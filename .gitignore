@@ -1,0 +1,15 @@
+# Node
+node_modules/
+npm-debug.log*
+pnpm-lock.yaml
+.yarn/
+
+# Env files
+.env*
+!/.env.example
+
+# Logs
+*.log
+
+# Docker
+docker-data/
