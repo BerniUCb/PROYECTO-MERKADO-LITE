@@ -1,16 +1,25 @@
-import { DataSource } from "typeorm";
-import { User } from "./entity/user.entity";
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { join } from 'path';
+export const dataSourceOptions: DataSourceOptions = {
+    type: 'postgres',
+    host: '172.28.241.32',
+    port: 5433,
+    username: 'merkado_admin',
+    password: 'app',
+    database: 'merkado_lite_db',
+    synchronize: false,
 
-export const AppDataSource = new DataSource({
-    type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: "merkado_admin",
-    password: "123456789",
-    database: "mklite",
-    synchronize: true,
+
+    entities: [join(process.cwd(), 'src', 'entity', '**', '*.entity{.ts,.js}')],
+
+
+    migrations: [join(process.cwd(), '..', 'database', 'migrations', '**', '*.ts')],
+    
+    // ==========================================================
+    
     logging: true,
-    entities: [User],
     subscribers: [],
-    migrations: [],
-})
+};
+
+const AppDataSource = new DataSource(dataSourceOptions);
+export default AppDataSource;
