@@ -1,27 +1,65 @@
-import { Body, Injectable } from "@nestjs/common";
-import { AppDataSource } from "src/data-source";
-import { User } from "src/entity/user.entity";
+// src/user/user.service.ts
 
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../entity/user.entity';
+// ¡Ya no importamos AppDataSource directamente!
 
 @Injectable()
 export class UserService {
-    async createUser(user: User) {
-        return await AppDataSource.manager.save(User ,user);
+  // Inyectamos el Repositorio de User. NestJS y TypeOrmModule se encargan de crearlo
+  // y dárnoslo listo para usar.
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async createUser(user: User): Promise<User> {
+    // Usamos el repositorio para guardar la nueva entidad de usuario.
+    const newUser = this.userRepository.create(user); // 'create' prepara el objeto para guardarlo
+    return await this.userRepository.save(newUser);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    // Usamos el repositorio para encontrar todos los usuarios.
+    return await this.userRepository.find();
+  }
+
+  async getUserByCi(ci: string): Promise<User> {
+    const id = parseInt(ci, 10);
+    const user = await this.userRepository.findOneBy({ id }); // Buscamos por la propiedad 'id'
+
+    // Es una buena práctica verificar si el usuario fue encontrado.
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+    return user;
+  }
+
+  async deleteUser(ci: string): Promise<{ deleted: boolean; affected?: number }> {
+    const id = parseInt(ci, 10);
+    const result = await this.userRepository.delete({ id }); // Borramos por la propiedad 'id'
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+    return { deleted: true, affected: result.affected ?? 0 };
+  }
+
+  async updateUser(ci: string, userUpdateData: Partial<User>): Promise<User> {
+    const id = parseInt(ci, 10);
+    // Usamos 'preload' para cargar el usuario existente y fusionar los nuevos datos.
+    const userToUpdate = await this.userRepository.preload({
+      id: id,
+      ...userUpdateData,
+    });
+
+    if (!userToUpdate) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
     }
 
-    async getAllUsers() {
-        return await AppDataSource.manager.find(User);
-    }
-
-    async getUserByCi(ci: string) {
-        return await AppDataSource.manager.findOneBy(User, {ci: parseInt(ci)});
-    }
-
-    async deleteUser(ci: string) {
-        return await AppDataSource.manager.delete(User, {ci: parseInt(ci)});
-    }
-
-    async updateUser(ci: string, user: User) {
-        return await AppDataSource.manager.update(User, {ci: parseInt(ci)}, user);
-    }
+    // Guardamos la entidad actualizada.
+    return await this.userRepository.save(userToUpdate);
+  }
 }
