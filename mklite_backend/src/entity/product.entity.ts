@@ -1,3 +1,5 @@
+// src/entity/product.entity.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Categoria } from "./category.entity";
 
@@ -16,18 +18,22 @@ export class Producto {
     @Column({ type: 'numeric', name: 'precio_venta' })
     precioVenta: number;
 
-    @Column({ name: 'unidad_medida' })
+    @Column({ name: 'unidad_medida', default: 'Unidad' })
     unidadMedida: string;
 
     @Column({ type: 'integer', name: 'stock_disponible' })
     stockDisponible: number;
 
+    // --- ¡NUEVA PROPIEDAD AÑADIDA! ---
+    @Column({ name: 'url_imagen', type: 'varchar', length: 512, nullable: true })
+    urlImagen: string;
+    // ------------------------------------
+
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
 
     // --- Relaciones ---
-    // Muchos Productos pertenecen a una Categoria
     @ManyToOne(() => Categoria, (categoria) => categoria.productos)
-    @JoinColumn({ name: 'categoria_id' }) // Esta es la llave foránea
+    @JoinColumn({ name: 'categoria_id' })
     categoria: Categoria;
 }
