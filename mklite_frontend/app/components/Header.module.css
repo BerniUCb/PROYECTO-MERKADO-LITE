@@ -1,0 +1,224 @@
+/* Header.module.css */
+
+.header {
+  width: 100%;
+}
+
+/* --- Top Bar --- */
+.topBar {
+  background-color: #414141;
+  color: #FFFFFF;
+  padding: 8px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.topBar a, .topBar span {
+  color: #FFFFFF;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.topBar a:hover {
+  text-decoration: underline;
+}
+
+.topBar select {
+  background-color: #414141;
+  color: #FFFFFF;
+  border: none;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.topBarLeft, .topBarRight {
+  display: flex;
+  align-items: center;
+}
+
+.topBarCenter {
+  display: flex;
+  align-items: center;
+  font-weight: 700; /* Lo ponemos en negrita como en el diseño */
+}
+
+/* --- Main Header --- */
+.mainHeader {
+  background-color: #F40009; /* Rojo */
+  color: #FFFFFF;
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+/* --- CORRECCIONES EN searchBar, input y button --- */
+.searchBar {
+  display: flex;
+  flex-grow: 1;
+  max-width: 600px;
+  margin: 0 30px;
+  position: relative; /* <-- NECESARIO para que el botón se posicione DENTRO */
+  background-color: #FFFFFF; /* <-- FONDO BLANCO PARA EL CONTENEDOR */
+  border: 2px solid #FFFFFF; /* <-- BORDE BLANCO EXTERIOR */
+  border-radius: 5px; /* <-- Bordes redondeados para el contenedor */
+  height: 46px; /* <-- Altura fija para el contenedor como en Figma */
+  overflow: hidden; /* <-- Oculta lo que se salga (el botón) */
+}
+
+.searchBar input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: none; /* <-- QUITAMOS EL BORDE DEL INPUT INDIVIDUAL */
+  background-color: transparent; /* <-- EL INPUT ES TRANSPARENTE */
+  font-size: 1rem;
+  color: #333; /* Color de texto normal */
+  height: 100%; /* <-- Ocupa toda la altura del contenedor */
+  width: calc(100% - 100px); /* <-- Deja espacio para el botón */
+}
+
+.searchBar input::placeholder { /* <-- ESTILO PARA EL TEXTO "Buscar productos..." */
+  color: #999999; /* Plomo */
+  opacity: 0.7; /* Casi transparente */
+}
+
+.searchBar button {
+  position: absolute; /* <-- POSICIÓN ABSOLUTA para estar DENTRO */
+  right: 0;
+  top: 0;
+  height: 100%; /* <-- Ocupa toda la altura */
+  background-color: #F40009; /* ¡BOTÓN ROJO! */
+  color: #FFFFFF;
+  border: none; /* ¡SIN BORDE! */
+  padding: 0 20px; /* Ajustamos padding */
+  border-radius: 0 3px 3px 0; /* <-- Bordes redondeados solo a la derecha */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700; /* Bold */
+  width: 100px; /* <-- Ancho fijo para el botón */
+}
+
+.searchBar button:hover {
+  background-color: #c7171a; /* Rojo más oscuro al pasar el ratón */
+  color: #FFFFFF;
+  border: none; 
+}
+/* --- FIN DE CORRECCIONES --- */
+
+.mainHeaderIcons {
+  display: flex;
+  gap: 25px;
+}
+
+.mainHeaderIcons a {
+  color: #FFFFFF;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+}
+
+.mainHeaderIcons a img {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+}
+
+.mainHeaderIcons a span {
+  margin-top: 5px;
+}
+
+.cartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px; 
+  background-color: #005daa; /* Azul del figma */
+  color: #FFFFFF;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700; /* Bold */
+  line-height: 1;
+  border: 1px solid #FFFFFF;
+}
+
+/* --- Nav Bar Inferior --- */
+.bottomNav {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #ddd;
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.categoriesDropdown button {
+  background-color: #F40009;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700; /* Bold */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.categoriesDropdown button:hover {
+  background-color: #c7171a;
+}
+
+.bottomNavLinks {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.bottomNavLinks a {
+  color: #64737E; /* Plomo de letras */
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500; /* Semi-bold */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bottomNavLinks a:hover {
+  color: #F40009;
+}
+
+.contactInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 700; /* Bold */
+}
+
+.contactInfo small {
+  font-size: 0.75rem;
+  color: #777;
+  font-weight: 400; /* Normal */
+  display: block;
+}
+
+.contactInfo > div {
+  display: flex;
+  flex-direction: column;
+}
