@@ -48,6 +48,6 @@ export class CategoryService{
         Object.assign(existing, categoryUpdateData);
 
         return await this.categoryRepository.save(existing);
-    }
+        }
 
 } 
