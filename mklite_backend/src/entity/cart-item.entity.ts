@@ -14,7 +14,7 @@ export class CarritoItem {
     @Column({ type: 'integer', default: 1 })
     cantidad: number;
         // --- ¡NUEVA PROPIEDAD AÑADIDA! ---
-    @Column({ type: 'numeric', name: 'precio_unitario' })
+     @Column({ type: 'numeric', name: 'precio_unitario', nullable: false }) // 'nullable: false' para que siempre se guarde un precio.
     precioUnitario: number;
 
     @CreateDateColumn({ name: 'fecha_agregado', type: 'timestamp with time zone' })
