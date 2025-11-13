@@ -33,25 +33,13 @@ export default function Home() {
 
         {/* Botones centrales */}
         <div className="flex flex-col space-y-4 w-48">
-          <button
-            onClick={() => router.push("/login")}
-            className="bg-white text-red-700 font-semibold py-2 rounded-lg shadow hover:bg-gray-300 transition"
-          >
-            Log In
-          </button>
-          <button
-            onClick={() => router.push("/signup")}
-            className="bg-red-700 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-800 transition"
-          >
-            Sign Up
-          </button>
-
-          {/* 🔽 Botón Principal movido debajo de Sign Up */}
+        
+          {/* Botón Principal */}
           <button
             onClick={() => router.push("/home")}
             className="bg-red-700 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-800 transition"
           >
-            Principal
+            Start
           </button>
         </div>
       </div>
