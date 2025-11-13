@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/entity/user.entity';
 
@@ -6,9 +6,15 @@ import { User } from 'src/entity/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // Ahora recibe query params: ?page=1&limit=10&sort=nombre&order=desc
   @Get()
-  async getAll(): Promise<User[]> {
-    return this.userService.findAll();
+  async getAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('sort') sort?: string,
+    @Query('order') order?: 'asc' | 'desc',
+  ): Promise<User[]> {
+    return this.userService.findAll(page, limit, sort, order);
   }
 
   @Get(':id')
