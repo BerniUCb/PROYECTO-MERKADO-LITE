@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
   }
 }
@@ -34,16 +34,3 @@ h1 {
   color: blue;
   font-size: 45px;
 }
-/* === Corrección de estilos globales === */
-html, body {
-  background-color: #f9f9f9 !important;
-  color: #333 !important;
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
-}
-
-main {
-  background-color: #f9f9f9 !important;
-}
-
