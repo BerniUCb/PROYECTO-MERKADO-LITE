@@ -5,15 +5,18 @@ import { FaHome, FaShoppingBasket, FaUsers, FaTags, FaCheckCircle } from 'react-
 import styles from './page.module.css';
 // NOTA: Asegúrate de instalar react-icons: npm install react-icons
 
+// --- INTERFACE MODIFICADA BASADA EN LA ENTIDAD PRODUCTO ---
 interface ProductData {
   nombre: string;
   descripcion: string;
-  categoria: string;
-  sku: string;
-  stockQuantity: string;
-  precioRegular: string;
-  precioOferta: string;
+  precioVenta: number | string; 
+  unidadMedida: string;
+  stockDisponible: number | string; 
+  // categoriaId es la llave foránea (categoria_id)
+  categoriaId: number | string; 
 }
+// Los campos 'sku', 'precioRegular', 'precioOferta' de tu formulario original se han eliminado
+// o se han mapeado a la estructura de la entidad Producto.
 
 const ImageListItem: React.FC<{ name: string; isUploaded: boolean }> = ({ name, isUploaded }) => (
   <div className={styles['image-list-item']}>
@@ -43,15 +46,21 @@ const Sidebar: React.FC = () => (
 );
 
 const ProductForm: React.FC = () => {
+  // --- ESTADO INICIAL MODIFICADO ---
   const [formData, setFormData] = useState<ProductData>({
     nombre: '',
     descripcion: '',
-    categoria: '',
-    sku: '#32A53',
-    stockQuantity: '211',
-    precioRegular: 'Bs. ###',
-    precioOferta: 'Bs. ###',
+    // Mapeo de campos de la entidad
+    precioVenta: '', // Corresponde al campo precio_venta
+    unidadMedida: 'Unidad', // Nuevo campo requerido por la entidad
+    stockDisponible: '', // Corresponde al campo stock_disponible
+    categoriaId: '', // Corresponde a la llave foránea categoria_id
   });
+
+  // El campo SKU y PRECIO OFERTA del diseño original NO se envían a la entidad Producto.
+  const [sku, setSku] = useState('#32A53');
+  const [precioOferta, setPrecioOferta] = useState('Bs. ###');
+  
 
   const uploadedImages = [
     { name: 'Cerveza_Budweiser_lata_269_ml_CBN(1).png', uploaded: true },
@@ -61,12 +70,32 @@ const ProductForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // El tipo de dato para 'precioVenta', 'stockDisponible', y 'categoriaId'
+    // se maneja como string en el input y se convierte al enviarse.
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleExtraChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      if (name === 'sku') setSku(value);
+      if (name === 'precioOferta') setPrecioOferta(value);
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Datos del Producto:', formData);
+    
+    // Prepara los datos para que coincidan con los tipos de la entidad TypeORM (number)
+    const dataToSend = {
+        nombre: formData.nombre,
+        descripcion: formData.descripcion,
+        precioVenta: parseFloat(String(formData.precioVenta)),
+        unidadMedida: formData.unidadMedida,
+        stockDisponible: parseInt(String(formData.stockDisponible), 10),
+        categoriaId: parseInt(String(formData.categoriaId), 10),
+    };
+
+    console.log('Datos del Producto para API (TypeORM):', dataToSend);
     // Lógica para enviar el formulario a la API
   };
 
@@ -77,49 +106,87 @@ const ProductForm: React.FC = () => {
         <form className={styles['form-container']} onSubmit={handleSubmit}>
           
           <div className={styles['form-left']}>
-            {/* Campo Nombre Producto */}
+            
+            {/* 1. Campo Nombre Producto (nombre) */}
             <div className={styles['input-group']}>
               <label>Nombre producto</label>
               <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
             </div>
 
-            {/* Campo Descripción */}
+            {/* 2. Campo Descripción (descripcion) */}
             <div className={styles['input-group']}>
               <label>Descripcion</label>
               <textarea name="descripcion" rows={4} value={formData.descripcion} onChange={handleChange}></textarea>
             </div>
 
-            {/* Campo Categoría */}
+            {/* 3. Campo Categoría (categoriaId - FK) */}
+            {/* Nota: En una app real, esto sería un <select> */}
             <div className={styles['input-group']}>
-              <label>Categoría</label>
-              <input type="text" name="categoria" value={formData.categoria} onChange={handleChange} />
+              <label>ID Categoría (categoria_id)</label>
+              <input 
+                  type="text" 
+                  name="categoriaId" 
+                  value={formData.categoriaId} 
+                  onChange={handleChange} 
+                  placeholder="ID de la Categoría"
+              />
             </div>
             
             <div className={styles['split-group']}>
-              {/* Campo SKU */}
+              
+              {/* CAMPO NO MAPPED: SKU (Se mantiene como extra) */}
               <div className={`${styles['input-group']} ${styles['half-width']}`}>
-                <label>SKU</label>
-                <input type="text" name="sku" value={formData.sku} onChange={handleChange} />
+                <label>SKU (No persistido)</label>
+                <input type="text" name="sku" value={sku} onChange={handleExtraChange} />
               </div>
-              {/* Campo Stock Quantity */}
+
+              {/* 4. Campo Stock Quantity (stockDisponible) */}
               <div className={`${styles['input-group']} ${styles['half-width']}`}>
-                <label>Stock Quantity</label>
-                <input type="text" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} />
+                <label>Stock Quantity ({'stockDisponible'})</label>
+                <input 
+                    type="number" 
+                    name="stockDisponible" 
+                    value={formData.stockDisponible} 
+                    onChange={handleChange} 
+                    placeholder="Stock"
+                />
               </div>
             </div>
             
             <div className={styles['split-group']}>
-              {/* Campo Precio Regular */}
+              
+              {/* 5. Campo Precio regular (precioVenta) */}
               <div className={`${styles['input-group']} ${styles['half-width']}`}>
-                <label>Precio regular</label>
-                <input type="text" name="precioRegular" value={formData.precioRegular} onChange={handleChange} />
+                <label>Precio Venta ({'precioVenta'})</label>
+                <input 
+                    type="number" 
+                    step="0.01"
+                    name="precioVenta" 
+                    value={formData.precioVenta} 
+                    onChange={handleChange} 
+                    placeholder="0.00" 
+                />
               </div>
-              {/* Campo Precio Oferta */}
+              
+              {/* CAMPO NO MAPPED: Precio Oferta (Se mantiene como extra) */}
               <div className={`${styles['input-group']} ${styles['half-width']}`}>
-                <label>Precio Oferta</label>
-                <input type="text" name="precioOferta" value={formData.precioOferta} onChange={handleChange} />
+                <label>Precio Oferta (No persistido)</label>
+                <input type="text" name="precioOferta" value={precioOferta} onChange={handleExtraChange} />
               </div>
             </div>
+
+            {/* Nuevo campo para unidad_medida (Unidad de Medida) */}
+            <div className={styles['input-group']}>
+              <label>Unidad de Medida</label>
+              <input 
+                  type="text" 
+                  name="unidadMedida" 
+                  value={formData.unidadMedida} 
+                  onChange={handleChange} 
+                  placeholder="Ej: Kg, Lb, Unidad"
+              />
+            </div>
+
           </div>
           
           <div className={styles['form-right']}>
@@ -149,7 +216,3 @@ const ProductForm: React.FC = () => {
 };
 
 export default ProductForm;
-
-// NOTA: Para usar este componente, impórtalo y renderízalo en tu App.tsx o index.tsx principal.
-// Ejemplo: import './ProductoForm.css';
-// Ejemplo: <ProductForm />
