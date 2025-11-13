@@ -1,0 +1,204 @@
+/* === CONTENEDOR GENERAL === */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #fafafa;
+}
+
+/* === CARRITO IZQUIERDO === */
+.cartBox {
+  width: 65%;
+  border: 1px solid #e3e9f7;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* === CABECERA === */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.header p {
+  color: #f57c00;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.clear {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* === TABLA === */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th {
+  text-align: left;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #222;
+}
+
+/* COLUMNAS RECTAS */
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 45%;
+  text-align: left;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 20%;
+  text-align: center;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 15%;
+  text-align: right;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 20%;
+  text-align: right;
+}
+
+.table td {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+  vertical-align: middle;
+  color: #333;
+}
+
+/* === PRODUCTO === */
+.productCell {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.productCell img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.productCell p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.productCell button {
+  background: none;
+  border: none;
+  color: #00a000;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+/* === CANTIDAD === */
+.qtyCell button {
+  background: #f3f4f6;
+  border: 1px solid #ddd;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.qtyCell button:hover {
+  background: #e5e7eb;
+}
+
+
+/* === RESUMEN DERECHO === */
+.summary {
+  width: 25%;
+  border: 1px solid #ddd;
+  padding: 1.2rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.03);
+}
+
+.summary h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #111;
+}
+
+/* === OPCIONES DE ENVÍO === */
+.shippingOptions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #222;
+}
+
+/* === TOTAL === */
+.totals {
+  margin-top: 1.2rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  font-size: 1rem;
+}
+
+/* === BOTÓN FINAL === */
+.checkout {
+  width: 100%;
+  background: #000;
+  color: #fff;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  margin-top: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.checkout:hover {
+  background: #222;
+  transform: translateY(-2px);
+}
+
+/* === EFECTO HOVER EN FILAS === */
+.table tr:hover td {
+  background: #f8f9ff; /* Azul muy suave */
+  transition: background 0.25s ease;
+}
+.fadeOut {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
