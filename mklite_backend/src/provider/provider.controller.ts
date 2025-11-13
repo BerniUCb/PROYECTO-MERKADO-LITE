@@ -17,17 +17,17 @@ export class ProviderController {
   }
 
   @Get('/:id')
-  getProviderById(@Param('id') id: number) {
+  getProviderById(@Param('id') id: string) {
     return this.providerService.getProviderById(id);
   }
 
   @Delete('/:id')
-  deleteProvider(@Param('id') id: number) {
+  deleteProvider(@Param('id') id: string) {
     return this.providerService.deleteProvider(id);
   }
 
   @Put('/:id')
-  updateProvider(@Param('id') id: number, @Body() proveedor: Proveedor) {
+  updateProvider(@Param('id') id: string, @Body() proveedor: Proveedor) {
     return this.providerService.updateProvider(id, proveedor);
   }
 }
