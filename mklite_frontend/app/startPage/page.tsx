@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
+export default function StartPage() {
   const router = useRouter();
 
   return (
@@ -33,7 +33,7 @@ export default function Home() {
 
         {/* Botones centrales */}
         <div className="flex flex-col space-y-4 w-48">
-        
+
           {/* Botón Principal */}
           <button
             onClick={() => router.push("/home")}

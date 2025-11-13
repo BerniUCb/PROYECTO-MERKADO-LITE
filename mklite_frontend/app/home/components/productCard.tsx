@@ -3,6 +3,8 @@
 import React from "react";
 import styles from "./productCard.module.css";
 import ProductCardModel from "../../models/productCard.model";
+import Link from "next/link";
+
 
 interface Props {
   product: ProductCardModel;
@@ -37,7 +39,9 @@ const ProductCard: React.FC<Props> = ({ product }) => {
             Bs. {discountedPrice.toFixed(2)}
           </span>
         </div>
-        <button className={styles.addButton}>🛒 Add</button>
+        <Link href="/viewproduct">
+          <button className={styles.addButton}>🛒 Add</button>
+        </Link>
       </div>
     </div>
   );

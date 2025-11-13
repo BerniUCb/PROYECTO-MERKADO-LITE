@@ -1,12 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation";
-import StartPage from "./startPage/startPage"; 
+import StartPage from "./startPage/page";
 
 export default function Home() {
-  const router = useRouter();
-
   return <StartPage />;
 }
+
 
 
 

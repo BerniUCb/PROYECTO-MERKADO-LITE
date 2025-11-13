@@ -1,14 +1,11 @@
 "use client";
 
 import React from "react";
-import Header from "../header/header";
-import Footer from "../footer/footer";
 import styles from "./page.module.css";
 
 export default function SignupPage() {
   return (
     <>
-      <Header />
       <div className={styles.signupContainer}>
         <form className={styles.signupForm}>
           <div>
@@ -61,7 +58,6 @@ export default function SignupPage() {
           </div>
         </form>
       </div>
-      <Footer />
     </>
   );
 }

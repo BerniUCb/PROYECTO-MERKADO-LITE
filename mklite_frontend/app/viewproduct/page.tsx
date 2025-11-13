@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 //import type { Product } from '../../src/types/entities';
 
 export default function ProductPage() {
@@ -46,6 +48,7 @@ interface Product {
   return (
     <div className={styles['product-page']}>
       {/* HEADER GLOBAL */}
+       <Header />
 
       {/* MAIN */}
       <main className={styles['main-content']}>
@@ -103,6 +106,7 @@ interface Product {
       </section>
 
         {/* FOOTER GLOBAL */}
+         <Footer />
         
     </div>
   );

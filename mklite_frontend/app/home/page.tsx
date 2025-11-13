@@ -1,7 +1,5 @@
 "use client";
 
-import Header from "../header/header";
-import Footer from "../footer/footer";
 import Benefits from "./components/benefits";
 import ProductShowcase from "./components/productShowcase";
 import ProductCard from "./components/productCard";
@@ -14,6 +12,8 @@ import ProductCardModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
 
 import styles from "./page.module.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   //CATEGORIAS
@@ -71,8 +71,8 @@ export default function HomePage() {
 
   return (
     <>
-      <Header />
-
+      
+    <Header />
       <main className={styles.main}>
         {/* 🔹 SECCIÓN: Productos populares */}
         <section id="productos" className={styles.productsSection}>
@@ -101,8 +101,8 @@ export default function HomePage() {
         {/* 🔹 SECCIÓN: Beneficios */}
         <Benefits />
       </main>
-
-      <Footer />
+       <Footer />
+      
     </>
   );
 }

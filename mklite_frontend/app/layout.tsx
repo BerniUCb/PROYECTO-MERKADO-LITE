@@ -27,13 +27,13 @@ export default function RootLayout({
       {/* 3. APLICAMOS LA FUENTE A TODA LA PÁGINA */}
       <body className={quicksand.className}> 
         
-        <Header />
+        
 
         <main style={{ minHeight: '80vh' }}>
           {children}
         </main>
         
-        <Footer />
+       
 
       </body>
     </html>
