@@ -25,3 +25,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
 }
+
+
+li {
+  color: red;
+}
+
+h1 {
+  color: blue;
+  font-size: 45px;
+}
+/* === Corrección de estilos globales === */
+html, body {
+  background-color: #f9f9f9 !important;
+  color: #333 !important;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+main {
+  background-color: #f9f9f9 !important;
+}
+
