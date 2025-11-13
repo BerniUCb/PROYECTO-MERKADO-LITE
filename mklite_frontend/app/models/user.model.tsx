@@ -7,3 +7,4 @@ interface UserModel {
 }
   
 export default UserModel;
+
