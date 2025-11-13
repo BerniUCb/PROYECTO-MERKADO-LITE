@@ -1,0 +1,180 @@
+.footer {
+  width: 100%;
+  background-color: #FFFFFF;
+  color: #333333;
+  padding: 60px 0 30px 0;
+  border-top: 1px solid #EAEAEA;
+  font-size: 14px;
+}
+
+.container {
+  width: 90%;
+  max-width: 1400px; /* Ajusta al ancho de tu diseño */
+  margin: 0 auto;
+}
+
+/* --- Sección Superior --- */
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Para que se vea bien en pantallas más pequeñas */
+  gap: 30px;
+}
+
+.column {
+  flex: 1; /* Cada columna toma espacio flexible */
+  min-width: 220px; /* Ancho mínimo antes de que se reordenen */
+}
+
+.column h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.column p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Listas de Enlaces (Compañía, Cuenta, Popular) */
+.column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.column ul li {
+  margin-bottom: 10px;
+}
+
+.column ul li a {
+  text-decoration: none;
+  color: #666;
+}
+
+.column ul li a:hover {
+  color: #F40009; /* Color rojo de tu marca */
+  text-decoration: underline;
+}
+
+/* Columna 1: Logo y Contacto */
+.logo {
+  margin-bottom: 25px;
+}
+
+.contactList {
+  list-style: none;
+  padding: 0;
+}
+
+.contactList li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  color: #666;
+  gap: 10px;
+}
+
+.contactList li img {
+  margin-top: 3px; /* Alinear el icono */
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.contactList li span {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* Columna 5: Muy Pronto */
+.storeButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.storeButtons img {
+  height: 40px;
+  width: auto;
+}
+
+.paymentTitle {
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+.paymentIcons img {
+  height: 25px;
+  width: auto;
+}
+
+/* --- Sección Inferior (Sub-Footer) --- */
+.subFooter {
+  border-top: 2px solid #EAEAEA;
+  margin-top: 40px;
+  padding-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.copyright {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+.footerContacts {
+  display: flex;
+  gap: 25px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contactItem img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.contactItem div {
+  display: flex;
+  flex-direction: column;
+}
+
+.contactItem div strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #F40009;
+}
+
+.contactItem div span {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.socials {
+  text-align: right;
+  color: #666;
+}
+
+.socials strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.socials p {
+  font-size: 0.85rem;
+  max-width: 200px;
+}
