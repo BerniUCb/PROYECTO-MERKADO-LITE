@@ -1,9 +1,12 @@
-import Image from "next/image";
+"use client";
+import { useRouter } from "next/navigation";
+import StartPage from "./startPage/startPage"; 
 
 export default function Home() {
-  return (
-    <div>
-      <h1>Bienvenido a merkado lite!!</h1>
-    </div>
-  );
+  const router = useRouter();
+
+  return <StartPage />;
 }
+
+
+
