@@ -1,10 +1,6 @@
 // src/entity/product.entity.ts
 
-<<<<<<< HEAD
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-=======
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
->>>>>>> origin/feature/backend-mateo
 import { Categoria } from "./category.entity";
 import { DetallePedido } from "./order-item.entity";
 
