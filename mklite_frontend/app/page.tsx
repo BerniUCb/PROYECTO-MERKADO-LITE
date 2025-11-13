@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -7,18 +6,10 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-red-800 to-red-600 flex items-center justify-center">
-      {/* Botón Principal en la esquina superior izquierda */}
-      <button
-        onClick={() => router.push("/home")}
-        className="absolute top-4 left-4 bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-red-800 transition"
-      >
-        Principal
-      </button>
-
       {/* Contenedor central */}
       <div className="flex flex-col items-center p-8 bg-gradient-to-br from-red-700 to-red-900 rounded-2xl shadow-lg">
         <h1 className="text-white text-4xl font-bold mb-6">Bienvenido A</h1>
-        
+
         {/* Carrito */}
         <div className="text-white mb-10">
           <svg
@@ -54,9 +45,18 @@ export default function Home() {
           >
             Sign Up
           </button>
+
+          {/* 🔽 Botón Principal movido debajo de Sign Up */}
+          <button
+            onClick={() => router.push("/home")}
+            className="bg-red-700 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-800 transition"
+          >
+            Principal
+          </button>
         </div>
       </div>
     </div>
   );
 }
+
 

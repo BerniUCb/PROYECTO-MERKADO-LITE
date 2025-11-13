@@ -1,7 +1,7 @@
 "use client";
 
-import Header from "./components/header";
-import Footer from "./components/footer";
+import Header from "../header/header";
+import Footer from "../footer/footer";
 import Benefits from "./components/benefits";
 import ProductShowcase from "./components/productShowcase";
 import ProductCard from "./components/productCard";
