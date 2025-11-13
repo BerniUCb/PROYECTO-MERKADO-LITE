@@ -3,6 +3,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Categoria } from "./category.entity";
 import { DetallePedido } from "./order-item.entity";
+import { HistorialPrecio } from "./price-history.entity";
 
 @Entity('producto')
 export class Producto {
@@ -40,4 +41,6 @@ export class Producto {
         // ¡NUEVA RELACIÓN! Un Producto puede estar en muchos detalles de pedido.
     @OneToMany(() => DetallePedido, (detalle) => detalle.producto)
     detallesPedido: DetallePedido[];
+    @OneToMany(() => HistorialPrecio, (historial) => historial.producto)
+    historialPrecios: HistorialPrecio[];
 }
