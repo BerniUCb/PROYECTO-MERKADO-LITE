@@ -26,23 +26,84 @@ export default function Vegetales() {
       {/*  Banner */}
       <section className={styles.banner}>
         <div className={styles.breadcrumb}>
-          <a href="/">Inicio</a> &gt; <span>Vegetales</span>
+          <a href="/">Inicio</a>/<span>Vegetales</span>
         </div>
       </section>
 
       {/*  Contenido principal */}
       <section className={styles.main}>
         {/* Sidebar */}
-        <aside className={styles.sidebar}>
-          <h3>Categorías</h3>
-          <ul>
-            <li>🥛 Lácteos & Derivados</li>
-            <li>🍖 Carnes</li>
-            <li>🍓 Frutas</li>
-            <li className={styles.activo}>🥦 Vegetales</li>
-            <li>🍞 Panadería</li>
-          </ul>
-        </aside>
+       <aside className={styles.sidebar}>
+  <h3>Categorías</h3>
+  <hr />
+
+  <ul>
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/abarrotes.svg" width="25" />
+        Abarrotes
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/bebidas.svg" width="25" />
+        Bebidas
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/frutas.svg" width="25" />
+        Frutas
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/verduras.svg" width="25" />
+        Verduras
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/mariscos.svg" width="25" />
+        Mariscos
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/snacks.svg" width="25" />
+        Snack y golosinas
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/lacteos.svg" width="25" />
+        Lácteos y derivados
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+
+    <li className={styles.categoriaItem}>
+      <div className={styles.itemLeft}>
+        <img src="/icons/mascotas.svg" width="25" />
+        Mascotas
+      </div>
+      <span className={styles.itemCount}>2</span>
+    </li>
+  </ul>
+</aside>
+
 
         {/* Productos */}
         <div className={styles.productos}>
