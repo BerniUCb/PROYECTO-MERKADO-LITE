@@ -23,8 +23,13 @@ export class Producto {
     @Column({ name: 'unidad_medida', default: 'Unidad' })
     unidadMedida: string;
 
-    @Column({ type: 'integer', name: 'stock_disponible' })
-    stockDisponible: number;
+// ...
+    @Column({ type: 'integer', name: 'stock_fisico' }) // <-- Renombrado
+    stockFisico: number;
+
+    @Column({ type: 'integer', name: 'stock_reservado', default: 0 }) // <-- Nueva propiedad
+    stockReservado: number;
+// ...
 
     // --- ¡NUEVA PROPIEDAD AÑADIDA! ---
     @Column({ name: 'url_imagen', type: 'varchar', length: 512, nullable: true })
