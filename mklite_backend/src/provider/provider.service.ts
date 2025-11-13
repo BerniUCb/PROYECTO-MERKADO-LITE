@@ -19,35 +19,32 @@ export class ProviderService {
     return await this.providerRepository.find();
   }
 
-  async getProviderById(id: string): Promise<Proveedor> {
-    const proveedorId = parseInt(id, 10);
-    const proveedor = await this.providerRepository.findOneBy({ id: proveedorId });
+  async getProviderById(id: number): Promise<Proveedor> {
+
+    const proveedor = await this.providerRepository.findOneBy({ id: id });
 
     if (!proveedor) {
-      throw new NotFoundException(`Proveedor con ID "${proveedorId}" no encontrado`);
+      throw new NotFoundException(`Proveedor con ID "${id}" no encontrado`);
     }
     return proveedor;
   }
 
-  async deleteProvider(id: string): Promise<{ deleted: boolean; affected?: number }> {
-    const proveedorId = parseInt(id, 10);
-    const result = await this.providerRepository.delete({ id: proveedorId });
+  async deleteProvider(id: number): Promise<{ deleted: boolean; affected?: number }> {
+    const result = await this.providerRepository.delete({ id: id });
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Proveedor con ID "${proveedorId}" no encontrado`);
+      throw new NotFoundException(`Proveedor con ID "${id}" no encontrado`);
     }
     return { deleted: true, affected: result.affected ?? 0 };
   }
 
-  async updateProvider(id: string, updateData: Partial<Proveedor>): Promise<Proveedor> {
-    const proveedorId = parseInt(id, 10);
+  async updateProvider(id: number, updateData: Partial<Proveedor>): Promise<Proveedor> {
     const proveedorToUpdate = await this.providerRepository.preload({
-      id: proveedorId,
-      ...updateData,
+      id: id,...updateData,
     });
 
     if (!proveedorToUpdate) {
-      throw new NotFoundException(`Proveedor con ID "${proveedorId}" no encontrado`);
+      throw new NotFoundException(`Proveedor con ID "${id}" no encontrado`);
     }
 
     return await this.providerRepository.save(proveedorToUpdate);
