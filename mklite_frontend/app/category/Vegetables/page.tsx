@@ -1,29 +1,12 @@
 "use client";
+
 import styles from "./page.module.css";
+
+
 
 export default function Vegetales() {
   return (
     <main>
-
-      {/* HEADER */}
-      <header className={styles.navbar}>
-        <div className={styles.logo}>
-          <span>MERKADO</span>
-          <span className={styles.lite}>LITE</span>
-        </div>
-
-        <div className={styles.search}>
-          <input type="text" placeholder="Buscar productos..." />
-          <button>Buscar</button>
-        </div>
-
-        <div className={styles.icons}>
-          <a href="#">❤️ Lista de Deseos</a>
-          <a href="#">🛒 Carrito</a>
-          <a href="#">👤 Cuenta</a>
-        </div>
-      </header>
-
       {/* BANNER */}
       <section className={styles.banner}>
         <div className={styles.breadcrumb}>
@@ -153,15 +136,6 @@ export default function Vegetales() {
       </section>
 
       {/* FOOTER */}
-      <footer className={styles.footer}>
-        <h3>Quédate en casa y consigue tus compras diarias</h3>
-        <p>Comienza tus compras con <b>Merkado Lite</b></p>
-
-        <div>
-          <input type="email" placeholder="Tu correo electrónico" />
-          <button>Suscribirse</button>
-        </div>
-      </footer>
     </main>
   );
 }
