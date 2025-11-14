@@ -43,12 +43,10 @@
   justify-content: space-between;
   padding: 50px 100px;
   gap: 40px;
-  background-color: #ffffff !important; /* ← FORZADO */
+  background-color: #ffffff 
 }
 
-
-/* SIDEBAR*/
-/* === SIDEBAR NUEVO === */
+/* SIDEBAR NUEVO  */
 
 .sidebar {
   width: 260px;

@@ -157,13 +157,13 @@
 
 /* === OPCIONES DE ENVÍO === */
 .shippingOptions {
-  display: grid;;
+  display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   row-gap: 12px;
   margin-bottom: 25px;
 }
-/* Texto de opciones de envío en blanco */
+/* Texto de opciones */
 .shippingOptions label {
   display: flex;
   align-items: center;
@@ -174,7 +174,7 @@
 }
 
 .shippingOptions span {
-  color: #2e2a2a !important;   /* BLANCO para el precio */
+  color: #2e2a2a ;   
 }
 
 
