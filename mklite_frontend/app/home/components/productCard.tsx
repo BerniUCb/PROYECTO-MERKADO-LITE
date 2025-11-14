@@ -13,8 +13,8 @@ interface Props {
 const ProductCard: React.FC<Props> = ({ product }) => {
   const hasDiscount = product.discount && product.discount > 0;
   const discountedPrice = hasDiscount
-    ? product.price - (product.price * product.discount!) / 100
-    : product.price;
+    ? product.precioVenta - (product.precioVenta * product.discount!) / 100
+    : product.precioVenta;
 
   return (
     <div className={styles.card}>
@@ -22,17 +22,17 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         <span className={styles.discountTag}>-{product.discount}%</span>
       )}
       <img
-        src={product.imageUrl}
-        alt={product.name}
+        src={product.urlImagen}
+        alt={product.nombre}
         className={styles.image}
       />
       <div className={styles.content}>
-        <h3 className={styles.name}>{product.name}</h3>
-        <p className={styles.description}>{product.description}</p>
+        <h3 className={styles.name}>{product.nombre}</h3>
+        <p className={styles.description}>{product.descripcion}</p>
         <div className={styles.priceContainer}>
           {hasDiscount && (
             <span className={styles.originalPrice}>
-              Bs. {product.price.toFixed(2)}
+              Bs. {product.precioVenta.toFixed(2)}
             </span>
           )}
           <span className={styles.finalPrice}>

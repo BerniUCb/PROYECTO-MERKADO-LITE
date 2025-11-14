@@ -2,6 +2,13 @@
 
 .header {
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 999; /* para que quede encima de todo */
+}
+
+.header {
+  width: 100%;
 }
 
 /* --- Top Bar --- */
