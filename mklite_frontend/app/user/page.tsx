@@ -8,10 +8,10 @@ import UserModel from "../models/user.model";
 export default function Usuario() {
   const [users, setUsers] = useState<UserModel[]>([]);
   const [user, setUser] = useState<Partial<UserModel>>({
-    lastname: "",
-    name: "",
-    email: "",
-    password: ""
+    //lastname: "",
+    //name: "",
+    //email: "",
+    //password: ""
   });
 
   useEffect(() => {
@@ -41,24 +41,24 @@ export default function Usuario() {
     console.log(response);
   }
 
-  return (
+ /* return (
     <div className={styles.user_page}>
-      <form onSubmit={onSubmit} className={styles.user_form}>
-        <input type="text" placeholder="name" value={user.name} onChange={handleChange} />
-        <input type="text" placeholder="lastname" value={user.lastname} onChange={handleChange} />
-        <input type="email" placeholder="email" value={user.email} onChange={handleChange} />
-        <input type="password" placeholder="password" value={user.password} onChange={handleChange} />
-        <button className={styles.user_card_delete_button} type="submit">Crear Usuario</button>
-      </form>
-      <div className={styles.user_container}>
-        { users.map((user: any) => (
-          <div className={styles.user_card} key={user.ci}>
-            <h1 className={styles.user_data}>Usuario: {user.name}</h1>
-            <p>Email: {user.email}</p>
-            <button className={styles.user_card_delete_button} onClick={() => deleteSelectedUser(user.ci)}>Eliminar</button>
-          </div>
+      { <form onSubmit={onSubmit} className={styles.user_form}>
+      <input type="text" placeholder="name" value={user.name} onChange={handleChange} />
+      <input type="text" placeholder="lastname" value={user.lastname} onChange={handleChange} />
+      <input type="email" placeholder="email" value={user.email} onChange={handleChange} />
+      <input type="password" placeholder="password" value={user.password} onChange={handleChange} />
+      <button className={styles.user_card_delete_button} type="submit">Crear Usuario</button>
+    </form>
+    <div className={styles.user_container}>
+      { users.map((user: any) => (
+        <div className={styles.user_card} key={user.ci}>
+          <h1 className={styles.user_data}>Usuario: {user.name}</h1>
+          <p>Email: {user.email}</p>
+          <button className={styles.user_card_delete_button} onClick={() => deleteSelectedUser(user.ci)}>Eliminar</button>
+        </div> }
         )) }
       </div>
     </div>
-  );
+  );*/
 }
