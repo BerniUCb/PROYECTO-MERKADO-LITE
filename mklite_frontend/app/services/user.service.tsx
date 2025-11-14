@@ -1,22 +1,34 @@
-import UserModel from "../models/user.model";
-import { instance } from "../utils/axios"
+import { instance } from "../utils/axios";
+import User  from "../models/user.model";
 
-export const getUsers = async () => {
-    const users = await instance.get('/user');
-    return users.data;
-}
+export const UserService = {
+  getAll: async (
+    page?: number,
+    limit?: number,
+    sort?: string,
+    order?: "asc" | "desc"
+  ): Promise<User[]> => {
+    const params = { page, limit, sort, order };
+    const res = await instance.get("/usuarios", { params });
+    return res.data;
+  },
 
-export const createUser = async (user: Partial<UserModel>) => {
-    const newUser = await instance.post('/user', user);
-    return newUser.data;
-}
+  getById: async (id: number): Promise<User> => {
+    const res = await instance.get(`/usuarios/${id}`);
+    return res.data;
+  },
 
-export const deleteUser = async (ci: string) => {
-    const deletedUser = await instance.delete(`/user/${ci}`);
-    return deletedUser.data;
-}
+  create: async (user: Partial<User>): Promise<User> => {
+    const res = await instance.post("/usuarios", user);
+    return res.data;
+  },
 
-export const updateUser = async (ci: string, user: any) => {
-    const updatedUser = await instance.put(`/user/${ci}`, user);
-    return updatedUser.data;
-}
+  update: async (id: number, user: Partial<User>): Promise<User> => {
+    const res = await instance.put(`/usuarios/${id}`, user);
+    return res.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await instance.delete(`/usuarios/${id}`);
+  },
+};
