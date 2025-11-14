@@ -15,7 +15,7 @@ const categoriasSidebar = [
   { id: "mascotas", nombre: "Mascotas", icono: "/icons/mascotas.svg", count: 2 },
 ];
 
-// PRODUCTOS DE CADA CATEGORÍA ----- agregar total 6
+// PRODUCTOS DE CADA CATEGORÍA ----- agregar total 6 
 const dataCategorias = {
   vegetales: {
     titulo: "Vegetales",
