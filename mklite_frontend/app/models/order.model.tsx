@@ -1,5 +1,5 @@
 import User from "./user.model";
-import DetallePedido from "./detallePedido.model";
+import DetallePedido from "./orderDetail.model";
 
 export type EstadoPedido =
   | 'pendiente'

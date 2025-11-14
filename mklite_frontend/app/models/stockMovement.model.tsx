@@ -1,5 +1,5 @@
 import ProductCardModel from "./productCard.model";
-import Lote from "./lote.model";
+import Lote from "./lot.model";
 import User from "./user.model";
 
 export type TipoMovimiento =

@@ -1,5 +1,5 @@
 import ProductCardModel from "./productCard.model";
-import Proveedor from "./proveedor.model";
+import Proveedor from "./ provider.model";
 
 export default interface Lote {
   id: number;

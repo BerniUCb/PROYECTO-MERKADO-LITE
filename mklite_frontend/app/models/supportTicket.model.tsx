@@ -1,6 +1,6 @@
-import Pedido from "./pedido.model";
+import Pedido from "./order.model";
 import User from "./user.model";
-import type  {MensajeSoporte}from "./mensajeSoporte.model";
+import MensajeSoporte from "./supportMessage.model";
 
 export type EstadoTicket =
   | 'abierto'
@@ -8,7 +8,7 @@ export type EstadoTicket =
   | 'resuelto'
   | 'cerrado';
 
-export interface TicketSoporte {
+export default interface TicketSoporte {
   id: number;
   asunto: string;
   estado: EstadoTicket;

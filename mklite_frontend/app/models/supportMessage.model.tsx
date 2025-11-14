@@ -1,7 +1,7 @@
-import type {TicketSoporte} from "./ticketSoporte.model";
+import TicketSoporte from "./supportTicket.model";
 import User from "./user.model";
 
-export interface MensajeSoporte {
+export default interface MensajeSoporte {
   id: number;
   contenido: string;
   fechaEnvio: string;

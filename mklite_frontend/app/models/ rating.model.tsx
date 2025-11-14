@@ -1,4 +1,4 @@
-import Pedido from "./pedido.model";
+import Pedido from "./order.model";
 import User from "./user.model";
 
 export default interface Calificacion {
