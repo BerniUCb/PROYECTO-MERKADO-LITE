@@ -1,7 +1,7 @@
 // src/user/user.service.ts
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';9
 import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 // ¡Ya no importamos AppDataSource directamente!

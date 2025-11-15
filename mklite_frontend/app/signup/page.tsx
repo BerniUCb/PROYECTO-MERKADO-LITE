@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import styles from "./page.module.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import styles from "./page.module.css";
 
 export default function SignupPage() {
   return (

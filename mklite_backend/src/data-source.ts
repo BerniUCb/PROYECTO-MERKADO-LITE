@@ -5,11 +5,11 @@ import { join } from 'path';
 
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    host: '172.28.241.32',
-    port: 5433,
+    host: '127.0.0.1',
+    port: 5432,
     username: 'merkado_admin',
-    password: 'app',
-    database: 'merkado_lite_db',
+    password: 'merkado_pass',
+    database: 'merkadolite_db',
     synchronize: false,
 
  
