@@ -1,16 +1,13 @@
-// src/user/user.service.ts
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Producto } from '../entity/product.entity';
 
-// ¡Ya no importamos AppDataSource directamente!
 
 @Injectable()
 export class ProductService {
-  // Inyectamos el Repositorio de User. NestJS y TypeOrmModule se encargan de crearlo
-  // y dárnoslo listo para usar.
+  
   constructor(
     @InjectRepository(Producto)
     private readonly productRepository: Repository<Producto>,
