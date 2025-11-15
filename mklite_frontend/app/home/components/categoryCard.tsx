@@ -1,26 +1,27 @@
-// categoryCard.tsx
-import styles from './categoryCard.module.css';
-import { IconType } from 'react-icons';
+import styles from "./categoryCard.module.css";
+import { IconType } from "react-icons";
+import Link from "next/link";
 
 interface CategoryCardProps {
   name: string;
-  IconComponent: IconType; // Tipo del componente de icono
+  slug: string;
+  IconComponent: IconType;
 }
 
-export default function CategoryCard({ name, IconComponent }: CategoryCardProps) {
+export default function CategoryCard({ name, slug, IconComponent }: CategoryCardProps) {
   return (
-    <div className={styles.card}>
-      {/* Contenedor para el icono */}
+    <Link href={`/categories/${slug}`} className={styles.card}>
       <div className={styles.iconContainer}>
-        {/* Renderiza el icono */}
         <IconComponent className={styles.icon} />
       </div>
       <div className={styles.content}>
         <h3>{name}</h3>
       </div>
-    </div>
+    </Link>
   );
 }
+
+
 
 
 

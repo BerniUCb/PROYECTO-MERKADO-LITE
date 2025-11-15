@@ -1,9 +1,9 @@
 import { IconType } from 'react-icons';
 
 interface CategoryCardModel {
-  id: number;
+    id: number;
   name: string;
-  description?: string;
+  slug: string;        // <-- SLUG CORRECTO
   IconComponent: IconType;
 }
 

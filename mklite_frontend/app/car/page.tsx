@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 type Product = {
   id: number;
@@ -62,6 +64,7 @@ export default function CarPage() {
   return (
     <main>
       {/* HEADER GLOBAL */}
+      <Header />
       
       {/* CONTENIDO DEL CARRITO */}
       <div className={styles.container}>
@@ -157,6 +160,7 @@ export default function CarPage() {
       </div>
 
       {/* FOOTER GLOBAL */}
+      <Footer />
     </main>
   );
 }

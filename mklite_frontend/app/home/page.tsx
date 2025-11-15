@@ -7,7 +7,7 @@ import ProductCard from "./components/productCard";
 import CategoryCard from "./components/categoryCard";
 
 // Importa los iconos que usarás para las categorías
-import { GiMilkCarton, GiMeat, GiCarrot, GiFruitBowl, GiChipsBag, GiDrinkMe } from 'react-icons/gi';
+import { GiMilkCarton, GiMeat, GiCarrot, GiFruitBowl, GiChipsBag, GiDrinkMe, GiBroom } from 'react-icons/gi';
 
 import ProductCardModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
@@ -19,13 +19,14 @@ import Footer from "../components/Footer";
 export default function HomePage() {
   //CATEGORIAS
   const categories: CategoryCardModel[] = [
-  { id: 1, name: "Lácteos", IconComponent: GiMilkCarton },
-  { id: 2, name: "Carnes", IconComponent: GiMeat },
-  { id: 3, name: "Verduras", IconComponent: GiCarrot },
-  { id: 4, name: "Frutas", IconComponent: GiFruitBowl },
-  { id: 5, name: "Snacks", IconComponent: GiChipsBag },
-  { id: 6, name: "Bebidas", IconComponent: GiDrinkMe },
+  { id: 1, name: "Lácteos", slug: "lacteos", IconComponent: GiMilkCarton },
+  { id: 2, name: "Carnes", slug: "carnes", IconComponent: GiMeat },
+  { id: 3, name: "Verduras", slug: "vegetales", IconComponent: GiCarrot },
+  { id: 4, name: "Frutas", slug: "frutas", IconComponent: GiFruitBowl },
+  { id: 5, name: "Snacks", slug: "snacks", IconComponent: GiChipsBag },
+  { id: 6, name: "Bebidas", slug: "bebidas", IconComponent: GiDrinkMe },
 ];
+
 
   // 🔹 Productos populares 
   const popularProducts: ProductCardModel[] = [
@@ -43,6 +44,7 @@ export default function HomePage() {
       categoria: {
         id: 1,
         name: "Lácteos",
+        slug: "lacteos",
         IconComponent: GiMilkCarton,
       },
     },
@@ -59,7 +61,8 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 5,
-        name: "Snacks",
+        name : "Snacks",
+        slug: "snacks",
         IconComponent: GiChipsBag,
       },
     },
@@ -76,6 +79,7 @@ export default function HomePage() {
       categoria: {
         id: 2,
         name: "Carnes",
+        slug: "carnes",
         IconComponent: GiMeat,
       },
     },
@@ -93,6 +97,7 @@ export default function HomePage() {
       categoria: {
         id: 2,
         name: "Carnes",
+        slug: "carnes",
         IconComponent: GiMeat,
       },
     },
@@ -110,6 +115,7 @@ export default function HomePage() {
       categoria: {
         id: 1,
         name: "Lácteos",
+        slug: "lacteos",
         IconComponent: GiMilkCarton,
       },
     },
@@ -126,6 +132,7 @@ export default function HomePage() {
       categoria: {
         id: 1,
         name: "Lácteos",
+        slug: "lacteos",
         IconComponent: GiMilkCarton,
       },
     },
@@ -152,7 +159,13 @@ export default function HomePage() {
           <div className={styles.categoriesGrid}>
             {categories.map((cat) => (
               // Cambié para que pase IconComponent en vez de category completa
-              <CategoryCard key={cat.id} name={cat.name} IconComponent={cat.IconComponent} />
+             <CategoryCard
+                  key={cat.id}
+                  name={cat.name}
+                  slug={cat.slug}
+                  IconComponent={cat.IconComponent}
+                />
+
             ))}
           </div>
         </section>
@@ -164,10 +177,12 @@ export default function HomePage() {
         <Benefits />
       </main>
        <Footer />
-      
-    </>
-  );
+      
+    </>
+  );
 }
+
+
 
 
 

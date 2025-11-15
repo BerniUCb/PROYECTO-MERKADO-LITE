@@ -3,7 +3,7 @@
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import styles from "./page.module.css"; // opcional si luego agregas CSS por módulo
+import styles from "./page.module.css"; 
 
 export default function LoginPage() {
   return (

@@ -39,8 +39,8 @@ export default function Header() {
             <Image
               src="/header/logoMKLite.png"
               alt="Merkado Lite Logo"
-              width={300}  // <-- ¡Tu tamaño correcto!
-              height={100} // <-- ¡Tu tamaño correcto!
+              width={300}  
+              height={100} 
               priority
             />
           </Link>
@@ -54,11 +54,14 @@ export default function Header() {
             <Image src="/header/corazonListaDeDeseos.png" alt="Lista de Deseos" width={24} height={24} />
             <span>Lista de Deseos</span>
           </Link>
-          <Link href="/cart">
-            <Image src="/header/carrito.png" alt="Carrito" width={24} height={24} />
-            <span className={styles.cartCount}>0</span>
+          <Link href="/car" className={styles.iconButton}>
+            <div className={styles.iconWrapper}>
+              <Image src="/header/carrito.png" alt="Carrito" width={24} height={24} />
+              <span className={styles.cartCount}>0</span>
+            </div>
             <span>Carrito</span>
           </Link>
+
           <Link href="/account">
             <Image src="/header/iconoUsuario.png" alt="Cuenta" width={24} height={24} />
             <span>Cuenta</span>

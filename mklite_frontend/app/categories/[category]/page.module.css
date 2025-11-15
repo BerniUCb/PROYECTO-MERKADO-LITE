@@ -11,7 +11,7 @@
 /* BANNER DE CATEGORÍA */
 .banner {
   background-color: var(--gris-claro);
-  padding: 60px 100px;
+  padding: 20px 60px;
   border-radius: 0 0 10px 10px;
   background-image: url('/images/pattern.svg');
   background-repeat: no-repeat;
