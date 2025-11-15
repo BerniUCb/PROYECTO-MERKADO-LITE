@@ -1,7 +1,7 @@
 "use client";
 
-import Header from "../header/header";
-import Footer from "../footer/footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import Benefits from "./components/benefits";
 import ProductShowcase from "./components/productShowcase";
 import ProductCard from "./components/productCard";
@@ -29,43 +29,104 @@ export default function HomePage() {
   // 🔹 Productos populares 
   const popularProducts: ProductCardModel[] = [
     {
-      name: "Leche Pil 1L",
-      description: "Leche entera fresca de 1 litro.",
-      price: 7.5,
-      imageUrl: "/products/leche.jpg",
+      id: 1,
+      nombre: "Leche Pil 1L",
+      descripcion: "Leche entera fresca de 1 litro.",
+      precioVenta: 7.5,
+      urlImagen: "/products/leche.jpg",
       discount: 10,
+      unidadMedida: "Litro",
+      stockFisico: 100,
+      stockReservado: 20,
+      isActive: true,
+      categoria: {
+        id: 1,
+        name: "Lácteos",
+        IconComponent: GiMilkCarton,
+      },
     },
      {
-      name: "Galletas Oreo",
-      description: "Paquete de galletas 12 unidades",
-      price: 10,
-      imageUrl: "/products/oreo.jpg",
+      id: 2,
+      nombre: "Galletas Oreo",
+      descripcion: "Paquete de galletas 12 unidades",
+      precioVenta: 10,
+      urlImagen: "/products/oreo.jpg",
       discount: 5,
+      unidadMedida: "Paquete",
+      stockFisico: 50,
+      stockReservado: 5,
+      isActive: true,
+      categoria: {
+        id: 5,
+        name: "Snacks",
+        IconComponent: GiChipsBag,
+      },
     },
     {
-      name: "Huevos frescos 12u",
-      description: "Docena de huevos seleccionados.",
-      price: 12,
-      imageUrl: "/products/huevos.jpg",
+      id: 3,
+      nombre: "Huevos frescos 12u",
+      descripcion: "Docena de huevos seleccionados.",
+      precioVenta: 12,
+      urlImagen: "/products/huevos.jpg",
+      unidadMedida: "Docena",
+      stockFisico: 200,
+      stockReservado: 30,
+      isActive: true,
+      categoria: {
+        id: 2,
+        name: "Carnes",
+        IconComponent: GiMeat,
+      },
     },
     {
-      name: "Jamon Serrano",
-      description: "Paquete de 24 unidades.",
-      price: 20,
-      imageUrl: "/products/jamon.jpg",
+      id: 4,
+      nombre: "Jamon Serrano",
+      descripcion: "Paquete de 24 unidades.",
+      precioVenta: 20,
+      urlImagen: "/products/jamon.jpg",
+      discount: 15,
+      unidadMedida: "Paquete",
+      stockFisico: 24,
+      stockReservado: 0,
+      isActive: true,
+      categoria: {
+        id: 2,
+        name: "Carnes",
+        IconComponent: GiMeat,
+      },
     },
     {
-      name: "Yogurt natural",
-      description: "Yogurt sin azúcar añadido.",
-      price: 8,
-      imageUrl: "/products/yogurt.jpg",
+      id: 5,
+      nombre: "Yogurt natural",
+      descripcion: "Yogurt sin azúcar añadido.",
+      precioVenta: 8,
+      urlImagen: "/products/yogurt.jpg",
       discount: 5,
+      unidadMedida: "Vaso",
+      stockFisico: 80,
+      stockReservado: 10,
+      isActive: true,
+      categoria: {
+        id: 1,
+        name: "Lácteos",
+        IconComponent: GiMilkCarton,
+      },
     },
     {
-      name: "Queso criollo",
-      description: "Queso artesanal 500g.",
-      price: 20,
-      imageUrl: "/products/queso.jpg",
+      id: 6,
+      nombre: "Queso criollo",
+      descripcion: "Queso artesanal 500g.",
+      precioVenta: 20,
+      urlImagen: "/products/queso.jpg",
+      unidadMedida: "Paquete",
+      stockFisico: 40,
+      stockReservado: 5,
+      isActive: true,
+      categoria: {
+        id: 1,
+        name: "Lácteos",
+        IconComponent: GiMilkCarton,
+      },
     },
   ];
 
