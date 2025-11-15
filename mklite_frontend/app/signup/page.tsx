@@ -2,10 +2,13 @@
 
 import React from "react";
 import styles from "./page.module.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function SignupPage() {
   return (
     <>
+    <Header />
       <div className={styles.signupContainer}>
         <form className={styles.signupForm}>
           <div>
@@ -58,6 +61,7 @@ export default function SignupPage() {
           </div>
         </form>
       </div>
+      <Footer />
     </>
   );
 }
