@@ -1,31 +1,17 @@
+
 "use client";
 
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import styles from "./page.module.css"; 
+import styles from "./page.module.css";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <>
-      <Header />
-      <div className="login-container">
-        <form className="login-form">
-          <div>
-            <label htmlFor="nombre">Nombres</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombres" />
-          </div>
-
-          <div>
-            <label htmlFor="apellido">Apellidos</label>
-            <input
-              type="text"
-              id="apellido"
-              name="apellido"
-              placeholder="Apellidos"
-            />
-          </div>
-
+    <Header />
+      <div className={styles.loginContainer}>
+        <form className={styles.loginForm}>
           <div>
             <label htmlFor="correo">Correo electrónico</label>
             <input
@@ -37,42 +23,24 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="ciudad">Ciudad</label>
-            <input
-              type="text"
-              id="ciudad"
-              name="ciudad"
-              placeholder="Cochabamba*"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="telefono">Número de teléfono</label>
-            <input
-              type="text"
-              id="telefono"
-              name="telefono"
-              placeholder="+591 *******"
-            />
-          </div>
-
-          <div>
             <label htmlFor="contrasena">Contraseña</label>
             <input
               type="password"
               id="contrasena"
               name="contrasena"
-              placeholder="8 caracteres como mínimo"
+              placeholder="••••••••"
             />
-            <p className="terms">
-              Al continuar, aceptas los Términos de servicio y la Política de
-              privacidad de Merkado Lite
+            <p className={styles.reset}>
+              ¿Olvidaste tu contraseña?{" "}
+              <a href="#">
+                <b>Restablécela aquí</b>
+              </a>
             </p>
           </div>
 
-          <div className="divider">— O —</div>
+          <div className={styles.divider}>— O —</div>
 
-          <div className="google">
+          <div className={styles.google}>
             <img
               src="https://www.svgrepo.com/show/355037/google.svg"
               width="18"
@@ -81,12 +49,15 @@ export default function LoginPage() {
             <a href="#">Continuar con Google</a>
           </div>
 
-          <button type="submit">Continuar</button>
+          <button type="submit" className={styles.button}>
+             Continuar
+            </button>
 
-          <div className="crearcuenta">
-            ¿Ya estás registrado?{" "}
+
+          <div className={styles.crearCuenta}>
+            ¿No tienes una cuenta?{" "}
             <a href="#">
-              <b>Iniciar Sesión</b>
+              <b>Crea una cuenta</b>
             </a>
           </div>
         </form>
@@ -95,3 +66,4 @@ export default function LoginPage() {
     </>
   );
 }
+

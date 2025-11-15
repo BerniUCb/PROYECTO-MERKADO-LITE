@@ -1,4 +1,5 @@
-.login-container {
+
+.loginContainer {
   font-family: "Poppins", sans-serif;
   background-color: white;
   display: flex;
@@ -8,33 +9,34 @@
   min-height: 100vh;
 }
 
-.login-form {
+.loginForm {
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   padding: 40px;
   border-radius: 10px;
-  width: 650px;
+  width: 550px;
   display: flex;
   flex-direction: column;
 }
 
-.login-form label {
+.loginForm label {
   text-align: left;
   margin-bottom: 5px;
   font-weight: 500;
+  color:rgb(0, 0, 0)
 }
 
-.login-form input[type="text"],
-.login-form input[type="password"] {
+.loginForm input[type="text"],
+.loginForm input[type="password"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid lightgrey;
+  border: 1px solid rgb(127, 121, 121);
   border-radius: 5px;
   margin-bottom: 15px;
   font-size: 14px;
 }
 
-.login-form a {
+.loginForm a {
   color: black;
   font-size: 13px;
   text-decoration: none;
@@ -61,7 +63,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-button {
+.button {
   background-color: black;
   color: white;
   border: none;
@@ -72,14 +74,14 @@ button {
   align-self: flex-end;
 }
 
-.crearcuenta {
+.crearCuenta {
   margin-top: 10px;
   font-size: 13px;
   text-align: right;
 }
 
-.terms {
+.reset {
   font-size: 12px;
-  color: gray;
+  color: rgb(0, 0, 0);
   margin-top: 5px;
 }
