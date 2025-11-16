@@ -11,7 +11,7 @@
 /* === LAYOUT PRINCIPAL (3 COLUMNAS) === */
 .main-content {
   display: grid;
-  grid-template-columns: 0.9fr 1fr 0.4fr; /* 👈 más equilibrado */
+  grid-template-columns: 1.2fr 1fr 0.5fr;
   gap: 40px;
   align-items: start;
 }
@@ -26,7 +26,7 @@
 
 .product-image img {
   width: 100%;
-  max-width: 380px; /* 👈 limita el tamaño máximo de la imagen */
+  max-width: 400px; /* 👈 limita el tamaño máximo de la imagen */
   height: auto;
   border-radius: 12px;
   object-fit: contain; /* 👈 mantiene proporción sin recortar */
@@ -39,15 +39,15 @@
 /* MINIATURAS */
 .thumbnail-row {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .thumbnail-row img {
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
   border: 2px solid transparent;
   cursor: pointer;
   object-fit: cover;
@@ -66,20 +66,20 @@
 }
 
 .product-info h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   margin: 0;
 }
 
 .price {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #f40009;
   font-weight: 700;
 }
 
 .description {
   color: #666;
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 0.95rem;
 }
 
@@ -109,7 +109,8 @@
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  margin-top: 15px;
 }
 
 .quantity-controls button {
@@ -126,8 +127,8 @@
   background: #f40009;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 12px 25px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
@@ -153,7 +154,8 @@
   background: #fafafa;
   border: 1px solid #eee;
   border-radius: 12px;
-  padding: 20px;
+  padding: 15px;
+  font-size: 0.95rem;
 }
 
 .categories h3 {
@@ -172,7 +174,7 @@
   background: white;
   border: 1px solid #eee;
   border-radius: 8px;
-  padding: 10px 15px;
+  padding: 8px 12px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: 0.3s;
@@ -218,8 +220,10 @@
 
 .related-card img {
   width: 100%;
+  height: 120px;
   border-radius: 10px;
   margin-bottom: 10px;
+  object-fit: contain;
 }
 
 .related-card h4 {
@@ -227,6 +231,7 @@
   font-weight: 600;
   margin-bottom: 5px;
   color: #333;
+  margin:10px 0 5px;
 }
 
 .related-card p {
@@ -238,6 +243,7 @@
 @media (max-width: 992px) {
   .main-content {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .categories {
