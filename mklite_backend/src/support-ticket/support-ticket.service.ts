@@ -63,7 +63,7 @@ export class TicketService {
   async update(id: number, updateDto: UpdateTicketDto): Promise<TicketSoporte> {
     const ticket = await this.findOne(id);
 
-    // Si viene agenteId en el update, resolver a entidad
+
     if ((updateDto as any).agenteId !== undefined) {
       const agenteId = (updateDto as any).agenteId;
       if (agenteId === null) {
@@ -75,14 +75,13 @@ export class TicketService {
       }
     }
 
-    // si viene pedidoId
     if ((updateDto as any).pedidoId !== undefined) {
       const pedido = await this.pedidoRepo.findOne({ where: { id: (updateDto as any).pedidoId }});
       if (!pedido) throw new NotFoundException(`Pedido ${(updateDto as any).pedidoId} not found`);
       ticket.pedido = pedido;
     }
 
-    // campos directos
+
     if (updateDto.asunto !== undefined) ticket.asunto = updateDto.asunto;
     if (updateDto.estado !== undefined) ticket.estado = updateDto.estado as any;
 
