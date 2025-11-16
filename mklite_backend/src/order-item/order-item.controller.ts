@@ -19,18 +19,18 @@ export class OrderItemController {
     }
 
     @Get('/:id') 
-    getOrderItemById(@Param() params: any) {
-        return this.orderItemService.getOrderItemById(params.id);
+    getOrderItemById(@Param('id') id: number) {
+        return this.orderItemService.getOrderItemById(id);
     }
 
     @Delete('/:id')
-    deleteOrderItem(@Param() params: any) {
-        return this.orderItemService.deleteOrderItem(params.id);
+    deleteOrderItem(@Param('id') id: number) {
+        return this.orderItemService.deleteOrderItem(id);
     }
 
     @Put('/:id')
-    updateOrderItem(@Param() params: any,  @Body() orderItem: DetallePedido) {
-        return this.orderItemService.updateOrderItem(params.id, orderItem);
+    updateOrderItem(@Param('id') id: number,  @Body() orderItem: DetallePedido) {
+        return this.orderItemService.updateOrderItem(id, orderItem);
     }
 
 
