@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Header from "../header/header";
-import Footer from "../footer/footer";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 import styles from "./page.module.css"; // opcional si luego agregas CSS por módulo
 
 export default function LoginPage() {

@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+
+import AddressEmpty from "./components/AddressEmpty";
+import AddressForm from "./components/AddressForm";
+import AddressList from "./components/AddressList";
+import AddressConfirm from "./components/AddressConfirm";
 
 type Product = {
   id: number;
@@ -38,6 +45,35 @@ export default function CarPage() {
 
   const [shipping, setShipping] = useState<number>(0);
 
+  // ESTADOS DE LOS MODALES
+  const [showEmpty, setShowEmpty] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showList, setShowList] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [addressList, setAddressList] = useState<string[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState("");
+
+  // FUNCIONES PARA DIRECCIONES
+  const saveAddress = (e: any) => {
+    e.preventDefault();
+    const form = e.target;
+    const newAddress = form[0].value;
+
+    setAddressList([...addressList, newAddress]);
+    setSelectedAddress(newAddress);
+
+    setShowForm(false);
+    setShowList(true);
+  };
+
+  const selectAddress = (address: string) => {
+    setSelectedAddress(address);
+    setShowList(false);
+    setShowConfirm(true);
+  };
+
+  // FUNCIONES CARRITO
   const changeQty = (id: number, delta: number) => {
     setProducts(prev =>
       prev.map(p =>
@@ -60,103 +96,145 @@ export default function CarPage() {
   const total = subtotal + shipping;
 
   return (
-    <main>
+    <>
       {/* HEADER GLOBAL */}
-      
-      {/* CONTENIDO DEL CARRITO */}
-      <div className={styles.container}>
-        <section className={styles.cartBox}>
-          <div className={styles.header}>
-            <h1>Tu Carrito</h1>
-            <p>Hay {products.length} productos en tu carrito!</p>
-            <button className={styles.clear}>Limpiar Carrito</button>
-          </div>
+      <Header />
 
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio U.</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
+      <main>
+        {/* CONTENIDO DEL CARRITO */}
+        <div className={styles.container}>
+          <section className={styles.cartBox}>
+            <div className={styles.header}>
+              <h1>Tu Carrito</h1>
+              <p>Hay {products.length} productos en tu carrito!</p>
+              <button className={styles.clear}>Limpiar Carrito</button>
+            </div>
 
-            <tbody>
-              {products.map(p => (
-                <tr key={p.id}>
-                  {/* PRODUCTO */}
-                  <td className={styles.productCell}>
-                    <img src={p.img} alt={p.name} />
-                    <div>
-                      <p>{p.name}</p>
-                      <button onClick={() => removeProduct(p.id)}>
-                        × Eliminar
-                      </button>
-                    </div>
-                  </td>
-
-                  {/* CANTIDAD */}
-                  <td className={styles.qtyCell}>
-                    <button onClick={() => changeQty(p.id, -1)}>-</button>
-                    <span>{p.qty}</span>
-                    <button onClick={() => changeQty(p.id, 1)}>+</button>
-                  </td>
-
-                  {/* PRECIO */}
-                  <td className={styles.price}>
-                    Bs. {p.price.toFixed(2)}
-                  </td>
-
-                  {/* SUBTOTAL */}
-                  <td className={styles.subtotal}>
-                    Bs. {(p.price * p.qty).toFixed(2)}
-                  </td>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio U.</th>
+                  <th>Subtotal</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+              </thead>
 
-        {/* RESUMEN LATERAL */}
-        <aside className={styles.summary}>
-          <h3>Resumen de compra</h3>
+              <tbody>
+                {products.map(p => (
+                  <tr key={p.id} id={`row-${p.id}`}>
+                    <td className={styles.productCell}>
+                      <img src={p.img} alt={p.name} />
+                      <div>
+                        <p>{p.name}</p>
+                        <button onClick={() => removeProduct(p.id)}>
+                          × Eliminar
+                        </button>
+                      </div>
+                    </td>
 
-          <div className={styles.shippingOptions}>
-            <label>
-              <input
-                type="radio"
-                name="shipping"
-                onChange={() => setShipping(0)}
-                defaultChecked
-              />
-              Envío Gratis
-            </label>
-            <span>Bs. 0.00</span>
+                    <td className={styles.qtyCell}>
+                      <button onClick={() => changeQty(p.id, -1)}>-</button>
+                      <span>{p.qty}</span>
+                      <button onClick={() => changeQty(p.id, 1)}>+</button>
+                    </td>
 
-            <label>
-              <input
-                type="radio"
-                name="shipping"
-                onChange={() => setShipping(15)}
-              />
-              Envío Express
-            </label>
-            <span>Bs. 15.00</span>
-          </div>
+                    <td className={styles.price}>Bs. {p.price.toFixed(2)}</td>
 
-          <div className={styles.totals}>
-            <p>Subtotal: Bs. {subtotal.toFixed(2)}</p>
-            <p>
-              <strong>Total: Bs. {total.toFixed(2)}</strong>
-            </p>
-          </div>
+                    <td className={styles.subtotal}>
+                      Bs. {(p.price * p.qty).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
 
-          <button className={styles.checkout}>Realizar envío</button>
-        </aside>
-      </div>
+          {/* RESUMEN LATERAL */}
+          <aside className={styles.summary}>
+            <h3>Resumen de compra</h3>
+
+            <div className={styles.shippingOptions}>
+              <label>
+                <input
+                  type="radio"
+                  name="shipping"
+                  onChange={() => setShipping(0)}
+                  defaultChecked
+                />
+                Envío Gratis
+              </label>
+              <span>Bs. 0.00</span>
+
+              <label>
+                <input
+                  type="radio"
+                  name="shipping"
+                  onChange={() => setShipping(15)}
+                />
+                Envío Express
+              </label>
+              <span>Bs. 15.00</span>
+            </div>
+
+            <div className={styles.totals}>
+              <p>Subtotal: Bs. {subtotal.toFixed(2)}</p>
+              <p>
+                <strong>Total: Bs. {total.toFixed(2)}</strong>
+              </p>
+            </div>
+
+            <button
+              className={styles.checkout}
+              onClick={() => {
+                if (addressList.length === 0) setShowEmpty(true);
+                else setShowList(true);
+              }}
+            >
+              Realizar envío
+            </button>
+          </aside>
+        </div>
+
+        {/* MODALES */}
+        {showEmpty && (
+          <AddressEmpty
+            onAdd={() => {
+              setShowEmpty(false);
+              setShowForm(true);
+            }}
+          />
+        )}
+
+        {showForm && (
+          <AddressForm
+            onSave={saveAddress}
+            onClose={() => setShowForm(false)}
+          />
+        )}
+
+        {showList && (
+          <AddressList
+            addresses={addressList}
+            onSelect={selectAddress}
+            onAdd={() => {
+              setShowList(false);
+              setShowForm(true);
+            }}
+            onClose={() => setShowList(false)}
+          />
+        )}
+
+        {showConfirm && (
+          <AddressConfirm
+            address={selectedAddress}
+            onClose={() => setShowConfirm(false)}
+          />
+        )}
+      </main>
 
       {/* FOOTER GLOBAL */}
-    </main>
+      <Footer />
+    </>
   );
 }
