@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Direccion } from '../entity/address.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Injectable()
 export class AddressService {
@@ -44,5 +45,11 @@ export class AddressService {
     if (result.affected === 0) {
       throw new NotFoundException(`La dirección con el ID #${id} no fue encontrada o no pertenece al usuario.`);
     }
+  }
+
+  async update(id: number, updateAddressDto: UpdateAddressDto, usuarioId: number): Promise<Direccion> {
+    const direccion = await this.findOne(id, usuarioId); // Reutilizamos findOne para validar
+    const direccionActualizada = this.direccionRepository.merge(direccion, updateAddressDto);
+    return this.direccionRepository.save(direccionActualizada);
   }
 }
