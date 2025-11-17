@@ -6,6 +6,7 @@ import { Envio } from "./shipment.entity";
 import { CarritoItem } from "./cart-item.entity";
 import { Calificacion } from "./rating.entity";
 import { MovimientoStock } from "./stock-movement.entity";
+import { Direccion } from "./address.entity"; // <-- Nueva entidad aniadida
 
 // Definimos el tipo para que sea más fácil de usar
 export type RolUsuario = 'Administrador' | 'Vendedor' | 'Almacen' | 'Repartidor' | 'Cliente' | 'Soporte' | 'Proveedor';
@@ -65,4 +66,6 @@ export class User {
     // Un Usuario (Admin/Almacen) puede registrar muchos movimientos de stock
     @OneToMany(() => MovimientoStock, (movimiento) => movimiento.usuario)
     movimientosStock: MovimientoStock[];
+    @OneToMany(() => Direccion, (direccion) => direccion.usuario)
+    direcciones: Direccion[];
 }
