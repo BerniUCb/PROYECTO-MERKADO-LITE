@@ -7,13 +7,13 @@ import styles from "./page.module.css";
 import Header from "../components/Header"; 
 import Footer from "../components/Footer"; 
 
-// Importar modelos y servicios reales (Asumimos que están en sus rutas correctas)
+// Importar modelos y servicios reales 
 import type CategoryCardModel from "../models/categoryCard.model";
 import type ProductoCardModel from "../models/productCard.model";
 import { createProduct, getProductById, updateProduct, deleteProduct } from "../services/product.service";
 import { CategoryService } from "../services/category.service"; 
 // Asumimos que estás en una página dinámica de Next.js: /admin/add-product/[id]
-import { useParams, useRouter } from 'next/navigation'; // Importa useParams
+import { useParams, useRouter } from 'next/navigation'; 
 
 // ====================================================================
 // --- COMPONENTES INTERNOS ---
@@ -38,9 +38,12 @@ const ImageListItem: React.FC<ImageListItemProps> = ({ name, url, isUploaded, on
   </div>
 );
 
-const Sidebar: React.FC = () => (
+interface SidebarProps {
+  adminName: string;
+}
+const Sidebar: React.FC<SidebarProps> = ({adminName}) => (
   <div className={styles.sidebar}>
-    <div className={styles['sidebar-header']}>Bienvenido Pepe</div>
+    <div className={styles['sidebar-header']}>Bienvenido {adminName}</div>
     <nav className={styles['sidebar-nav']}>
       <ul>
         <li className={styles['nav-item']}><FaHome /> Panel de Control</li>
@@ -366,13 +369,14 @@ const ProductFormContent: React.FC = () => {
 
 // --- COMPONENTE PRINCIPAL QUE INCLUYE HEADER Y FOOTER ---
 const AdminProductPage: React.FC = () => {
+    const [currentAdminName, setCurrentAdminName] = useState("Admin de Pruebas");
     return (
         <div className={styles['full-page-container']}>
             <Header /> 
             
             <div className={styles['main-content-wrapper']}>
                 <div className={styles['app-layout']}>
-                    <Sidebar />
+                    <Sidebar adminName={currentAdminName}/>
                     <ProductFormContent />
                 </div>
             </div>
