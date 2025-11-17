@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';  // De la rama de Mateo
 import { ProductModule } from './product/product.module';
 import { PromotionModule } from './promotion/promotion.module';
+import { AddressModule } from './address/address.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
@@ -16,6 +17,7 @@ import { PromotionModule } from './promotion/promotion.module';
     CategoryModule,
     ProductModule,
     PromotionModule,
+    AddressModule,
    
   ],
   controllers: [AppController],
