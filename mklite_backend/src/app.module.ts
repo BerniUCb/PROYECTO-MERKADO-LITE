@@ -7,11 +7,8 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';  // De la rama de Mateo
 import { ProductModule } from './product/product.module';
 import { PromotionModule } from './promotion/promotion.module';
-<<<<<<< HEAD
 import { TicketModule } from './support-ticket/support-ticket.module';
-=======
 import { AddressModule } from './address/address.module';
->>>>>>> 3ad57b5a67ec0118e1fc33113fffd58da8009248
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
@@ -19,11 +16,8 @@ import { AddressModule } from './address/address.module';
     CategoryModule,
     ProductModule,
     PromotionModule,
-<<<<<<< HEAD
     TicketModule,
-=======
     AddressModule,
->>>>>>> 3ad57b5a67ec0118e1fc33113fffd58da8009248
    
   ],
   controllers: [AppController],
