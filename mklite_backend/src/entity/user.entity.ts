@@ -7,6 +7,7 @@ import { CarritoItem } from "./cart-item.entity";
 import { Calificacion } from "./rating.entity";
 import { MovimientoStock } from "./stock-movement.entity";
 import { Direccion } from "./address.entity"; // <-- Nueva entidad aniadida
+import { Notificacion } from "./notification.entity";
 
 // Definimos el tipo para que sea más fácil de usar
 export type RolUsuario = 'Administrador' | 'Vendedor' | 'Almacen' | 'Repartidor' | 'Cliente' | 'Soporte' | 'Proveedor';
@@ -68,4 +69,9 @@ export class User {
     movimientosStock: MovimientoStock[];
     @OneToMany(() => Direccion, (direccion) => direccion.usuario)
     direcciones: Direccion[];
+        // --- ¡NUEVA RELACIÓN AÑADIDA! ---
+
+    // Un Usuario puede tener muchas Notificaciones
+    @OneToMany(() => Notificacion, (notificacion) => notificacion.usuario)
+    notificaciones: Notificacion[];
 }
