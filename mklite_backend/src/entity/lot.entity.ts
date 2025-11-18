@@ -1,40 +1,40 @@
-// lot.entity.ts
+// src/entity/lot.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Producto } from "./product.entity";
-import { Proveedor } from "./provider.entity"; // <-- Import actualizado
-import { MovimientoStock } from "./stock-movement.entity"; // <-- Import actualizado
+import { Product } from "./product.entity"; // Anticipamos 'Product'
+import { Supplier } from "./provider.entity"; // Anticipamos 'Supplier'
+import { StockMovement } from "./stock-movement.entity"; // Anticipamos 'StockMovement'
 
-@Entity('lote')
-export class Lote {
+@Entity('lots') // <-- 'lote' -> 'lots'
+export class Lot { // <-- 'Lote' -> 'Lot'
 
-    @PrimaryGeneratedColumn({ name: 'lote_id' })
+    @PrimaryGeneratedColumn({ name: 'lot_id' }) // <-- 'lote_id'
     id: number;
 
-    @Column({ type: 'integer', name: 'cantidad_recibida' })
-    cantidadRecibida: number;
+    @Column({ type: 'integer', name: 'received_quantity' })
+    receivedQuantity: number; // <-- 'cantidadRecibida' -> 'receivedQuantity'
 
-    @Column({ type: 'integer', name: 'cantidad_actual' })
-    cantidadActual: number;
+    @Column({ type: 'integer', name: 'current_quantity' })
+    currentQuantity: number; // <-- 'cantidadActual' -> 'currentQuantity'
 
-    @Column({ type: 'numeric', precision: 10, scale: 2, name: 'costo_distribuidor', nullable: true })
-    costoDistribuidor: number;
+    @Column({ type: 'numeric', precision: 10, scale: 2, name: 'supplier_cost', nullable: true })
+    supplierCost: number; // <-- 'costoDistribuidor' -> 'supplierCost'
 
-    @Column({ type: 'date', name: 'fecha_recibida' })
-    fechaRecibida: Date;
+    @Column({ type: 'date', name: 'received_at' })
+    receivedAt: Date; // <-- 'fechaRecibida' -> 'receivedAt'
 
-    @Column({ type: 'date', name: 'fecha_vencimiento', nullable: true })
-    fechaVencimiento: Date;
+    @Column({ type: 'date', name: 'expires_at', nullable: true })
+    expiresAt: Date; // <-- 'fechaVencimiento' -> 'expiresAt'
 
-    // --- Relaciones ---
-    @ManyToOne(() => Producto, { nullable: false })
-    @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    // --- Relationships ---
+    @ManyToOne(() => Product, { nullable: false })
+    @JoinColumn({ name: 'product_id' })
+    product: Product; // <-- 'producto'
 
-    @ManyToOne(() => Proveedor, (proveedor) => proveedor.lotes, { nullable: true })
-    @JoinColumn({ name: 'proveedor_id' })
-    proveedor: Proveedor;
+    @ManyToOne(() => Supplier, (supplier) => supplier.lots, { nullable: true }) // <-- Relación inversa será 'supplier.lots'
+    @JoinColumn({ name: 'supplier_id' }) // <-- 'proveedor_id'
+    supplier: Supplier; // <-- 'proveedor' -> 'supplier'
     
-    @OneToMany(() => MovimientoStock, (movimiento) => movimiento.lote)
-    movimientos: MovimientoStock[];
+    @OneToMany(() => StockMovement, (movement) => movement.lot) // <-- Relación inversa será 'movement.lot'
+    stockMovements: StockMovement[]; // <-- 'movimientos' -> 'stockMovements'
 }
