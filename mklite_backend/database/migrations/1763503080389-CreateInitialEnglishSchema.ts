@@ -54,9 +54,31 @@ export class CreateInitialEnglishSchema1763503080389 implements MigrationInterfa
         await queryRunner.query(`ALTER TABLE "support_tickets" ADD CONSTRAINT "FK_0b1eb4f1f984aab3c481c48468a" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "support_tickets" ADD CONSTRAINT "FK_8c5e35b7820ad511f1f5425cc24" FOREIGN KEY ("agent_id") REFERENCES "users"("user_id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "promotions" ADD CONSTRAINT "FK_b3b55da5e8dbf3241ba1059b679" FOREIGN KEY ("product_id") REFERENCES "products"("product_id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`
+            CREATE OR REPLACE VIEW vista_ventas_detalladas AS
+            SELECT
+                p.order_id AS pedido_id,
+                p.created_at AS fecha_pedido,
+                p.status AS estado_pedido,
+                p.order_total AS total_pedido,
+                u.user_id AS cliente_id,
+                u.full_name AS cliente_nombre,
+                u.email AS cliente_email,
+                pr.product_id,
+                pr.name AS producto_nombre,
+                cat.name AS categoria_producto,
+                dp.quantity AS cantidad,
+                dp.unit_price AS precio_unitario,
+                (dp.quantity * dp.unit_price) AS subtotal
+            FROM orders p
+            LEFT JOIN users u ON p.user_id = u.user_id
+            LEFT JOIN order_items dp ON p.order_id = dp.order_id
+            LEFT JOIN products pr ON dp.product_id = pr.product_id
+            LEFT JOIN categories cat ON pr.category_id = cat.category_id;
+        `);
     }
-
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP VIEW IF EXISTS vista_ventas_detalladas;`);
         await queryRunner.query(`ALTER TABLE "promotions" DROP CONSTRAINT "FK_b3b55da5e8dbf3241ba1059b679"`);
         await queryRunner.query(`ALTER TABLE "support_tickets" DROP CONSTRAINT "FK_8c5e35b7820ad511f1f5425cc24"`);
         await queryRunner.query(`ALTER TABLE "support_tickets" DROP CONSTRAINT "FK_0b1eb4f1f984aab3c481c48468a"`);
@@ -107,6 +129,7 @@ export class CreateInitialEnglishSchema1763503080389 implements MigrationInterfa
         await queryRunner.query(`DROP TABLE "products"`);
         await queryRunner.query(`DROP TABLE "price_history"`);
         await queryRunner.query(`DROP TABLE "categories"`);
+        
     }
 
 }
