@@ -10,4 +10,4 @@ import { PedidoController } from './order.controller';
   providers: [PedidoService],
   exports: [PedidoService],
 })
-export class PedidoModule {}
+export class OrderModule {}
