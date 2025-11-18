@@ -1,10 +1,10 @@
 import { IconType } from 'react-icons';
 
 interface CategoryCardModel {
-    id: number;
-  name: string;
-  slug: string;        // <-- SLUG CORRECTO
-  IconComponent: IconType;
+   id: number;
+  nombre: string;
+  descripcion: string; // esto te llega del backend
+  IconComponent?: IconType;
 }
 
 export default CategoryCardModel;
