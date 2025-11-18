@@ -10,7 +10,11 @@ export const dataSourceOptions: DataSourceOptions = {
     username: 'merkado_admin',
     password: 'merkado_pass',
     database: 'merkadolite_db',
-    synchronize: false,
+<<<<<<< HEAD
+    synchronize:true,
+=======
+    synchronize: true,
+>>>>>>> 3ad57b5a67ec0118e1fc33113fffd58da8009248
 
  
     entities: [join(__dirname, '**', '*.entity{.js,.ts}')],
