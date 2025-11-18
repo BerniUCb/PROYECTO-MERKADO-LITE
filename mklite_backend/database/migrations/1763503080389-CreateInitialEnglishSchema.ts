@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class RefactorSchemaToEnglish1763497700492 implements MigrationInterface {
-    name = 'RefactorSchemaToEnglish1763497700492'
+export class CreateInitialEnglishSchema1763503080389 implements MigrationInterface {
+    name = 'CreateInitialEnglishSchema1763503080389'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "categories" ("category_id" SERIAL NOT NULL, "name" character varying NOT NULL, "description" character varying, CONSTRAINT "UQ_8b0be371d28245da6e4f4b61878" UNIQUE ("name"), CONSTRAINT "PK_51615bef2cea22812d0dcab6e18" PRIMARY KEY ("category_id"))`);
