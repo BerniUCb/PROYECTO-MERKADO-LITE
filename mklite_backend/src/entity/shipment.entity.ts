@@ -3,6 +3,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Pedido } from "./order.entity";
 import { User } from "./user.entity";
+import { Direccion } from "./address.entity"; // <-- Importar la nueva entidad
 
 @Entity('envio')
 export class Envio {
@@ -41,4 +42,9 @@ export class Envio {
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'repartidor_id' })
     repartidor: User;
+    // --- ¡NUEVA RELACIÓN CRÍTICA! ---
+    // Un Envío está destinado a una Dirección específica.
+    @ManyToOne(() => Direccion, { nullable: false })
+    @JoinColumn({ name: 'direccion_entrega_id' })
+    direccionEntrega: Direccion;
 }

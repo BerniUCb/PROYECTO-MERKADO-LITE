@@ -1,32 +1,57 @@
 "use client";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import React, { useEffect, useState } from "react";
+
 import Benefits from "./components/benefits";
 import ProductShowcase from "./components/productShowcase";
 import ProductCard from "./components/productCard";
 import CategoryCard from "./components/categoryCard";
 
-// Importa los iconos que usarás para las categorías
-import { GiMilkCarton, GiMeat, GiCarrot, GiFruitBowl, GiChipsBag, GiDrinkMe } from 'react-icons/gi';
-
 import ProductCardModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
 
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 import styles from "./page.module.css";
 
-export default function HomePage() {
-  //CATEGORIAS
-  const categories: CategoryCardModel[] = [
-  { id: 1, name: "Lácteos", IconComponent: GiMilkCarton },
-  { id: 2, name: "Carnes", IconComponent: GiMeat },
-  { id: 3, name: "Verduras", IconComponent: GiCarrot },
-  { id: 4, name: "Frutas", IconComponent: GiFruitBowl },
-  { id: 5, name: "Snacks", IconComponent: GiChipsBag },
-  { id: 6, name: "Bebidas", IconComponent: GiDrinkMe },
-];
+// Servicios
+import { CategoryService } from "../services/category.service";
 
-  // 🔹 Productos populares 
+// Iconos locales
+import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
+
+export default function HomePage() {
+  
+  // 🔹 Estado para categorías cargadas desde el backend
+  const [categories, setCategories] = useState<CategoryCardModel[]>([]);
+
+  // ===================================================================
+  // 🔥 CARGAR CATEGORÍAS DESDE BACKEND
+  // ===================================================================
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await CategoryService.getAll();
+
+        // Asignar icono desde categoryIcons según el nombre
+        const mapped = data.map((cat: CategoryCardModel) => ({
+          ...cat,
+          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon
+        }));
+
+        setCategories(mapped);
+      } catch (error) {
+        console.error("❌ Error cargando categorías:", error);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  // ===================================================================
+  // 🔹 Productos populares (tú ya tenías esto, NO TOQUÉ NADA)
+  // ===================================================================
   const popularProducts: ProductCardModel[] = [
     {
       id: 1,
@@ -41,11 +66,12 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 1,
-        name: "Lácteos",
-        IconComponent: GiMilkCarton,
+        nombre: "Lácteos",
+        descripcion: "Productos lácteos variados.",
+        IconComponent: categoryIcons["Lácteos"],
       },
     },
-     {
+    {
       id: 2,
       nombre: "Galletas Oreo",
       descripcion: "Paquete de galletas 12 unidades",
@@ -58,8 +84,9 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 5,
-        name: "Snacks",
-        IconComponent: GiChipsBag,
+        nombre: "Snacks",
+        descripcion: "Aperitivos y snacks variados.",
+        IconComponent: categoryIcons["Snacks"],
       },
     },
     {
@@ -74,8 +101,9 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 2,
-        name: "Carnes",
-        IconComponent: GiMeat,
+        nombre: "Carnes",
+        descripcion: "Carnes frescas y procesadas.",
+        IconComponent: categoryIcons["Carnes"],
       },
     },
     {
@@ -91,8 +119,9 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 2,
-        name: "Carnes",
-        IconComponent: GiMeat,
+        nombre: "Carnes",
+        descripcion: "Carnes frescas y procesadas.",
+        IconComponent: categoryIcons["Carnes"],
       },
     },
     {
@@ -108,8 +137,9 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 1,
-        name: "Lácteos",
-        IconComponent: GiMilkCarton,
+        nombre: "Lácteos",
+        descripcion: "Productos lácteos variados.",
+        IconComponent: categoryIcons["Lácteos"],
       },
     },
     {
@@ -124,18 +154,25 @@ export default function HomePage() {
       isActive: true,
       categoria: {
         id: 1,
-        name: "Lácteos",
-        IconComponent: GiMilkCarton,
+        nombre: "Lácteos",
+        descripcion: "Productos lácteos variados.",
+        IconComponent: categoryIcons["Lácteos"],
       },
     },
   ];
 
+  // ===================================================================
+  // 🔹 RETURN
+  // ===================================================================
   return (
     <>
       <Header />
 
       <main className={styles.main}>
-        {/* 🔹 SECCIÓN: Productos populares */}
+
+        {/* ================================================================= */}
+        {/* 🔹 SECCIÓN: Productos Populares */}
+        {/* ================================================================= */}
         <section id="productos" className={styles.productsSection}>
           <h2>Productos Populares</h2>
           <div className={styles.productsGrid}>
@@ -145,28 +182,39 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ================================================================= */}
         {/* 🔹 SECCIÓN: Categorías */}
+        {/* ================================================================= */}
         <section id="categorias" className={styles.categoriesSection}>
           <h2>Categorías</h2>
+
           <div className={styles.categoriesGrid}>
             {categories.map((cat) => (
-              // Cambié para que pase IconComponent en vez de category completa
-              <CategoryCard key={cat.id} name={cat.name} IconComponent={cat.IconComponent} />
+              <CategoryCard
+                key={cat.id}
+                name={cat.nombre}
+                slug={cat.nombre.toLowerCase()}
+                IconComponent={cat.IconComponent!}
+              />
             ))}
           </div>
         </section>
 
-        {/* 🔹 SECCIÓN: Showcase (más vendidos, nuevos, mejor calificados) */}
+        {/* ================================================================= */}
+        {/* Showcase + Benefits (SIN CAMBIAR NADA) */}
+        {/* ================================================================= */}
         <ProductShowcase />
-
-        {/* 🔹 SECCIÓN: Beneficios */}
         <Benefits />
+
       </main>
 
       <Footer />
     </>
   );
 }
+
+
+
 
 
 

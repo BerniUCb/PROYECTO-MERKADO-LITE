@@ -48,7 +48,7 @@ interface Product {
   return (
     <div className={styles['product-page']}>
       {/* HEADER GLOBAL */}
-      <Header />
+       <Header />
 
       {/* MAIN */}
       <main className={styles['main-content']}>
@@ -106,7 +106,7 @@ interface Product {
       </section>
 
         {/* FOOTER GLOBAL */}
-        <Footer />
+         <Footer />
         
     </div>
   );
