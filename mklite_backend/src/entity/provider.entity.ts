@@ -1,30 +1,30 @@
-// provider.entity.ts
+// src/entity/provider.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm";
-import { Lote } from "./lot.entity"; // <-- Import actualizado
+import { Lot } from "./lot.entity"; // <-- Actualizado de 'Lote' a 'Lot'
 
-@Entity('proveedor')
-export class Proveedor {
+@Entity('suppliers') // <-- 'proveedor' -> 'suppliers'
+export class Supplier { // <-- 'Proveedor' -> 'Supplier'
 
-    @PrimaryGeneratedColumn({ name: 'proveedor_id' })
+    @PrimaryGeneratedColumn({ name: 'supplier_id' }) // <-- 'proveedor_id'
     id: number;
 
-    @Column({ name: 'nombre_empresa' })
-    nombreEmpresa: string;
+    @Column({ name: 'company_name' })
+    companyName: string; // <-- 'nombreEmpresa' -> 'companyName'
 
-    @Column({ name: 'contacto_nombre', nullable: true })
-    contactoNombre: string;
+    @Column({ name: 'contact_name', nullable: true })
+    contactName: string; // <-- 'contactoNombre' -> 'contactName'
 
     @Column({ nullable: true })
     email: string;
 
     @Column({ nullable: true })
-    telefono: string;
+    phone: string; // <-- 'telefono' -> 'phone'
 
-    @CreateDateColumn({ name: 'fecha_creacion', type: 'timestamp with time zone' })
-    fechaCreacion: Date;
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
 
-    // --- Relaciones ---
-    @OneToMany(() => Lote, (lote) => lote.proveedor)
-    lotes: Lote[];
+    // --- Relationships ---
+    @OneToMany(() => Lot, (lot) => lot.supplier) // <-- 'Lote' -> 'Lot', '(lote) => lote.proveedor' -> '(lot) => lot.supplier'
+    lots: Lot[]; // <-- 'lotes' -> 'lots'
 }

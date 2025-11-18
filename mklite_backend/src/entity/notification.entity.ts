@@ -3,64 +3,63 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
 
-// Tipos de notificación específicos para el negocio
-export type TipoNotificacion = 
-  | 'CIERRE_CAJA'           // Para Administradores
-  | 'STOCK_BAJO'            // Para Administradores
-  | 'DEMANDA_ALTA_PRODUCTO' // Para Administradores
-  | 'PEDIDO_RECIBIDO'       // Para Clientes
-  | 'PEDIDO_EN_CAMINO'      // Para Clientes
-  | 'PEDIDO_ENTREGADO'      // Para Clientes
-  | 'NUEVA_PROMOCION';      // Para Clientes
+// Business-specific notification types
+export type NotificationType = 
+  | 'CASH_REGISTER_CLOSED'  // Cierre de caja
+  | 'LOW_STOCK'             // Stock bajo
+  | 'HIGH_DEMAND_PRODUCT'   // Demanda alta de producto
+  | 'ORDER_RECEIVED'        // Pedido recibido
+  | 'ORDER_SHIPPED'         // Pedido en camino
+  | 'ORDER_DELIVERED'       // Pedido entregado
+  | 'NEW_PROMOTION';        // Nueva promoción
 
-// Roles de destinatario para filtrado fácil
-export type RolDestinatario = 'Administrador' | 'Cliente';
+// Recipient roles for easy filtering
+export type RecipientRole = 'Admin' | 'Client';
 
-@Entity('notificacion')
-export class Notificacion {
+@Entity('notifications') // <-- 'notificacion' -> 'notifications'
+export class Notification { // <-- 'Notificacion' -> 'Notification'
 
-    @PrimaryGeneratedColumn({ name: 'notificacion_id' })
+    @PrimaryGeneratedColumn({ name: 'notification_id' }) // <-- 'notificacion_id'
     id: number;
 
     @Column()
-    titulo: string; // Ej: "Cierre de Caja del 17/11/2025"
+    title: string; // <-- 'titulo' -> 'title'
 
     @Column({ type: 'text' })
-    detalle: string; // Ej: "Se ha generado el reporte de cierre de caja para el vendedor X."
+    detail: string; // <-- 'detalle' -> 'detail'
 
     @Column({
         type: 'enum',
         enum: [
-            'CIERRE_CAJA',
-            'STOCK_BAJO',
-            'DEMANDA_ALTA_PRODUCTO',
-            'PEDIDO_RECIBIDO',
-            'PEDIDO_EN_CAMINO',
-            'PEDIDO_ENTREGADO',
-            'NUEVA_PROMOCION'
+            'CASH_REGISTER_CLOSED',
+            'LOW_STOCK',
+            'HIGH_DEMAND_PRODUCT',
+            'ORDER_RECEIVED',
+            'ORDER_SHIPPED',
+            'ORDER_DELIVERED',
+            'NEW_PROMOTION'
         ]
     })
-    tipo: TipoNotificacion;
+    type: NotificationType; // <-- 'tipo' -> 'type'
     
     @Column({
         type: 'enum',
-        enum: ['Administrador', 'Cliente'],
-        name: 'destinatario_rol'
+        enum: ['Admin', 'Client'], // <-- Traducido para consistencia
+        name: 'recipient_role'
     })
-    destinatarioRol: RolDestinatario;
+    recipientRole: RecipientRole; // <-- 'destinatarioRol' -> 'recipientRole'
 
-    @Column({ name: 'entidad_relacionada_id', nullable: true })
-    entidadRelacionadaId: string; // Ej: puede guardar un 'pedido_id' o 'producto_id'
+    @Column({ name: 'related_entity_id', nullable: true })
+    relatedEntityId: string; // <-- 'entidadRelacionadaId' -> 'relatedEntityId'
 
-    @Column({ default: false })
-    leido: boolean;
+    @Column({ name: 'is_read', default: false })
+    isRead: boolean; // <-- 'leido' -> 'isRead'
 
-    @CreateDateColumn({ name: 'fecha_creacion' })
-    fechaCreacion: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
 
-    // --- Relaciones ---
-    // Muchas notificaciones pertenecen a un solo usuario (el destinatario)
-    @ManyToOne(() => User, (usuario) => usuario.notificaciones, { nullable: true }) // Nullable para notificaciones globales
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: User;
+    // --- Relationships ---
+    @ManyToOne(() => User, (user) => user.notifications, { nullable: true }) // <-- 'usuario.notificaciones' -> 'user.notifications'
+    @JoinColumn({ name: 'user_id' })
+    user: User; // <-- 'usuario' -> 'user'
 }
