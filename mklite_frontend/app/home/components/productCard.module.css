@@ -1,0 +1,94 @@
+.card {
+  width: 250px; 
+  height: 350px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  position: relative;
+  flex-shrink: 0; 
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.discountTag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #f40009;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.image {
+  width: 100%;
+  height: 180px; 
+  object-fit: contain; 
+  background-color: #f9f9f9;
+}
+
+.content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px; 
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #000000;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 4px 0 8px 0;
+  flex-grow: 1;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.originalPrice {
+  color: #888;
+  text-decoration: line-through;
+  font-size: 0.9rem;
+}
+
+.finalPrice {
+  color: #a72828;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.addButton {
+  margin-top: 8px;
+  width: 100%;
+  background-color: #f40009;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.addButton:hover {
+  background-color: #c7171a;
+}
+
+
+

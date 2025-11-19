@@ -1,26 +1,27 @@
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './data-source'; // Importamos las OPCIONES
+import { dataSourceOptions } from './data-source';
 import { UserModule } from './user/user.module';
-import { SeedingModule } from './seeding/seeding.module';
-import { SeedingService } from './seeding/seeding.service';
-
+import { CategoryModule } from './category/category.module';  // De la rama de Mateo
+import { ProductModule } from './product/product.module';
+import { PromotionModule } from './promotion/promotion.module';
+import { TicketModule } from './support-ticket/support-ticket.module';
+import { AddressModule } from './address/address.module';
 @Module({
   imports: [
-    // Aquí le pasamos el objeto de configuración. ¡Esto es correcto!
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
-    SeedingModule,
+    CategoryModule,
+    ProductModule,
+    PromotionModule,
+    TicketModule,
+    AddressModule,
+   
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements OnApplicationBootstrap {
-  constructor(private readonly seedingService: SeedingService) {}
-
-  async onApplicationBootstrap() {
-    await this.seedingService.seed();
-  }
-}
+// La clase ya no implementa OnApplicationBootstrap.
+export class AppModule {}

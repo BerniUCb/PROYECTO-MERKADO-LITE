@@ -2,6 +2,13 @@
 
 .header {
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 999; /* para que quede encima de todo */
+}
+
+.header {
+  width: 100%;
 }
 
 /* --- Top Bar --- */
@@ -221,4 +228,19 @@
 .contactInfo > div {
   display: flex;
   flex-direction: column;
+}
+
+.iconButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer !important;
+}
+
+.iconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
