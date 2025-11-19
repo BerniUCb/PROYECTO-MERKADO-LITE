@@ -2,6 +2,9 @@
 
 import { useParams } from "next/navigation";
 import styles from "./page.module.css";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+
 
 // LISTA COMPLETA DEL SIDEBAR
 const categoriasSidebar = [
@@ -20,9 +23,9 @@ const dataCategorias = {
   vegetales: {
     titulo: "Vegetales",
     productos: [
-      { nombre: "Pimiento Verde 1kg", precio: 15.00, img: "/images/pimiento.png" },
+      { nombre: "Pimiento Verde 1kg", precio: 15.0, img: "/images/pimiento.png" },
       { nombre: "Brócoli 1kg", precio: 32.85, img: "/images/brocoli.png" },
-      { nombre: "Lechuga Romana", precio: 10.50, img: "/images/lechuga.png" },
+      { nombre: "Lechuga Romana", precio: 10.5, img: "/images/lechuga.png" },
       { nombre: "Zanahoria 1kg", precio: 8.75, img: "/images/zanahoria.png" },
     ],
   },
@@ -57,14 +60,19 @@ export default function CategoriaDinamica() {
   }
 
   return (
-    <main>
+    <>
+      {/* HEADER GLOBAL */}
+      <Header />
 
-      {/* BANNER */}
+      <main>
+        {/* BANNER */}
       <section className={styles.banner}>
         <div className={styles.breadcrumb}>
           <a href="/">Inicio</a> &gt; <span>{categoria.titulo}</span>
         </div>
       </section>
+
+      
 
       {/* CONTENIDO PRINCIPAL */}
       <section className={styles.main}>
@@ -103,7 +111,7 @@ export default function CategoriaDinamica() {
                 <img src={p.img} alt={p.nombre} />
                 <h4>{p.nombre}</h4>
                 <p className={styles.precio}>Bs. {p.precio.toFixed(2)}</p>
-                <button className={styles.btn}>🛒 Añadir</button>
+                <button className={styles.btn}>🛒 Add</button>
               </div>
             ))}
           </div>
@@ -119,6 +127,11 @@ export default function CategoriaDinamica() {
         </div>
 
       </section>
+
+      <Footer />
     </main>
+      {/* FOOTER GLOBAL */}
+      <Footer />
+    </>
   );
 }

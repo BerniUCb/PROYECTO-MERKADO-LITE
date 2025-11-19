@@ -1,6 +1,6 @@
 import Pedido from "./order.model";
 import User from "./user.model";
-
+import DireccionModel from "./address.model";
 
 export type EstadoEnvio =
   | 'pendiente'
@@ -16,7 +16,9 @@ export default interface Envio {
   fechaAsignacion?: string;
   fechaEntregaEstimada?: string;
   fechaEntregado?: string;
-
+  direccion: DireccionModel;
+  direccionId: number;
+  
   pedido: Pedido;
   repartidor?: User;
 }

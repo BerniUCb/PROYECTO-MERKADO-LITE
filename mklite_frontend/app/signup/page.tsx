@@ -5,35 +5,42 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styles from "./page.module.css";
 
-export default function SignupPage() {
+export default function LoginPage() {
   return (
     <>
       <Header />
       <div className={styles.signupContainer}>
         <form className={styles.signupForm}>
           <div>
+            <label htmlFor="nombre">Nombres</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombres" />
+          </div>
+
+          <div>
+            <label htmlFor="apellido">Apellidos</label>
+            <input type="text" id="apellido" name="apellido" placeholder="Apellidos" />
+          </div>
+
+          <div>
             <label htmlFor="correo">Correo electrónico</label>
-            <input
-              type="text"
-              id="correo"
-              name="correo"
-              placeholder="ejemplo@correo.com"
-            />
+            <input type="text" id="correo" name="correo" placeholder="ejemplo@correo.com" />
+          </div>
+
+          <div>
+            <label htmlFor="ciudad">Ciudad</label>
+            <input type="text" id="ciudad" name="ciudad" placeholder="Cochabamba*" />
+          </div>
+
+          <div>
+            <label htmlFor="telefono">Número de teléfono</label>
+            <input type="text" id="telefono" name="telefono" placeholder="+591 *******" />
           </div>
 
           <div>
             <label htmlFor="contrasena">Contraseña</label>
-            <input
-              type="password"
-              id="contrasena"
-              name="contrasena"
-              placeholder="••••••••"
-            />
-            <p className={styles.reset}>
-              ¿Olvidaste tu contraseña?{" "}
-              <a href="#">
-                <b>Restablécela aquí</b>
-              </a>
+            <input type="password" id="contrasena" name="contrasena" placeholder="8 caracteres como mínimo" />
+            <p className={styles.terms}>
+              Al continuar, aceptas los Términos de servicio y la Política de privacidad de Merkado Lite
             </p>
           </div>
 
@@ -48,16 +55,11 @@ export default function SignupPage() {
             <a href="#">Continuar con Google</a>
           </div>
 
-          <button type="submit" className={styles.button}>
-             Continuar
-            </button>
+          <button type="submit" className={styles.button}>Continuar</button>
 
-
-          <div className={styles.crearCuenta}>
-            ¿No tienes una cuenta?{" "}
-            <a href="#">
-              <b>Crea una cuenta</b>
-            </a>
+          <div className={styles.crearcuenta}>
+            ¿Ya estás registrado?{" "}
+            <a href="#"><b>Iniciar Sesión</b></a>
           </div>
         </form>
       </div>

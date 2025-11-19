@@ -1,3 +1,5 @@
+import type DireccionModel from "./address.model";
+
 export type RolUsuario =
   | 'Administrador'
   | 'Vendedor'
@@ -13,4 +15,5 @@ export default interface User {
   email: string;
   rol: RolUsuario;
   isActive: boolean;
+  direcciones: DireccionModel[];
 }

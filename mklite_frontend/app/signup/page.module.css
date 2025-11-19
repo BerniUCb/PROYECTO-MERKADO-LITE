@@ -10,18 +10,21 @@
 
 .signupForm {
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgb(86, 80, 80);
   padding: 40px;
   border-radius: 10px;
-  width: 550px;
+  width: 100%;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
 }
 
+/* Labels */
 .signupForm label {
   text-align: left;
   margin-bottom: 5px;
   font-weight: 500;
+  color: rgb(60, 53, 53);
 }
 
 .signupForm input[type="text"],
@@ -32,15 +35,23 @@
   border-radius: 5px;
   margin-bottom: 15px;
   font-size: 14px;
-}
-
-.signupForm a {
   color: black;
-  font-size: 13px;
-  text-decoration: none;
-  text-align: center;
 }
 
+/* Botón */
+.button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 15px;
+  margin-top: 10px;
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+/* Divider */
 .divider {
   margin: 20px 0;
   color: gray;
@@ -48,6 +59,7 @@
   text-align: center;
 }
 
+/* Google button */
 .google {
   display: flex;
   align-items: center;
@@ -61,24 +73,15 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.button {
-  background-color: black;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 15px;
-  margin-top: 10px;
-  align-self: flex-end;
-}
-
-.crearCuenta {
+/* Textos */
+.crearcuenta {
   margin-top: 10px;
   font-size: 13px;
   text-align: right;
+  color: rgb(0, 0, 0);
 }
 
-.reset {
+.terms {
   font-size: 12px;
   color: gray;
   margin-top: 5px;

@@ -71,8 +71,9 @@ export default function ProductPage() {
     return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
-    <div className={styles["product-page"]}>
-      <Header />
+    <div className={styles['product-page']}>
+      {/* HEADER GLOBAL */}
+       <Header />
 
       <main className={styles["main-content"]}>
         {/* Imagen */}
@@ -151,7 +152,9 @@ export default function ProductPage() {
         </div>
       </section>
 
-      <Footer />
+        {/* FOOTER GLOBAL */}
+         <Footer />
+        
     </div>
   );
 }
