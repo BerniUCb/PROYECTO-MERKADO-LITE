@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { OrderItemService } from "./order-item.service";
-import { DetallePedido } from "src/entity/order-item.entity";
+import { OrderItem } from "src/entity/order-item.entity";
 
 
 @Controller('/order-item')
@@ -9,7 +9,7 @@ export class OrderItemController {
     constructor(private readonly orderItemService: OrderItemService) {}
 
     @Post()
-    createOrderItem(@Body() orderItem: DetallePedido) {
+    createOrderItem(@Body() orderItem: OrderItem) {
         return this.orderItemService.createOrderItem(orderItem);
     }
 
@@ -29,7 +29,7 @@ export class OrderItemController {
     }
 
     @Put('/:id')
-    updateOrderItem(@Param('id') id: number,  @Body() orderItem: DetallePedido) {
+    updateOrderItem(@Param('id') id: number,  @Body() orderItem: OrderItem) {
         return this.orderItemService.updateOrderItem(id, orderItem);
     }
 
