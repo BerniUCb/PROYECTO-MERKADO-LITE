@@ -11,12 +11,12 @@ export const dataSourceOptions: DataSourceOptions = {
     password: 'merkado_pass',
     database: 'merkadolite_db',
 
-    synchronize:true,
+    synchronize:false,
 
 
  
     entities: [join(__dirname, '**', '*.entity{.js,.ts}')],
-    migrations: [join(__dirname, '../database/migrations/*{.js,.ts}')],
+    migrations: [join(__dirname, 'database', 'migrations', '*{.ts,.js}')],
     
     logging: true,
     subscribers: [],
