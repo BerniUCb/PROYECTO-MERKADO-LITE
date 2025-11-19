@@ -2,10 +2,11 @@
 .product-page {
   font-family: 'Poppins', sans-serif;
   color: #333;
-  padding: 40px;
   background-color: #fff;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px 40px; /* un padding pequeño interno */
 }
 
 /* === LAYOUT PRINCIPAL (3 COLUMNAS) === */
@@ -188,8 +189,8 @@
 
 /* === PRODUCTOS RELACIONADOS === */
 .related-products {
-  max-width: 1400px;
-  margin: 60px auto 0;
+  width: 100%;
+  margin-top: 60px;
 }
 
 .related-products h3 {

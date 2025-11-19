@@ -147,24 +147,26 @@ const ProductFormContent: React.FC = () => {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
-    
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            setPreviewImage(url); 
-            
-            const newFile = { name: file.name, url: url, isUploaded: true };
-            setUploadedFiles(prev => [...prev, newFile]);
-            setMensaje(`Imagen ${file.name} lista para enviar.`);
-        }
-    };
+       
     
     const handleRemoveImage = (urlToRemove: string) => {
         setUploadedFiles(prev => prev.filter(file => file.url !== urlToRemove));
         if (previewImage === urlToRemove) {
             setPreviewImage(null);
         }
+    };
+
+    const handleImageUrl = (url: string) => {
+         if (!url) return;
+         setPreviewImage(url);
+         setUploadedFiles([
+        {
+            name: "Imagen desde URL",
+            url: url,
+            isUploaded: true
+        }
+        ]);
+        setMensaje("Imagen cargada desde URL correctamente.");
     };
 
     const resetForm = () => {
@@ -243,7 +245,7 @@ const ProductFormContent: React.FC = () => {
                     name="categoriaId" 
                     value={formData.categoria?.id || ""} 
                     onChange={handleChange} 
-                    required
+                    //required
                 >
                     <option value="">Selecciona una categoría</option>
                     {categories.map(c => (
@@ -255,16 +257,23 @@ const ProductFormContent: React.FC = () => {
                 <div className={styles['split-group']}>
                 
                 <div className={`${styles['input-group']} ${styles['half-width']}`}>
-                    <label>Codigo</label>
-                      <input 
-                        type="number" 
-                        name="id" 
-                        value={formData.id || ''} 
-                        onChange={handleChange} 
-                        // El ID solo es visible/no editable si estamos editando
-                        readOnly={isEditMode} 
-                        required={isEditMode} 
-                      />                
+                    <label>Código</label>
+
+                    {/* Mostrar el ID solo si estamos editando */}
+                    {isEditMode ? (
+                        <p style={{ fontWeight: "bold", marginTop: "8px" }}>
+                            {formData.id}
+                        </p>
+                    ) : (
+                        <p style={{ fontStyle: "italic", color: "#888", marginTop: "8px" }}>
+                            Se generará automáticamente
+                        </p>
+                    )}
+
+                    {/* Input hidden para enviar el ID al backend (solo en modo edición) */}
+                    {isEditMode && (
+                        <input type="hidden" name="id" value={formData.id} />
+                    )}
                     </div>
 
                 <div className={`${styles['input-group']} ${styles['half-width']}`}>
@@ -319,24 +328,22 @@ const ProductFormContent: React.FC = () => {
                         <img src={previewImage} alt="Preview principal" className={styles['image-preview-large']} />
                     ) : (
                         <div className={styles['image-empty']}>
-                            <span className={styles['image-empty-text']}>Arrastra tu imagen o haz clic para subirla.</span>
+                            <span className={styles['image-empty-text']}>Imagen</span>
                         </div>
                     )}
                 </div>
                 
                 <div className={styles['image-uploader-container']}>
-                    <label htmlFor="file-upload" className={styles.dropzone}>
-                        {/* El texto del dropzone */}
-                        <span className={styles['dropzone-text-label']}>Arrastra tu imagen o haz clic para subirla.</span>
-                        <input 
-                            id="file-upload" 
-                            type="file" 
-                            accept="image/*" 
-                            onChange={handleImageUpload} 
-                            style={{ display: 'none' }}
-                        />
-                    </label>
-                    
+                    <div className={styles.dropzone}>
+                    <span className={styles['dropzone-text-label']}>Ingresa el link de la imagen</span>
+                    <input 
+                         type="text"
+                         placeholder="https://ejemplo.com/imagen.jpg"
+                         onChange={(e) => handleImageUrl(e.target.value)}
+                         className={styles['url-input']}
+                    />
+                    </div>
+
                     <div className={styles['image-list']}>
                         {uploadedFiles.map((img, index) => (
                             <ImageListItem 

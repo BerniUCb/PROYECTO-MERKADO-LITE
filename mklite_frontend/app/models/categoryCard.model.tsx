@@ -2,7 +2,7 @@ import { IconType } from 'react-icons';
 
 interface CategoryCardModel {
    id: number;
-  nombre: string;
+  name: string;
   descripcion: string; // esto te llega del backend
   IconComponent?: IconType;
 }

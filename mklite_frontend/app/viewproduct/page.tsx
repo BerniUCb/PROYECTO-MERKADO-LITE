@@ -67,8 +67,8 @@ export default function ProductPage() {
   // =========================================================
   // Render
   // =========================================================
-  if (!product)
-    return <p style={{ padding: 30 }}>Cargando producto...</p>;
+  if (product)
+   // return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
     <div className={styles['product-page']}>
