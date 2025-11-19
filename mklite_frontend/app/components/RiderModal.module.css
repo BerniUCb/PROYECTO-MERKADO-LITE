@@ -1,0 +1,68 @@
+.overlay {
+  position: fixed;
+  inset: 0; /* top:0, right:0, bottom:0, left:0 */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.35); /* oscurece */
+  backdrop-filter: blur(4px);      /* BLUR del fondo */
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px 32px 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  font-family: inherit;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #222222;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  color: #444444;
+}
+
+.continueButton {
+  display: inline-block;
+  padding: 10px 32px;
+  border-radius: 999px;
+  border: none;
+  background-color: #e30613; /* rojo de la marca */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.continueButton:hover {
+  background-color: #c10510;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666666;
+}
+
+.closeButton:hover {
+  color: #000000;
+}

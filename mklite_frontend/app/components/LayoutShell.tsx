@@ -1,9 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+
 import Header from "./Header";
 import HeaderAdmin from "./HeaderAdmin";
 import Footer from "./Footer";
+import RiderModal from "./RiderModal"; // este componente lo puedes crear igual al que te pasé
 
 export default function LayoutShell({
   children,
@@ -11,9 +14,9 @@ export default function LayoutShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
-  // true si estamos en /admin o /admin/lo-que-sea
   const isAdminRoute = pathname.startsWith("/admin");
+
+  const [showRiderModal, setShowRiderModal] = useState(false);
 
   return (
     <>
@@ -21,8 +24,15 @@ export default function LayoutShell({
 
       <main style={{ minHeight: "80vh" }}>{children}</main>
 
-      {/* Para admin NO mostramos footer de tienda */}
-      <Footer />
+      {/* Footer solo para usuario */}
+      {!isAdminRoute && (
+        <Footer onOpenRiderModal={() => setShowRiderModal(true)} />
+      )}
+
+      {/* Modal Rider */}
+      {showRiderModal && (
+        <RiderModal onClose={() => setShowRiderModal(false)} />
+      )}
     </>
   );
 }
