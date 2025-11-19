@@ -1,21 +1,21 @@
 import User from "./user.model";
-import DetallePedido from "./orderDetail.model";
+import OrderItem from "./orderItem.model";
 
-export type EstadoPedido =
-  | 'pendiente'
-  | 'procesando'
-  | 'en camino'
-  | 'entregado'
-  | 'devuelto'
-  | 'cancelado';
+export type OrderStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "returned"
+  | "cancelled";
 
-export default interface Pedido {
+export default interface Order {
   id: number;
-  fechaPedido: string;
-  estado: EstadoPedido;
-  totalPedido: number;
-  metodoPago: string;
+  createdAt: string;
+  status: OrderStatus;
+  orderTotal: number;
+  paymentMethod: string;
 
-  cliente: User;
-  detalles: DetallePedido[];
+  user: User;
+  items: OrderItem[];
 }

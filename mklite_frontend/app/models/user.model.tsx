@@ -1,19 +1,20 @@
-import type DireccionModel from "./address.model";
+import AddressModel from "./address.model";
 
-export type RolUsuario =
-  | 'Administrador'
-  | 'Vendedor'
-  | 'Almacen'
-  | 'Repartidor'
-  | 'Cliente'
-  | 'Soporte'
-  | 'Proveedor';
+export type UserRole =
+  | "Administrator"
+  | "Sales"
+  | "Warehouse"
+  | "Delivery"
+  | "Client"
+  | "Support"
+  | "Supplier";
 
 export default interface User {
   id: number;
-  nombreCompleto: string;
+  fullName: string;
   email: string;
-  rol: RolUsuario;
+  role: UserRole;
   isActive: boolean;
-  direcciones: DireccionModel[];
+
+  addresses: AddressModel[];
 }

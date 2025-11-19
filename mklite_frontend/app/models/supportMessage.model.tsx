@@ -1,11 +1,11 @@
-import TicketSoporte from "./supportTicket.model";
+import SupportTicket from "./supportTicket.model";
 import User from "./user.model";
 
-export default interface MensajeSoporte {
+export default interface SupportMessage {
   id: number;
-  contenido: string;
-  fechaEnvio: string;
+  content: string;
+  sentAt: string;
 
-  ticket: TicketSoporte;
-  remitente: User;
+  ticket: SupportTicket;
+  sender: User;
 }

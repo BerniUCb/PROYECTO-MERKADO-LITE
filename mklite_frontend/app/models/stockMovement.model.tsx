@@ -1,20 +1,20 @@
-import ProductCardModel from "./productCard.model";
-import Lote from "./lot.model";
+import ProductModel from "./productCard.model";
+import Lot from "./lot.model";
 import User from "./user.model";
 
-export type TipoMovimiento =
-  | 'entrada_compra'
-  | 'salida_venta'
-  | 'ajuste_vencido'
-  | 'ajuste_devolucion';
+export type StockMovementType =
+  | "purchase_entry"
+  | "sale_exit"
+  | "expired_adjustment"
+  | "return_adjustment";
 
-export default interface MovimientoStock {
+export default interface StockMovement {
   id: number;
-  cantidad: number;
-  tipo: TipoMovimiento;
-  fechaMovimiento: string;
+  quantity: number;
+  type: StockMovementType;
+  movementDate: string;
 
-  producto: ProductCardModel;
-  lote?: Lote;
-  usuario?: User;
+  product: ProductModel;
+  lot?: Lot;
+  user?: User;
 }

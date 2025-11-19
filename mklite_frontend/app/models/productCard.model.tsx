@@ -1,15 +1,16 @@
-import CategoryCardModel  from './categoryCard.model';
+import CategoryModel from "./categoryCard.model";
 
-export default interface ProductCardModel {
+export default interface ProductModel {
   id: number;
-  nombre: string;
-  descripcion?: string;
-  precioVenta: number;
-  unidadMedida: string;
-  stockFisico: number;
-  stockReservado: number;
-  urlImagen?: string;
+  name: string;
+  description?: string;
+  salePrice: number;
+  unitOfMeasure: string;
+  physicalStock: number;
+  reservedStock: number;
+  imageUrl?: string;
   isActive: boolean;
-  discount?: number; 
-  categoria: CategoryCardModel;
+  discount?: number;
+
+  category: CategoryModel;
 }
