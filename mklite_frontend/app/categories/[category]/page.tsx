@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
+
 // LISTA COMPLETA DEL SIDEBAR
 const categoriasSidebar = [
   { id: "abarrotes", nombre: "Abarrotes", icono: "/icons/abarrotes.svg", count: 2 },
@@ -71,6 +72,8 @@ export default function CategoriaDinamica() {
         </div>
       </section>
 
+      
+
       {/* CONTENIDO PRINCIPAL */}
       <section className={styles.main}>
 
@@ -108,7 +111,7 @@ export default function CategoriaDinamica() {
                 <img src={p.img} alt={p.nombre} />
                 <h4>{p.nombre}</h4>
                 <p className={styles.precio}>Bs. {p.precio.toFixed(2)}</p>
-                <button className={styles.btn}>🛒 Añadir</button>
+                <button className={styles.btn}>🛒 Add</button>
               </div>
             ))}
           </div>
@@ -124,6 +127,8 @@ export default function CategoriaDinamica() {
         </div>
 
       </section>
+
+      <Footer />
     </main>
       {/* FOOTER GLOBAL */}
       <Footer />

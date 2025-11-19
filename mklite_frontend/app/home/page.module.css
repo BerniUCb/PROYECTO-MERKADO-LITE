@@ -9,6 +9,7 @@
 /* --- Sección de categorías --- */
 .categoriesSection {
   text-align: center;
+  color: #ff0000;
 }
 
 .categoriesSection h2 {
@@ -27,6 +28,7 @@
 /* --- Sección de productos populares --- */
 .productsSection {
   text-align: center;
+  color: #ff0000;
 }
 
 .productsSection h2 {
