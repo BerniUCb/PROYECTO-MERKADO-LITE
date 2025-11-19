@@ -43,7 +43,13 @@ export class User {
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
+        // --- NUEVOS CAMPOS PARA 2FA (HU21) ---
+    @Column({ name: 'is_two_factor_enabled', default: false })
+    isTwoFactorEnabled: boolean;
 
+    @Column({ name: 'two_factor_secret', nullable: true, select: false }) // Select false por seguridad
+    twoFactorSecret: string;
+ 
     // --- Relationships ---
     @OneToMany(() => Order, (order) => order.user)
     orders: Order[];
