@@ -1,8 +1,8 @@
 import { instance } from "../utils/axios";
-import  CarritoItem  from "../models/carItem.model";
+import  CartItem  from "../models/carItem.model";
 
 export const CartItemService = {
-  getById: async (id: number): Promise<CarritoItem> => {
+  getById: async (id: number): Promise<CartItem> => {
     const res = await instance.get(`/cart-item/${id}`);
     return res.data;
   },
@@ -11,8 +11,8 @@ export const CartItemService = {
     await instance.delete(`/cart-item/${id}`);
   },
 
-  updateQuantityById: async (id: number, cantidad: number): Promise<CarritoItem> => {
-    const res = await instance.put(`/cart-item/${id}`, { cantidad });
+  updateQuantityById: async (id: number, quantity: number): Promise<CartItem> => {
+    const res = await instance.put(`/cart-item/${id}`, { quantity });
     return res.data;
   },
 
@@ -20,32 +20,32 @@ export const CartItemService = {
   addToCart: async (
     userId: number,
     productId: number,
-    cantidad: number = 1
-  ): Promise<CarritoItem> => {
-    const res = await instance.post(`/users/${userId}/cart`, {
+    quantity: number = 1
+  ): Promise<CartItem> => {
+    const res = await instance.post(`/user/${userId}/cart`, {
       productId,
-      cantidad,
+      quantity,
     });
     return res.data;
   },
 
-  getCartByUser: async (userId: number): Promise<CarritoItem[]> => {
-    const res = await instance.get(`/users/${userId}/cart`);
+  getCartByUser: async (userId: number): Promise<CartItem[]> => {
+    const res = await instance.get(`/user/${userId}/cart`);
     return res.data;
   },
 
   updateQuantityUserProduct: async (
     userId: number,
     productId: number,
-    cantidad: number
-  ): Promise<CarritoItem> => {
-    const res = await instance.put(`/users/${userId}/cart/${productId}`, {
-      cantidad,
+    quantity: number
+  ): Promise<CartItem> => {
+    const res = await instance.put(`/user/${userId}/cart/${productId}`, {
+      quantity,
     });
     return res.data;
   },
 
   removeItemUserProduct: async (userId: number, productId: number): Promise<void> => {
-    await instance.delete(`/users/${userId}/cart/${productId}`);
+    await instance.delete(`/user/${userId}/cart/${productId}`);
   },
 };

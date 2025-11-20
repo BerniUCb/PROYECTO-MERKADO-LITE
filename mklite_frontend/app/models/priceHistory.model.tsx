@@ -1,4 +1,4 @@
-import ProductCardModel from "./productCard.model";
+import ProductModel from "./productCard.model";
 import User from "./user.model";
 
 export default interface PriceHistory {
@@ -6,6 +6,6 @@ export default interface PriceHistory {
   newPrice: number;
   changedAt: string;
 
-  product: ProductCardModel;
+  product: ProductModel;
   changedByUser: User;
 }

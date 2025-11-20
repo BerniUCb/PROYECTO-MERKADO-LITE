@@ -4,7 +4,6 @@ import  Shipment  from "./shipment.model";
 import  CartItem  from "./carItem.model";
 import  Rating  from "./rating.model";
 import  StockMovement  from "./stockMovement.model";
-import  Address  from "./address.model";
 import  Notification  from "./notification.model";
 
 export type UserRole =

@@ -1,4 +1,4 @@
-// models/direccion.model.ts
+// models/address.model.ts
 
 export default interface AddressModel {
   id: number;

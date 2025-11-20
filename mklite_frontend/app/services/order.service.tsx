@@ -1,28 +1,28 @@
 import { instance } from "../utils/axios";
-import Pedido from "../models/order.model";
+import Order from "../models/order.model";
 
-export const PedidoService = {
-  create: async (data: Pedido): Promise<Pedido> => {
-    const res = await instance.post("/pedido", data);
+export const OrderService = {
+  create: async (data: Order): Promise<Order> => {
+    const res = await instance.post("/order", data);
     return res.data;
   },
 
-  getAll: async (): Promise<Pedido[]> => {
-    const res = await instance.get("/pedido");
+  getAll: async (): Promise<Order[]> => {
+    const res = await instance.get("/order");
     return res.data;
   },
 
-  getById: async (id: number): Promise<Pedido> => {
-    const res = await instance.get(`/pedido/${id}`);
+  getById: async (id: number): Promise<Order> => {
+    const res = await instance.get(`/order/${id}`);
     return res.data;
   },
 
-  update: async (id: number, data: Partial<Pedido>): Promise<Pedido> => {
-    const res = await instance.patch(`/pedido/${id}`, data);
+  update: async (id: number, data: Partial<Order>): Promise<Order> => {
+    const res = await instance.patch(`/order/${id}`, data);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/pedido/${id}`);
+    await instance.delete(`/order/${id}`);
   },
 };
