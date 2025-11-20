@@ -1,68 +1,105 @@
+/* --- FONDO OSCURECIDO --- */
 .overlay {
   position: fixed;
-  inset: 0; /* top:0, right:0, bottom:0, left:0 */
-  z-index: 9999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45); /* NO usar opacity aquí */
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: rgba(0, 0, 0, 0.35); /* oscurece */
-  backdrop-filter: blur(4px);      /* BLUR del fondo */
+  z-index: 50;
 }
 
+/* --- CONTENEDOR DEL MODAL --- */
 .modal {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 32px 32px 28px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
-  text-align: left;
-  font-family: inherit;
+  border-radius: 8px;
+  padding: 24px 32px;
+  max-width: 540px;
+  width: 100%;
+  position: relative;
+
+  /* Fuerza el texto negro */
+  color: #000000 !important;
 }
 
-.title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: #222222;
-}
-
-.text {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 24px;
-  color: #444444;
-}
-
-.continueButton {
-  display: inline-block;
-  padding: 10px 32px;
-  border-radius: 999px;
-  border: none;
-  background-color: #e30613; /* rojo de la marca */
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.continueButton:hover {
-  background-color: #c10510;
-}
-
+/* --- BOTÓN CERRAR (X) --- */
 .closeButton {
   position: absolute;
-  top: 10px;
+  top: 12px;
   right: 12px;
   border: none;
   background: transparent;
   font-size: 20px;
   cursor: pointer;
-  color: #666666;
+  color: #000000;
 }
 
-.closeButton:hover {
+/* --- TITULOS Y TEXTOS --- */
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 4px;
   color: #000000;
+}
+
+.text,
+.textForm {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+/* --- FORMULARIO --- */
+.form {
+  margin-top: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #000000; /* Label negra */
+}
+
+/* Inputs y selects */
+.field input,
+.field select {
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: #000000; /* Texto de input negro */
+  background: #ffffff;
+}
+
+/* Placeholder */
+.field input::placeholder {
+  color: #8a8a8a; /* Gris neutro */
+}
+
+/* --- BOTÓN CONTINUAR --- */
+.continueButton {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 4px;
+  background: #e53935;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
 }
