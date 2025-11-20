@@ -18,18 +18,18 @@ export class PromotionController {
     }
 
     @Get('/:id') 
-    getPromotionById(@Param() params: any) {
-        return this.promotionService.getPromotionById(params.id);
+    getPromotionById(@Param('id') id: number) {
+        return this.promotionService.getPromotionById(id);
     }
 
     @Delete('/:id')
-    deletePromotion(@Param() params: any) {
-        return this.promotionService.deletePromotion(params.id);
+    deletePromotion(@Param('id') id: number) {
+        return this.promotionService.deletePromotion(id);
     }
 
     @Put('/:id')
-    updatePromotion(@Param() params: any,  @Body() promotion: Promocion) {
-        return this.promotionService.updatePromotion(params.id, promotion);
+    updatePromotion(@Param('id') id: number,  @Body() promotion: Promocion) {
+        return this.promotionService.updatePromotion(id, promotion);
     }
 
 }
