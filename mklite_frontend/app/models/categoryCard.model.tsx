@@ -8,3 +8,5 @@ interface CategoryCardModel {
   IconComponent?: IconType;
   products: ProductModel[];
 }
+
+export default CategoryCardModel;

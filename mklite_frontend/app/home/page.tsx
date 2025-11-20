@@ -37,7 +37,6 @@ export default function HomePage() {
         const mapped = data.map((cat: CategoryCardModel) => ({
           ...cat,
           IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
-          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
         }));
 
         setCategories(mapped);
@@ -77,7 +76,7 @@ export default function HomePage() {
   
   return (
     <>
-      <Header />
+      //header
 
       <main className={styles.main}>
 
@@ -119,7 +118,8 @@ export default function HomePage() {
 
       </main>
 
-      <Footer />
+      //footer
+      
     </>
   );
 }
