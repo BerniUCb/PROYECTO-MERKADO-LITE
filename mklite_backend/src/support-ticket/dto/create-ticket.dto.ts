@@ -1,6 +1,6 @@
 export class CreateTicketDto {
-  asunto!: string;
-  pedidoId!: number;    
-  clienteId!: number;   
-  agenteId?: number;    
+  reason!: string;
+  orderId!: number;    
+  clientId!: number;   
+  agentId?: number;    
 }
