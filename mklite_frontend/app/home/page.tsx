@@ -10,9 +10,6 @@ import CategoryCard from "./components/categoryCard";
 import ProductCardModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-
 import styles from "./page.module.css";
 
 // Servicios
@@ -39,6 +36,7 @@ export default function HomePage() {
 
         const mapped = data.map((cat: CategoryCardModel) => ({
           ...cat,
+          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
           IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
         }));
 
@@ -101,17 +99,17 @@ export default function HomePage() {
         <section id="categorias" className={styles.categoriesSection}>
           <h2>Categorías</h2>
 
-          <div className={styles.categoriesGrid}>
-            {categories.map((cat) => (
-              <CategoryCard
-                key={cat.id}
-                name={cat.nombre}
-                slug={cat.nombre.toLowerCase()}
-                IconComponent={cat.IconComponent!}
-              />
-            ))}
-          </div>
-        </section>
+        <div className={styles.categoriesGrid}>
+          {categories.map((cat) => (
+            <CategoryCard
+              key={cat.id}
+              name={cat.nombre}
+              slug={cat.nombre.toLowerCase()}
+              IconComponent={cat.IconComponent!}
+            />
+          ))}
+        </div>
+      </section>
 
       
         {/* Showcase + Benefits  */}

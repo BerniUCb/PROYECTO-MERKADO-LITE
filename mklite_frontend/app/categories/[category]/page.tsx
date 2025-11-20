@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
+
 // LISTA COMPLETA DEL SIDEBAR
 const categoriasSidebar = [
   { id: "abarrotes", nombre: "Abarrotes", icono: "/icons/abarrotes.svg", count: 2 },
@@ -22,9 +23,9 @@ const dataCategorias = {
   vegetales: {
     titulo: "Vegetales",
     productos: [
-      { nombre: "Pimiento Verde 1kg", precio: 15.00, img: "/images/pimiento.png" },
+      { nombre: "Pimiento Verde 1kg", precio: 15.0, img: "/images/pimiento.png" },
       { nombre: "Brócoli 1kg", precio: 32.85, img: "/images/brocoli.png" },
-      { nombre: "Lechuga Romana", precio: 10.50, img: "/images/lechuga.png" },
+      { nombre: "Lechuga Romana", precio: 10.5, img: "/images/lechuga.png" },
       { nombre: "Zanahoria 1kg", precio: 8.75, img: "/images/zanahoria.png" },
     ],
   },
@@ -59,11 +60,12 @@ export default function CategoriaDinamica() {
   }
 
   return (
-    <main>
-
+    <>
+      {/* HEADER GLOBAL */}
       <Header />
 
-      {/* BANNER */}
+      <main>
+        {/* BANNER */}
       <section className={styles.banner}>
         <div className={styles.breadcrumb}>
           <a href="/">Inicio</a> &gt; <span>{categoria.titulo}</span>
@@ -128,5 +130,8 @@ export default function CategoriaDinamica() {
 
       <Footer />
     </main>
+      {/* FOOTER GLOBAL */}
+      <Footer />
+    </>
   );
 }

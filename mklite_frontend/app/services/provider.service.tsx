@@ -1,28 +1,28 @@
 import { instance } from "../utils/axios";
-import Proveedor  from "../models/ provider.model";
+import Supplier  from "../models/supplier.model";
 
-export const ProviderService = {
-  create: async (proveedor: Proveedor): Promise<Proveedor> => {
-    const res = await instance.post("/provider", proveedor);
+export const SupplierService = {
+  create: async (supplier: Supplier): Promise<Supplier> => {
+    const res = await instance.post("/supplier", supplier);
     return res.data;
   },
 
-  getAll: async (): Promise<Proveedor[]> => {
-    const res = await instance.get("/provider");
+  getAll: async (): Promise<Supplier[]> => {
+    const res = await instance.get("/supplier");
     return res.data;
   },
 
-  getById: async (id: string): Promise<Proveedor> => {
-    const res = await instance.get(`/provider/${id}`);
+  getById: async (id: string): Promise<Supplier> => {
+    const res = await instance.get(`/supplier/${id}`);
     return res.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    await instance.delete(`/provider/${id}`);
+    await instance.delete(`/supplier/${id}`);
   },
 
-  update: async (id: string, proveedor: Proveedor): Promise<Proveedor> => {
-    const res = await instance.put(`/provider/${id}`, proveedor);
+  update: async (id: string, supplier: Supplier): Promise<Supplier> => {
+    const res = await instance.put(`/supplier/${id}`, supplier);
     return res.data;
   },
 };

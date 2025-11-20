@@ -43,7 +43,7 @@ export default function Footer() {
               <li><Link href="/terms">Terminos y Condiciones</Link></li>
               <li><Link href="/contact">Contáctanos</Link></li>
               <li><Link href="/support">Centro de Soporte</Link></li>
-              <li><Link href="/jobs">Empleos</Link></li>
+              <li><Link href="/jobs">Quiero ser Rider</Link></li>
             </ul>
           </div>
 

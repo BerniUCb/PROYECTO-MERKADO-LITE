@@ -2,9 +2,9 @@
 "use client";
 
 import React from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import styles from "./page.module.css";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+import styles from "./page.module.css"; // opcional si luego agregas CSS por módulo
 
 export default function SignupPage() {
   return (

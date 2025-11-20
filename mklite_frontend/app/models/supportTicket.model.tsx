@@ -1,23 +1,19 @@
-import Pedido from "./order.model";
+import Order from "./order.model";
 import User from "./user.model";
-import MensajeSoporte from "./supportMessage.model";
+import SupportMessage from "./supportMessage.model";
 
-export type EstadoTicket =
-  | 'abierto'
-  | 'en_proceso'
-  | 'resuelto'
-  | 'cerrado';
+export type TicketStatus = "open" | "in_progress" | "resolved" | "closed";
 
-export default interface TicketSoporte {
+export default interface SupportTicket {
   id: number;
-  asunto: string;
-  estado: EstadoTicket;
-  fechaCreacion: string;
-  fechaActualizacion: string;
+  subject: string;
+  status: TicketStatus;
+  createdAt: string;
+  updatedAt: string;
 
-  pedido: Pedido;
-  cliente: User;
-  agente?: User;
+  order: Order;
+  client: User;
+  agent?: User;
 
-  mensajes: MensajeSoporte[];
+  messages: SupportMessage[];
 }

@@ -1,22 +1,25 @@
-import Pedido from "./order.model";
+import Order from "./order.model";
 import User from "./user.model";
+import AddressModel from "./address.model";
 
+export type ShipmentStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "returned"
+  | "cancelled";
 
-export type EstadoEnvio =
-  | 'pendiente'
-  | 'procesando'
-  | 'en camino'
-  | 'entregado'
-  | 'devuelto'
-  | 'cancelado';
-
-export default interface Envio {
+export default interface Shipment {
   id: number;
-  estado: EstadoEnvio;
-  fechaAsignacion?: string;
-  fechaEntregaEstimada?: string;
-  fechaEntregado?: string;
+  status: ShipmentStatus;
+  assignedAt?: string;
+  estimatedDelivery?: string;
+  deliveredAt?: string;
 
-  pedido: Pedido;
-  repartidor?: User;
+  address: AddressModel;
+  addressId: number;
+
+  order: Order;
+  deliveryUser?: User;
 }
