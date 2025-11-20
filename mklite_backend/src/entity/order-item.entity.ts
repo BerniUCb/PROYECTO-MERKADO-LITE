@@ -4,6 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "t
 import { Order } from "./order.entity"; // Anticipamos 'Order'
 import { Product } from "./product.entity"; // Anticipamos 'Product'
 
+
 @Entity('order_items') // <-- 'detalle_pedido' -> 'order_items'
 export class OrderItem { // <-- 'DetallePedido' -> 'OrderItem'
 
@@ -24,4 +25,5 @@ export class OrderItem { // <-- 'DetallePedido' -> 'OrderItem'
     @ManyToOne(() => Product, (product) => product.orderItems, { nullable: false }) // <-- Relación inversa será 'product.orderItems'
     @JoinColumn({ name: 'product_id' })
     product: Product; // <-- 'producto' -> 'product'
+    
 }

@@ -1,8 +1,9 @@
 // src/entity/order.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany, OneToOne } from "typeorm";
 import { User } from "./user.entity";
 import { OrderItem } from "./order-item.entity"; // <-- Actualizado de 'DetallePedido' a 'OrderItem'
+import { Payment } from "./payment.entity"; // <--- IMPORTAR
 
 // Define el enum para los estados del pedido en inglés
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
@@ -43,4 +44,6 @@ export class Order { // <-- 'Pedido' -> 'Order'
 
     @OneToMany(() => OrderItem, (item) => item.order) // <-- 'DetallePedido' -> 'OrderItem', '(detalle) => detalle.pedido' -> '(item) => item.order'
     items: OrderItem[]; // <-- 'detalles' -> 'items'
+    @OneToOne(() => Payment, (payment) => payment.order) // Relación inversa
+    payment: Payment;
 }
