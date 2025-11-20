@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { Lote } from "src/entity/lot.entity";
 import { LotService } from "./lot.service";
 
-@Controller('/lotes') 
+@Controller('/lot') 
 export class LotController {
 
   constructor(private readonly lotService: LotService) {}
