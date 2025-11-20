@@ -2,8 +2,7 @@
 
 import { useParams } from "next/navigation";
 import styles from "./page.module.css";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+
 
 
 // LISTA COMPLETA DEL SIDEBAR
@@ -61,8 +60,7 @@ export default function CategoriaDinamica() {
 
   return (
     <>
-      {/* HEADER GLOBAL */}
-      <Header />
+      
 
       <main>
         {/* BANNER */}
@@ -111,7 +109,7 @@ export default function CategoriaDinamica() {
                 <img src={p.img} alt={p.nombre} />
                 <h4>{p.nombre}</h4>
                 <p className={styles.precio}>Bs. {p.precio.toFixed(2)}</p>
-                <button className={styles.btn}>🛒 Add</button>
+                <button className={styles.btn}>🛒 add </button>
               </div>
             ))}
           </div>
@@ -128,10 +126,9 @@ export default function CategoriaDinamica() {
 
       </section>
 
-      <Footer />
+      
     </main>
-      {/* FOOTER GLOBAL */}
-      <Footer />
+      
     </>
   );
 }

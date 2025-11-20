@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+
 
 import AddressEmpty from "./components/AddressEmpty";
 import AddressForm from "./components/AddressForm";
@@ -98,7 +97,7 @@ export default function CarPage() {
   return (
     <>
       {/* HEADER GLOBAL */}
-      <Header />
+      
 
       <main>
         {/* CONTENIDO DEL CARRITO */}
@@ -234,7 +233,7 @@ export default function CarPage() {
       </main>
 
       {/* FOOTER GLOBAL */}
-      <Footer />
+      
     </>
   );
 }
