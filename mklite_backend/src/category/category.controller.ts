@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, ParseIntPipe } from "@nestjs/common";
 import { CategoryService } from "./category.service";
-import { Categoria } from "src/entity/category.entity";
+import { Category } from "src/entity/category.entity";
 
 
 @Controller('/category')
@@ -8,7 +8,7 @@ export class CategoryController{
     constructor(private readonly categoryService :  CategoryService){}
 
     @Post()
-    createCategory(@Body() category: Categoria){
+    createCategory(@Body() category: Category){
         return this.categoryService.createCategory(category);
     }
 
@@ -28,7 +28,7 @@ export class CategoryController{
     }
 
     @Put(':id')
-    updateCategory(@Param('id', ParseIntPipe) id: number, @Body() category: Categoria){
+    updateCategory(@Param('id', ParseIntPipe) id: number, @Body() category: Category){
         return this.categoryService.updateCategory(id, category);
     }
 }
