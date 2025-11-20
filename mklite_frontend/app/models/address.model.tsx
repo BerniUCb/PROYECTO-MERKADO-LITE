@@ -1,15 +1,16 @@
-// models/direccion.model.ts
+// models/address.model.ts
 
-export default interface DireccionModel {
+export default interface AddressModel {
   id: number;
-  calle: string;
-  numeroExterior: string;
-  numeroInterior?: string | null;
-  codigoPostal: string;
-  ciudad: string;
-  estado: string;
-  referencias?: string | null;
-  aliasDireccion: string; // Ej: "Casa", "Oficina"
+  street: string;
+  streetNumber: string;
+  internalNumber?: string | null;
+  postalCode: string;
+  city: string;
+  state: string;
+  references?: string | null;
+  addressAlias: string;
   isDefault: boolean;
-  usuarioId: number;      // Relación simplificada para el frontend
+
+  userId: number;
 }

@@ -1,18 +1,18 @@
 import { instance } from "../utils/axios";
-import CategoryCardModel from "../models/categoryCard.model";
+import CategoryModel from "../models/categoryCard.model";
 
 export const CategoryService = {
-  create: async (category: CategoryCardModel): Promise<CategoryCardModel> => {
+  create: async (category: CategoryModel): Promise<CategoryModel> => {
     const res = await instance.post("/category", category);
     return res.data;
   },
 
-  getAll: async (): Promise<CategoryCardModel[]> => {
+  getAll: async (): Promise<CategoryModel[]> => {
     const res = await instance.get("/category");
     return res.data;
   },
 
-  getById: async (id: number): Promise<CategoryCardModel> => {
+  getById: async (id: number): Promise<CategoryModel> => {
     const res = await instance.get(`/category/${id}`);
     return res.data;
   },
@@ -21,7 +21,7 @@ export const CategoryService = {
     await instance.delete(`/category/${id}`);
   },
 
-  update: async (id: number, category: CategoryCardModel): Promise<CategoryCardModel> => {
+  update: async (id: number, category: CategoryModel): Promise<CategoryModel> => {
     const res = await instance.put(`/category/${id}`, category);
     return res.data;
   },

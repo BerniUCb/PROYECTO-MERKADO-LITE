@@ -1,15 +1,22 @@
-import CategoryCardModel  from './categoryCard.model';
+import CategoryModel from "./categoryCard.model";
+import OrderItem from "./orderItem.model";
+import priceHistory from "./priceHistory.model";
 
-export default interface ProductCardModel {
+export default interface ProductModel {
   id: number;
-  nombre: string;
-  descripcion?: string;
-  precioVenta: number;
-  unidadMedida: string;
-  stockFisico: number;
-  stockReservado: number;
-  urlImagen?: string;
+  name: string;
+  description?: string | null;  // nullable en la entidad
+  salePrice: number;
+  unitOfMeasure: string;
+  physicalStock: number;
+  reservedStock: number;
+  imageUrl?: string | null; // también nullable en la entidad
   isActive: boolean;
-  discount?: number; 
-  categoria: CategoryCardModel;
+
+  // Relaciones
+  category: CategoryModel;
+
+  // Si tu frontend va a usarlo:
+  orderItems?: OrderItem[];
+  priceHistory?: priceHistory[];
 }

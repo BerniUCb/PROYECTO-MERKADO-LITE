@@ -1,19 +1,35 @@
-import type DireccionModel from "./address.model";
+import AddressModel from "./address.model";
+import Order from "./order.model";
+import  Shipment  from "./shipment.model";
+import  CartItem  from "./carItem.model";
+import  Rating  from "./rating.model";
+import  StockMovement  from "./stockMovement.model";
+import  Notification  from "./notification.model";
 
-export type RolUsuario =
-  | 'Administrador'
-  | 'Vendedor'
-  | 'Almacen'
-  | 'Repartidor'
-  | 'Cliente'
-  | 'Soporte'
-  | 'Proveedor';
+export type UserRole =
+  | "Administrator"
+  | "Sales"
+  | "Warehouse"
+  | "Delivery"
+  | "Client"
+  | "Support"
+  | "Supplier";
 
 export default interface User {
   id: number;
-  nombreCompleto: string;
+  fullName: string;
   email: string;
-  rol: RolUsuario;
+  passwordHash: string;
+  role: UserRole;
   isActive: boolean;
-  direcciones: DireccionModel[];
+
+  isTwoFactorEnabled: boolean;
+  twoFactorSecret: string;
+  orders: Order[];
+  assignedShipments: Shipment[];
+  cartItems: CartItem[];
+  ratings: Rating[];
+  stockMovements: StockMovement[];
+  notifications: Notification[];
+  addresses: AddressModel[];
 }

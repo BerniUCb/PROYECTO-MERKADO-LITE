@@ -1,14 +1,16 @@
-import ProductCardModel from "./productCard.model";
-import Proveedor from "./ provider.model";
+import ProductModel from "./productCard.model";
+import Supplier from "./supplier.model";
+import StockMovement from "./stockMovement.model";
 
-export default interface Lote {
+export default interface Lot {
   id: number;
-  cantidadRecibida: number;
-  cantidadActual: number;
-  costoDistribuidor?: number;
-  fechaRecibida: string;
-  fechaVencimiento?: string;
+  receivedQuantity: number;
+  currentQuantity: number;
+  supplierCost?: number;
+  receivedAt: string;
+  expiresAt?: string;
 
-  producto: ProductCardModel;
-  proveedor?: Proveedor;
+  product: ProductModel;
+  supplier?: Supplier;
+  stockMovements: StockMovement[];
 }
