@@ -1,0 +1,105 @@
+/* --- FONDO OSCURECIDO --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45); /* NO usar opacity aquí */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* --- CONTENEDOR DEL MODAL --- */
+.modal {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px 32px;
+  max-width: 540px;
+  width: 100%;
+  position: relative;
+
+  /* Fuerza el texto negro */
+  color: #000000 !important;
+}
+
+/* --- BOTÓN CERRAR (X) --- */
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  color: #000000;
+}
+
+/* --- TITULOS Y TEXTOS --- */
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 4px;
+  color: #000000;
+}
+
+.text,
+.textForm {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+/* --- FORMULARIO --- */
+.form {
+  margin-top: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #000000; /* Label negra */
+}
+
+/* Inputs y selects */
+.field input,
+.field select {
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: #000000; /* Texto de input negro */
+  background: #ffffff;
+}
+
+/* Placeholder */
+.field input::placeholder {
+  color: #8a8a8a; /* Gris neutro */
+}
+
+/* --- BOTÓN CONTINUAR --- */
+.continueButton {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 4px;
+  background: #e53935;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
