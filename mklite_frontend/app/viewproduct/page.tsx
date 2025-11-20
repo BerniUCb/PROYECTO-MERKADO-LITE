@@ -3,21 +3,18 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
-
-import type ProductoCardModel from "@/app/models/productCard.model";
-import { getProductById, getProducts} from "@/app/services/product.service";
+import type ProductModel from "@/app/models/productCard.model";
+import { getProductById, getProducts } from "@/app/services/product.service";
 
 import { CartItemService } from "@/app/services/cartItem.service";
 import { useParams } from "next/navigation";
 
 export default function ProductPage() {
   const params = useParams();
-  const productId = Number(params.id); // /product/12 → id = 12
+  const productId = Number(params.id);
 
-  const [product, setProduct] = useState<ProductoCardModel | null>(null);
-  const [related, setRelated] = useState<ProductoCardModel[]>([]);
+  const [product, setProduct] = useState<ProductModel | null>(null);
+  const [related, setRelated] = useState<ProductModel[]>([]);
   const [quantity, setQuantity] = useState(1);
 
   // =========================================================
@@ -39,11 +36,11 @@ export default function ProductPage() {
   // =========================================================
   useEffect(() => {
     const loadRelated = async () => {
-      if (!product?.categoria?.id) return;
+      if (!product?.category?.id) return;
 
       const all = await getProducts();
       const filtered = all.filter(
-        (p) => p.categoria?.id === product.categoria?.id && p.id !== product.id
+        (p) => p.category?.id === product.category?.id && p.id !== product.id
       );
 
       setRelated(filtered);
@@ -56,7 +53,7 @@ export default function ProductPage() {
   // 3) Agregar al carrito
   // =========================================================
   const handleAddToCart = async () => {
-    const userId = 1; // ← reemplazar por usuario real logueado
+    const userId = 1; // ← reemplazar luego
 
     if (!product) return;
 
@@ -67,32 +64,31 @@ export default function ProductPage() {
   // =========================================================
   // Render
   // =========================================================
-  if (product)
-   // return <p style={{ padding: 30 }}>Cargando producto...</p>;
+  //if (!product) 
+    // return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
-    <div className={styles['product-page']}>
-      {/* HEADER GLOBAL */}
-       <Header />
+    <div className={styles["product-page"]}>
+      
 
       <main className={styles["main-content"]}>
         {/* Imagen */}
         <div className={styles["product-image"]}>
           <img
-            src={product.urlImagen ?? "/placeholder.png"}
-            alt={product.nombre}
+            src={product?.imageUrl ?? "/placeholder.png"}
+            alt={product?.name}
           />
         </div>
 
         {/* Info */}
         <div className={styles["product-info"]}>
-          <h2>{product.nombre}</h2>
+          <h2>{product?.name}</h2>
 
           <p className={styles.price}>
-            Bs. {Number(product.precioVenta).toFixed(2)}
+            Bs. {Number(product?.salePrice).toFixed(2)}
           </p>
 
-          <p className={styles.description}>{product.descripcion}</p>
+          <p className={styles.description}>{product?.description}</p>
 
           <div className={styles["quantity-controls"]}>
             <button
@@ -113,20 +109,20 @@ export default function ProductPage() {
 
           <div className={styles.details}>
             <p>
-              <strong>Tipo:</strong> {product.unidadMedida ?? "Unidad"}
+              <strong>Tipo:</strong> {product?.unitOfMeasure ?? "Unidad"}
             </p>
             <p>
-              <strong>Stock:</strong> {product.stockFisico ?? "—"}
+              <strong>Stock:</strong> {product?.physicalStock ?? "—"}
             </p>
           </div>
         </div>
 
-        {/* Categorías */}
+        {/* Categoría */}
         <aside className={styles.categories}>
           <h3>Categoría</h3>
           <ul>
             <li className={styles.active}>
-              {product.categoria?.name ?? "Sin categoría"}
+              {product?.category?.name ?? "Sin categoría"}
             </li>
           </ul>
         </aside>
@@ -141,20 +137,15 @@ export default function ProductPage() {
 
           {related.map((p) => (
             <div key={p.id} className={styles["related-card"]}>
-              <img
-                src={p.urlImagen ?? "/placeholder.png"}
-                alt={p.nombre}
-              />
-              <h4>{p.nombre}</h4>
-              <p>Bs. {Number(p.precioVenta).toFixed(2)}</p>
+              <img src={p.imageUrl ?? "/placeholder.png"} alt={p.name} />
+              <h4>{p.name}</h4>
+              <p>Bs. {Number(p.salePrice).toFixed(2)}</p>
             </div>
           ))}
         </div>
       </section>
 
-        {/* FOOTER GLOBAL */}
-         <Footer />
-        
+      
     </div>
   );
 }
