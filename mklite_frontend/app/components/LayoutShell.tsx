@@ -1,28 +1,42 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState, type ReactNode } from "react";
+
 import Header from "./Header";
 import HeaderAdmin from "./HeaderAdmin";
 import Footer from "./Footer";
+import RiderModal from "./RiderModal";
+import styles from "./LayoutShell.module.css";
 
 export default function LayoutShell({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const pathname = usePathname();
-
-  // true si estamos en /admin o /admin/lo-que-sea
   const isAdminRoute = pathname.startsWith("/admin");
+
+  const [showRiderModal, setShowRiderModal] = useState(false);
 
   return (
     <>
-      {isAdminRoute ? <HeaderAdmin /> : <Header />}
+      {/* TODO LO QUE SE VA A BLUREAR */}
+      <div className={showRiderModal ? styles.blurred : ""}>
+        {isAdminRoute ? <HeaderAdmin /> : <Header />}
 
-      <main style={{ minHeight: "80vh" }}>{children}</main>
+        <main style={{ minHeight: "80vh" }}>{children}</main>
 
-      {/* Para admin NO mostramos footer de tienda */}
-      <Footer />
+        {/* Footer solo para usuario */}
+        {!isAdminRoute && (
+          <Footer onOpenRiderModal={() => setShowRiderModal(true)} />
+        )}
+      </div>
+
+      {/* Modal Rider (NO se blurea) */}
+      {showRiderModal && (
+        <RiderModal onClose={() => setShowRiderModal(false)} />
+      )}
     </>
   );
 }

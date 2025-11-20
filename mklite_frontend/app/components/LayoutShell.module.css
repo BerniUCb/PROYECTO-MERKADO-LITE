@@ -1,0 +1,8 @@
+/* LayoutShell.module.css */
+
+.blurred {
+  filter: blur(6px);           /* ajusta la intensidad aquí */
+  pointer-events: none;        /* no deja hacer clic en el fondo */
+  user-select: none;           /* no deja seleccionar texto */
+  transition: filter 0.25s ease-in-out;
+}

@@ -2,7 +2,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Footer.module.css';
 
-export default function Footer() {
+type FooterProps = {
+  onOpenRiderModal?: () => void;
+};
+
+export default function Footer({ onOpenRiderModal }: FooterProps) {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
@@ -43,7 +47,17 @@ export default function Footer() {
               <li><Link href="/terms">Terminos y Condiciones</Link></li>
               <li><Link href="/contact">Contáctanos</Link></li>
               <li><Link href="/support">Centro de Soporte</Link></li>
-              <li><Link href="/jobs">Quiero ser Rider</Link></li>
+
+              {/* AQUÍ ES DONDE IMPORTA */}
+              <li>
+                <button
+                  type="button"
+                  onClick={onOpenRiderModal}
+                  className={styles.riderLinkButton}
+                >
+                  Quiero ser Rider
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -113,7 +127,6 @@ export default function Footer() {
           </div>
           <div className={styles.socials}>
             <strong>Siguenos</strong>
-            {/* Aquí irían los iconos de redes sociales, pero no estaban en la lista */ }
             <p>Hasta 15% de descuento en tu primera suscripción</p>
           </div>
         </div>
