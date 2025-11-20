@@ -10,9 +10,6 @@ import CategoryCard from "./components/categoryCard";
 import ProductCardModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-
 import styles from "./page.module.css";
 
 // Servicios
@@ -22,8 +19,6 @@ import { CategoryService } from "../services/category.service";
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
 
 export default function HomePage() {
-  
-  // 🔹 Estado para categorías cargadas desde el backend
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
 
   // ===================================================================
@@ -34,10 +29,9 @@ export default function HomePage() {
       try {
         const data = await CategoryService.getAll();
 
-        // Asignar icono desde categoryIcons según el nombre
         const mapped = data.map((cat: CategoryCardModel) => ({
           ...cat,
-          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon
+          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
         }));
 
         setCategories(mapped);
@@ -50,7 +44,7 @@ export default function HomePage() {
   }, []);
 
   // ===================================================================
-  // 🔹 Productos populares (tú ya tenías esto, NO TOQUÉ NADA)
+  // 🔹 Productos populares
   // ===================================================================
   const popularProducts: ProductCardModel[] = [
     {
@@ -161,64 +155,37 @@ export default function HomePage() {
     },
   ];
 
-  // ===================================================================
-  // 🔹 RETURN
-  // ===================================================================
   return (
-    <>
-      <Header />
+    <main className={styles.main}>
+      {/* Productos Populares */}
+      <section id="productos" className={styles.productsSection}>
+        <h2>Productos Populares</h2>
+        <div className={styles.productsGrid}>
+          {popularProducts.map((p, i) => (
+            <ProductCard key={i} product={p} />
+          ))}
+        </div>
+      </section>
 
-      <main className={styles.main}>
+      {/* Categorías */}
+      <section id="categorias" className={styles.categoriesSection}>
+        <h2>Categorías</h2>
 
-        {/* ================================================================= */}
-        {/* 🔹 SECCIÓN: Productos Populares */}
-        {/* ================================================================= */}
-        <section id="productos" className={styles.productsSection}>
-          <h2>Productos Populares</h2>
-          <div className={styles.productsGrid}>
-            {popularProducts.map((p, i) => (
-              <ProductCard key={i} product={p} />
-            ))}
-          </div>
-        </section>
+        <div className={styles.categoriesGrid}>
+          {categories.map((cat) => (
+            <CategoryCard
+              key={cat.id}
+              name={cat.nombre}
+              slug={cat.nombre.toLowerCase()}
+              IconComponent={cat.IconComponent!}
+            />
+          ))}
+        </div>
+      </section>
 
-        {/* ================================================================= */}
-        {/* 🔹 SECCIÓN: Categorías */}
-        {/* ================================================================= */}
-        <section id="categorias" className={styles.categoriesSection}>
-          <h2>Categorías</h2>
-
-          <div className={styles.categoriesGrid}>
-            {categories.map((cat) => (
-              <CategoryCard
-                key={cat.id}
-                name={cat.nombre}
-                slug={cat.nombre.toLowerCase()}
-                IconComponent={cat.IconComponent!}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* ================================================================= */}
-        {/* Showcase + Benefits (SIN CAMBIAR NADA) */}
-        {/* ================================================================= */}
-        <ProductShowcase />
-        <Benefits />
-
-      </main>
-
-      <Footer />
-    </>
+      {/* Showcase + Benefits */}
+      <ProductShowcase />
+      <Benefits />
+    </main>
   );
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,28 +1,28 @@
 import { instance } from "../utils/axios";
-import Lote from "../models/lot.model";
+import Lot from "../models/lot.model";
 
 export const LotService = {
-  create: async (lote: Lote): Promise<Lote> => {
-    const res = await instance.post("/lotes", lote);
+  create: async (lot: Lot): Promise<Lot> => {
+    const res = await instance.post("/lot", lot);
     return res.data;
   },
 
-  getAll: async (): Promise<Lote[]> => {
-    const res = await instance.get("/lotes");
+  getAll: async (): Promise<Lot[]> => {
+    const res = await instance.get("/lot");
     return res.data;
   },
 
-  getById: async (id: number): Promise<Lote> => {
-    const res = await instance.get(`/lotes/${id}`);
+  getById: async (id: number): Promise<Lot> => {
+    const res = await instance.get(`/lot/${id}`);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/lotes/${id}`);
+    await instance.delete(`/lot/${id}`);
   },
 
-  update: async (id: number, lote: Partial<Lote>): Promise<Lote> => {
-    const res = await instance.put(`/lotes/${id}`, lote);
+  update: async (id: number, lot: Partial<Lot>): Promise<Lot> => {
+    const res = await instance.put(`/lot/${id}`, lot);
     return res.data;
   },
 };

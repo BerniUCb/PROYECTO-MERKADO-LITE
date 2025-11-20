@@ -1,13 +1,12 @@
-import ProductCardModel from "./productCard.model";
+import ProductModel from "./productCard.model";
 
-
-export default interface Promocion {
+export default interface Promotion {
   id: number;
-  descripcion: string;
-  tipoDescuento?: string;
-  valorDescuento?: number;
-  fechaInicio?: string;
-  fechaFin?: string;
+  description: string;
+  discountType?: string;
+  discountValue?: number;
+  startsAt?: string;
+  endsAt?: string;
 
-  producto?: ProductCardModel;
+  product?: ProductModel;
 }

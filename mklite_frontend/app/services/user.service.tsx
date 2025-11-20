@@ -9,26 +9,26 @@ export const UserService = {
     order?: "asc" | "desc"
   ): Promise<User[]> => {
     const params = { page, limit, sort, order };
-    const res = await instance.get("/usuarios", { params });
+    const res = await instance.get("/user", { params });
     return res.data;
   },
 
   getById: async (id: number): Promise<User> => {
-    const res = await instance.get(`/usuarios/${id}`);
+    const res = await instance.get(`/user/${id}`);
     return res.data;
   },
 
   create: async (user: Partial<User>): Promise<User> => {
-    const res = await instance.post("/usuarios", user);
+    const res = await instance.post("/user", user);
     return res.data;
   },
 
   update: async (id: number, user: Partial<User>): Promise<User> => {
-    const res = await instance.put(`/usuarios/${id}`, user);
+    const res = await instance.put(`/user/${id}`, user);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/usuarios/${id}`);
+    await instance.delete(`/user/${id}`);
   },
 };

@@ -1,10 +1,10 @@
-import { IconType } from 'react-icons';
+import { IconType } from "react-icons";
+import ProductModel from "./productCard.model";
 
-interface CategoryCardModel {
-   id: number;
+export default interface CategoryModel {
+  id: number;
   name: string;
-  descripcion: string; // esto te llega del backend
+  description?: string;
   IconComponent?: IconType;
+  products: ProductModel[];
 }
-
-export default CategoryCardModel;

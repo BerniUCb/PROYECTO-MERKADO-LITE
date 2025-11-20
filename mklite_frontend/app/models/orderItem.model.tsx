@@ -1,12 +1,10 @@
 import ProductModel from "./productCard.model";
-import User from "./user.model";
+import Order from "./order.model";
 
-export default interface CartItem {
+export default interface OrderItem {
   id: number;
   quantity: number;
   unitPrice: number;
-  addedAt: string;
-
-  user: User;
+  order: Order;
   product: ProductModel;
 }

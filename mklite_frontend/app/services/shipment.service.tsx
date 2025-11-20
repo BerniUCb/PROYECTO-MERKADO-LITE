@@ -1,39 +1,39 @@
-// src/services/envio.service.ts
+// src/services/shipment.service.ts
 import { instance } from "../utils/axios";
-import type EnvioModel from "../models/shipment.model";
+import type Shipment from "../models/shipment.model";
 
-export const EnvioService = {
-  getAll: async (): Promise<EnvioModel[]> => {
-    const res = await instance.get("/envio");
+export const ShipmentService = {
+  getAll: async (): Promise<Shipment[]> => {
+    const res = await instance.get("/shipment");
     return res.data;
   },
 
-  getById: async (id: number): Promise<EnvioModel> => {
-    const res = await instance.get(`/envio/${id}`);
+  getById: async (id: number): Promise<Shipment> => {
+    const res = await instance.get(`/shipment/${id}`);
     return res.data;
   },
 
-  getByUser: async (userId: number): Promise<EnvioModel[]> => {
-    const res = await instance.get(`/user/${userId}/envios`);
+  getByUser: async (userId: number): Promise<Shipment[]> => {
+    const res = await instance.get(`/user/${userId}/shipments`);
     return res.data;
   },
 
   create: async (
-    envio: Partial<EnvioModel> // requiere direccionId y usuarioId
-  ): Promise<EnvioModel> => {
-    const res = await instance.post("/envio", envio);
+    shipment: Partial<Shipment> // requiere direccionId y usuarioId
+  ): Promise<Shipment> => {
+    const res = await instance.post("/shipment", shipment);
     return res.data;
   },
 
   update: async (
     id: number,
-    envio: Partial<EnvioModel>
-  ): Promise<EnvioModel> => {
-    const res = await instance.put(`/envio/${id}`, envio);
+    shipment: Partial<Shipment>
+  ): Promise<Shipment> => {
+    const res = await instance.put(`/shipment/${id}`, shipment);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/envio/${id}`);
+    await instance.delete(`/shipment/${id}`);
   },
 };
