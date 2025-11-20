@@ -1,0 +1,41 @@
+.sidebar {
+  background: #fff5f5;
+  border-radius: 15px;
+  padding: 16px 18px;
+  width: 270px;
+}
+
+.header {
+  margin-bottom: 12px;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item,
+.active {
+  margin-bottom: 10px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #9a9a9a;
+}
+
+.active .link {
+  color: #e53935;
+  font-weight: 600;
+}
