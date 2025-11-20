@@ -1,3 +1,5 @@
+import Lot from "./lot.model";
+
 export default interface Supplier {
   id: number;
   companyName: string;
@@ -5,4 +7,5 @@ export default interface Supplier {
   email?: string;
   phone?: string;
   createdAt: string;
+  lots: Lot[];
 }

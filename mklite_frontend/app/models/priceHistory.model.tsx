@@ -1,11 +1,11 @@
 import ProductCardModel from "./productCard.model";
 import User from "./user.model";
 
-export default interface HistorialPrecio {
+export default interface PriceHistory {
   id: number;
-  precioNuevo: number;
-  fechaCambio: string;
+  newPrice: number;
+  changedAt: string;
 
-  producto: ProductCardModel;
-  usuarioModifico: User;
+  product: ProductCardModel;
+  changedByUser: User;
 }

@@ -1,5 +1,6 @@
 import ProductModel from "./productCard.model";
 import Supplier from "./supplier.model";
+import StockMovement from "./stockMovement.model";
 
 export default interface Lot {
   id: number;
@@ -11,4 +12,5 @@ export default interface Lot {
 
   product: ProductModel;
   supplier?: Supplier;
+  stockMovements: StockMovement[];
 }
