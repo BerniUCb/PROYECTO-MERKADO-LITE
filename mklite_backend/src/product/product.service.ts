@@ -72,4 +72,22 @@ export class ProductService {
   return await this.productRepository.save(productToUpdate);
 }
 
+
+async getTopSellingProducts(limit = 10): Promise<any[]> {
+  const result = await this.productRepository
+    .createQueryBuilder('product')
+    .leftJoin('product.orderItems', 'orderItem')
+    .addSelect('SUM(orderItem.quantity)', 'totalSold')
+    .groupBy('product.id')
+    .orderBy('totalSold', 'DESC')
+    .limit(limit)
+    .getRawAndEntities();
+
+  return result.entities.map((product, index) => ({
+    ...product,
+    totalSold: Number(result.raw[index].totalSold || 0),
+  }));
+}
+
+
 }
