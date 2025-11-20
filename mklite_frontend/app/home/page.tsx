@@ -17,27 +17,29 @@ import styles from "./page.module.css";
 
 // Servicios
 import { CategoryService } from "../services/category.service";
+import { ProductService } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
 
 export default function HomePage() {
-  
-  // 🔹 Estado para categorías cargadas desde el backend
+  // 🔹 Estado para categorías
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
 
-  // ===================================================================
-  // 🔥 CARGAR CATEGORÍAS DESDE BACKEND
-  // ===================================================================
+  // 🔹 Estado para productos reales desde backend
+  const [products, setProducts] = useState<ProductCardModel[]>([]);
+
+  // ================================================================
+  // 🔥 CARGAR CATEGORÍAS DESDE BACKEND (NO SE TOCA NADA AQUÍ)
+  // ================================================================
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const data = await CategoryService.getAll();
 
-        // Asignar icono desde categoryIcons según el nombre
         const mapped = data.map((cat: CategoryCardModel) => ({
           ...cat,
-          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon
+          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
         }));
 
         setCategories(mapped);
@@ -49,142 +51,53 @@ export default function HomePage() {
     loadCategories();
   }, []);
 
-  // ===================================================================
-  // 🔹 Productos populares (tú ya tenías esto, NO TOQUÉ NADA)
-  // ===================================================================
-  const popularProducts: ProductCardModel[] = [
-    {
-      id: 1,
-      nombre: "Leche Pil 1L",
-      descripcion: "Leche entera fresca de 1 litro.",
-      precioVenta: 7.5,
-      urlImagen: "/products/leche.jpg",
-      discount: 10,
-      unidadMedida: "Litro",
-      stockFisico: 100,
-      stockReservado: 20,
-      isActive: true,
-      categoria: {
-        id: 1,
-        nombre: "Lácteos",
-        descripcion: "Productos lácteos variados.",
-        IconComponent: categoryIcons["Lácteos"],
-      },
-    },
-    {
-      id: 2,
-      nombre: "Galletas Oreo",
-      descripcion: "Paquete de galletas 12 unidades",
-      precioVenta: 10,
-      urlImagen: "/products/oreo.jpg",
-      discount: 5,
-      unidadMedida: "Paquete",
-      stockFisico: 50,
-      stockReservado: 5,
-      isActive: true,
-      categoria: {
-        id: 5,
-        nombre: "Snacks",
-        descripcion: "Aperitivos y snacks variados.",
-        IconComponent: categoryIcons["Snacks"],
-      },
-    },
-    {
-      id: 3,
-      nombre: "Huevos frescos 12u",
-      descripcion: "Docena de huevos seleccionados.",
-      precioVenta: 12,
-      urlImagen: "/products/huevos.jpg",
-      unidadMedida: "Docena",
-      stockFisico: 200,
-      stockReservado: 30,
-      isActive: true,
-      categoria: {
-        id: 2,
-        nombre: "Carnes",
-        descripcion: "Carnes frescas y procesadas.",
-        IconComponent: categoryIcons["Carnes"],
-      },
-    },
-    {
-      id: 4,
-      nombre: "Jamon Serrano",
-      descripcion: "Paquete de 24 unidades.",
-      precioVenta: 20,
-      urlImagen: "/products/jamon.jpg",
-      discount: 15,
-      unidadMedida: "Paquete",
-      stockFisico: 24,
-      stockReservado: 0,
-      isActive: true,
-      categoria: {
-        id: 2,
-        nombre: "Carnes",
-        descripcion: "Carnes frescas y procesadas.",
-        IconComponent: categoryIcons["Carnes"],
-      },
-    },
-    {
-      id: 5,
-      nombre: "Yogurt natural",
-      descripcion: "Yogurt sin azúcar añadido.",
-      precioVenta: 8,
-      urlImagen: "/products/yogurt.jpg",
-      discount: 5,
-      unidadMedida: "Vaso",
-      stockFisico: 80,
-      stockReservado: 10,
-      isActive: true,
-      categoria: {
-        id: 1,
-        nombre: "Lácteos",
-        descripcion: "Productos lácteos variados.",
-        IconComponent: categoryIcons["Lácteos"],
-      },
-    },
-    {
-      id: 6,
-      nombre: "Queso criollo",
-      descripcion: "Queso artesanal 500g.",
-      precioVenta: 20,
-      urlImagen: "/products/queso.jpg",
-      unidadMedida: "Paquete",
-      stockFisico: 40,
-      stockReservado: 5,
-      isActive: true,
-      categoria: {
-        id: 1,
-        nombre: "Lácteos",
-        descripcion: "Productos lácteos variados.",
-        IconComponent: categoryIcons["Lácteos"],
-      },
-    },
-  ];
+  
+  //  CARGAR PRODUCTOS DESDE BACKEND 
+  
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await ProductService.getProducts();
 
-  // ===================================================================
-  // 🔹 RETURN
-  // ===================================================================
+        // 🔄 Asegurar que haya imagen o colocar placeholder
+        const mapped = data.map((p: ProductCardModel) => ({
+          ...p,
+          urlImagen: p.urlImagen ?? "/products/no-image.png",
+        }));
+
+        setProducts(mapped);
+      } catch (error) {
+        console.error("❌ Error cargando productos:", error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+
+  //  RETURN
+  
   return (
     <>
       <Header />
 
       <main className={styles.main}>
 
-        {/* ================================================================= */}
-        {/* 🔹 SECCIÓN: Productos Populares */}
-        {/* ================================================================= */}
+        {/* 🔹 SECCIÓN: Productos desde el BACKEND */}
+      
         <section id="productos" className={styles.productsSection}>
-          <h2>Productos Populares</h2>
+          <h2>Productos</h2>
+
           <div className={styles.productsGrid}>
-            {popularProducts.map((p, i) => (
-              <ProductCard key={i} product={p} />
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>
 
-        {/* ================================================================= */}
-        {/* 🔹 SECCIÓN: Categorías */}
-        {/* ================================================================= */}
+       
+        {/* 🔹 SECCIÓN: Categorías  */}
+       
         <section id="categorias" className={styles.categoriesSection}>
           <h2>Categorías</h2>
 
@@ -200,9 +113,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ================================================================= */}
-        {/* Showcase + Benefits (SIN CAMBIAR NADA) */}
-        {/* ================================================================= */}
+      
+        {/* Showcase + Benefits  */}
+        
         <ProductShowcase />
         <Benefits />
 
@@ -212,6 +125,7 @@ export default function HomePage() {
     </>
   );
 }
+
 
 
 
