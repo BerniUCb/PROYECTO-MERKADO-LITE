@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
-import { Promocion } from '../entity/promotion.entity';    
+import { Promotion } from '../entity/promotion.entity';    
 import { PromotionService } from './promotion.service';
 import { PromotionController } from './promotion.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Promocion]) 
+    TypeOrmModule.forFeature([Promotion]) 
   ],
   controllers: [PromotionController],
   providers: [PromotionService],
