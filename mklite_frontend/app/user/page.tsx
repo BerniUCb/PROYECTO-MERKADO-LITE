@@ -8,7 +8,6 @@ import type UserModel from "../models/user.model";
 export default function UsuarioPage() {
   const [users, setUsers] = useState<UserModel[]>([]);
 
-  // Cuando conectes el backend, puedes descomentar esto:
   /*
   useEffect(() => {
     async function fetchUsers() {
@@ -29,14 +28,13 @@ export default function UsuarioPage() {
         {users.map((user) => (
           <div className={styles.user_card} key={user.id}>
             <h2 className={styles.user_data}>
-              Usuario: {user.nombreCompleto}
+              Usuario: {user.fullName}
             </h2>
             <p>Email: {user.email}</p>
-            <p>Rol: {user.rol}</p>
+            <p>Rol: {user.role}</p>
             <p>Estado: {user.isActive ? "Activo" : "Inactivo"}</p>
 
-            {/* Cuando vuelvas a activar backend */}
-            {/*
+            {/* 
             <button
               className={styles.user_card_delete_button}
               onClick={() => deleteUser(user.id)}
