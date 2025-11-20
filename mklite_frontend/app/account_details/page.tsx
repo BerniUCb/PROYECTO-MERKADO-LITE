@@ -30,19 +30,19 @@ export default function AccountDetails() {
         <div className={styles.card}>
           <span className={styles.label}>Nombre Completo</span>
           <span className={styles.value}>el pepe</span>
-          <button className={styles.edit}>✏️ Editar</button>
+          {/*<button className={styles.edit}>✏️ Editar</button>*/}
         </div>
 
         <div className={styles.card}>
           <span className={styles.label}>Número de Teléfono</span>
           <span className={styles.value}>+591 69500024</span>
-          <button className={styles.edit}>✏️ Editar</button>
+           {/*<button className={styles.edit}>✏️ Editar</button>*/}
         </div>
 
         <div className={styles.card}>
           <span className={styles.label}>Correo Electrónico</span>
           <span className={styles.value}>pepe2025@gmail.com</span>
-          <button className={styles.edit}>✏️ Editar</button>
+          {/*<button className={styles.edit}>✏️ Editar</button>*/}
         </div>
       </section>
     </main>
