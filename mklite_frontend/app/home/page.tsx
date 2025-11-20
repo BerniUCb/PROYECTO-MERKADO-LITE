@@ -17,7 +17,7 @@ import styles from "./page.module.css";
 
 // Servicios
 import { CategoryService } from "../services/category.service";
-import { ProductService } from "../services/product.service";
+//import { ProductService } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
@@ -54,7 +54,7 @@ export default function HomePage() {
   
   //  CARGAR PRODUCTOS DESDE BACKEND 
   
-  useEffect(() => {
+ /* useEffect(() => {
     const loadProducts = async () => {
       try {
         const data = await ProductService.getProducts();
@@ -72,7 +72,7 @@ export default function HomePage() {
     };
 
     loadProducts();
-  }, []);
+  }, []);*/
 
 
   //  RETURN
