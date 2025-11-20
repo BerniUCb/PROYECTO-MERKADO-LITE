@@ -1,25 +1,27 @@
+// src/entity/support-message.entity.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { TicketSoporte } from "./support-ticket.entity";
+import { SupportTicket } from "./support-ticket.entity"; // Anticipamos 'SupportTicket'
 import { User } from "./user.entity";
 
-@Entity('mensaje_soporte')
-export class MensajeSoporte {
+@Entity('support_messages') // <-- 'mensaje_soporte' -> 'support_messages'
+export class SupportMessage { // <-- 'MensajeSoporte' -> 'SupportMessage'
 
-    @PrimaryGeneratedColumn({ name: 'mensaje_soporte_id' })
+    @PrimaryGeneratedColumn({ name: 'support_message_id' }) // <-- 'mensaje_soporte_id'
     id: number;
 
     @Column({ type: 'text' })
-    contenido: string;
+    content: string; // <-- 'contenido' -> 'content'
 
-    @CreateDateColumn({ name: 'fecha_envio' })
-    fechaEnvio: Date;
+    @CreateDateColumn({ name: 'sent_at' })
+    sentAt: Date; // <-- 'fechaEnvio' -> 'sentAt'
     
-    // --- Relaciones ---
-    @ManyToOne(() => TicketSoporte, (ticket) => ticket.mensajes, { nullable: false })
-    @JoinColumn({ name: 'ticket_soporte_id' })
-    ticket: TicketSoporte;
+    // --- Relationships ---
+    @ManyToOne(() => SupportTicket, (ticket) => ticket.messages, { nullable: false }) // <-- Relación inversa será 'ticket.messages'
+    @JoinColumn({ name: 'support_ticket_id' }) // <-- 'ticket_soporte_id'
+    ticket: SupportTicket; // <-- 'ticket' -> 'ticket' (apunta a 'SupportTicket')
     
-    @ManyToOne(() => User, { nullable: false }) // Quién envió el mensaje (cliente o agente)
-    @JoinColumn({ name: 'remitente_id' })
-    remitente: User;
+    @ManyToOne(() => User, { nullable: false })
+    @JoinColumn({ name: 'sender_id' }) // <-- 'remitente_id' -> 'sender_id'
+    sender: User; // <-- 'remitente' -> 'sender'
 }
