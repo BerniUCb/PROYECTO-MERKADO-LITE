@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Category } from '../entity/category.entity';
 import { CreateHistogramOptions } from 'perf_hooks';
 import { promises } from 'dns';
-import { Producto } from 'src/entity/product.entity';
+import { Product } from 'src/entity/product.entity';
 
 @Injectable()
 export class CategoryService{
@@ -51,10 +51,7 @@ export class CategoryService{
         return await this.categoryRepository.save(existing);
     }
     
-    // Obtener categoria dado un producto
-    async getProductCategory(producto: Producto){
-
-    }
-
+    // Obtener categoria dado un Product
+    
 
 } 

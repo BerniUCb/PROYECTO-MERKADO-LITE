@@ -2,8 +2,9 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Product } from "./product.entity"; // Anticipamos 'Product'
-import { Supplier } from "./provider.entity"; // Anticipamos 'Supplier'
+import { Supplier } from "./supplier.entity"; // Anticipamos 'Supplier'
 import { StockMovement } from "./stock-movement.entity"; // Anticipamos 'StockMovement'
+import { SupplierReturn } from "./supplier-return.entity"; // <--- IMPORTAR
 
 @Entity('lots') // <-- 'lote' -> 'lots'
 export class Lot { // <-- 'Lote' -> 'Lot'
@@ -37,4 +38,6 @@ export class Lot { // <-- 'Lote' -> 'Lot'
     
     @OneToMany(() => StockMovement, (movement) => movement.lot) // <-- Relación inversa será 'movement.lot'
     stockMovements: StockMovement[]; // <-- 'movimientos' -> 'stockMovements'
+    @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.lot)
+    returns: SupplierReturn[];
 }

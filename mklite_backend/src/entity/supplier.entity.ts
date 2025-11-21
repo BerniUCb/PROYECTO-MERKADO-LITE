@@ -2,6 +2,7 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm";
 import { Lot } from "./lot.entity"; // <-- Actualizado de 'Lote' a 'Lot'
+import { SupplierReturn } from "./supplier-return.entity"; // <--- IMPORTAR
 
 @Entity('suppliers') // <-- 'proveedor' -> 'suppliers'
 export class Supplier { // <-- 'Proveedor' -> 'Supplier'
@@ -27,4 +28,6 @@ export class Supplier { // <-- 'Proveedor' -> 'Supplier'
     // --- Relationships ---
     @OneToMany(() => Lot, (lot) => lot.supplier) // <-- 'Lote' -> 'Lot', '(lote) => lote.proveedor' -> '(lot) => lot.supplier'
     lots: Lot[]; // <-- 'lotes' -> 'lots'
+    @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.supplier)
+    returns: SupplierReturn[];
 }
