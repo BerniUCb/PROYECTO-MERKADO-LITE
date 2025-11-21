@@ -64,8 +64,6 @@ export class TicketService {
 
   async update(id: number, updateDto: UpdateTicketDto): Promise<SupportTicket> {
     const ticket = await this.findOne(id);
-
-
     if ((updateDto as any).agentId !== undefined) {
       const agentId = (updateDto as any).agentId;
       if (agentId === null) {
