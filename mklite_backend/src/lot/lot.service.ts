@@ -1,62 +1,62 @@
-// src/lote/lot.service.ts
+// src/Lot/lot.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Lote } from '../entity/lot.entity';
+import { Lot } from '../entity/lot.entity';
 
 @Injectable()
 export class LotService {
   constructor(
-    @InjectRepository(Lote)
-    private readonly loteRepository: Repository<Lote>,
+    @InjectRepository(Lot)
+    private readonly LotRepository: Repository<Lot>,
   ) {}
 
-  async createLote(lote: Lote): Promise<Lote> {
-    const newLote = this.loteRepository.create(lote);
-    return await this.loteRepository.save(newLote);
+  async createLot(Lot: Lot): Promise<Lot> {
+    const newLot = this.LotRepository.create(Lot);
+    return await this.LotRepository.save(newLot);
   }
 
-  async getAllLotes(): Promise<Lote[]> {
-    return await this.loteRepository.find({
+  async getAllLots(): Promise<Lot[]> {
+    return await this.LotRepository.find({
       relations: ['producto', 'proveedor'],
     });
   }
 
-  async getLoteById(idString: string): Promise<Lote> {
+  async getLotById(idString: string): Promise<Lot> {
     const id = parseInt(idString, 10);
-    const lote = await this.loteRepository.findOne({
+    const Lot = await this.LotRepository.findOne({
       where: { id },
       relations: ['producto', 'proveedor']
     });
 
-    if (!lote) {
-      throw new NotFoundException(`Lote with ID "${id}" not found`);
+    if (!Lot) {
+      throw new NotFoundException(`Lot with ID "${id}" not found`);
     }
-    return lote;
+    return Lot;
   }
 
-  async deleteLote(idString: string): Promise<{ deleted: boolean; affected?: number }> {
+  async deleteLot(idString: string): Promise<{ deleted: boolean; affected?: number }> {
     const id = parseInt(idString, 10);
-    const result = await this.loteRepository.delete({ id });
+    const result = await this.LotRepository.delete({ id });
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Lote with ID "${id}" not found`);
+      throw new NotFoundException(`Lot with ID "${id}" not found`);
     }
     return { deleted: true, affected: result.affected ?? 0 };
   }
 
-  async updateLote(idString: string, loteUpdateData: Partial<Lote>): Promise<Lote> {
+  async updateLot(idString: string, LotUpdateData: Partial<Lot>): Promise<Lot> {
     const id = parseInt(idString, 10);
     
-    const loteToUpdate = await this.loteRepository.preload({
+    const LotToUpdate = await this.LotRepository.preload({
       id: id,
-      ...loteUpdateData,
+      ...LotUpdateData,
     });
 
-    if (!loteToUpdate) {
-      throw new NotFoundException(`Lote with ID "${id}" not found`);
+    if (!LotToUpdate) {
+      throw new NotFoundException(`Lot with ID "${id}" not found`);
     }
 
-    return await this.loteRepository.save(loteToUpdate);
+    return await this.LotRepository.save(LotToUpdate);
   }
 }
