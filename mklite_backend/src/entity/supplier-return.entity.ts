@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Supplier } from "./provider.entity"; // Asegúrate que el nombre del archivo coincida (provider o supplier)
+import { Supplier } from "./supplier.entity"; // Asegúrate que el nombre del archivo coincida (provider o supplier)
 import { Product } from "./product.entity";
 import { Lot } from "./lot.entity";
 
