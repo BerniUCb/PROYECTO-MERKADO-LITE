@@ -3,7 +3,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from "typeorm";
 import { User } from "./user.entity";
 import { OrderItem } from "./order-item.entity"; // <-- Actualizado de 'DetallePedido' a 'OrderItem'
-
 // Define el enum para los estados del pedido en inglés
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
