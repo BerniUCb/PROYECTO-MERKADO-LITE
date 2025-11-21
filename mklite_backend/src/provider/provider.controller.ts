@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { Proveedor } from 'src/entity/provider.entity';
+import { Proveedor } from 'src/entity/supplier.entity';
 import { ProviderService } from './provider.service';
 
 @Controller('/provider')
