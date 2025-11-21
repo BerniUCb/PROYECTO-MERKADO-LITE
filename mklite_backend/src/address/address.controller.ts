@@ -14,33 +14,33 @@ export class AddressController {
   create(@Body() createAddressDto: CreateAddressDto) {
     // NOTA: Aquí asumimos un usuarioId fijo (1). En un sistema real,
     // esto vendría de un sistema de autenticación (ej. un decorador @GetUser()).
-    const usuarioId = 1; 
-    return this.addressService.create(createAddressDto, usuarioId);
+    const userId = 1; 
+    return this.addressService.create(createAddressDto, userId);
   }
 
   // READ ALL -> GET /address
   @Get()
   findAll() {
-    const usuarioId = 1; // De nuevo, esto sería dinámico.
-    return this.addressService.findAllByUser(usuarioId);
+    const userId = 1; // De nuevo, esto sería dinámico.
+    return this.addressService.findAllByUser(userId);
   }
 
   // READ ONE -> GET /address/123
   @Get(':id')
   findOne(@Param('id') id: string) {
-    const usuarioId = 1; // Sería dinámico.
-    return this.addressService.findOne(+id, usuarioId);
+    const userId = 1; // Sería dinámico.
+    return this.addressService.findOne(+id, userId);
   }
 
   // DELETE -> DELETE /address/123
   @Delete(':id')
   remove(@Param('id') id: string) {
-    const usuarioId = 1; // Sería dinámico.
-    return this.addressService.remove(+id, usuarioId);
+    const userId = 1; // Sería dinámico.
+    return this.addressService.remove(+id, userId);
   }
     @Patch(':id')
   update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
-    const usuarioId = 1; // De nuevo, esto sería dinámico.
-    return this.addressService.update(+id, updateAddressDto, usuarioId);
+    const userId = 1; // De nuevo, esto sería dinámico.
+    return this.addressService.update(+id, updateAddressDto, userId);
   }
 }

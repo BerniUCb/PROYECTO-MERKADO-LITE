@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { PromotionService } from "./promotion.service";
-import { Promocion } from "src/entity/promotion.entity";
+import { Promotion } from "src/entity/promotion.entity";
 
 
 @Controller('/promotion')
@@ -8,7 +8,7 @@ export class PromotionController {
     constructor(private readonly promotionService: PromotionService) {}
 
     @Post()
-    createPromotion(@Body() promotion: Promocion) {
+    createPromotion(@Body() promotion: Promotion) {
         return this.promotionService.createPromotion(promotion);
     }
 
@@ -28,7 +28,7 @@ export class PromotionController {
     }
 
     @Put('/:id')
-    updatePromotion(@Param('id') id: number,  @Body() promotion: Promocion) {
+    updatePromotion(@Param('id') id: number,  @Body() promotion: Promotion) {
         return this.promotionService.updatePromotion(id, promotion);
     }
 

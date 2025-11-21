@@ -1,30 +1,29 @@
 // src/entity/order-item.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Pedido } from "./order.entity";
-import { Producto } from "./product.entity";
+import { Order } from "./order.entity"; // Anticipamos 'Order'
+import { Product } from "./product.entity"; // Anticipamos 'Product'
 
-@Entity('detalle_pedido')
-export class DetallePedido {
 
-    @PrimaryGeneratedColumn({ name: 'detalle_pedido_id' })
+@Entity('order_items') // <-- 'detalle_pedido' -> 'order_items'
+export class OrderItem { // <-- 'DetallePedido' -> 'OrderItem'
+
+    @PrimaryGeneratedColumn({ name: 'order_item_id' }) // <-- 'detalle_pedido_id'
     id: number;
 
     @Column({ type: 'integer' })
-    cantidad: number;
+    quantity: number; // <-- 'cantidad' -> 'quantity'
 
-    @Column({ type: 'numeric', name: 'precio_unitario' })
-    precioUnitario: number; // Guardamos el precio al momento de la compra
+    @Column({ type: 'numeric', name: 'unit_price' })
+    unitPrice: number; // <-- 'precioUnitario' -> 'unitPrice'
 
-    // --- Relaciones ---
+    // --- Relationships ---
+    @ManyToOne(() => Order, (order) => order.items, { nullable: false }) // <-- Relación inversa será 'order.items'
+    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
+    order: Order; // <-- 'pedido' -> 'order'
 
-    // Muchos "detalles" pertenecen a un solo Pedido
-    @ManyToOne(() => Pedido, (pedido) => pedido.detalles, { nullable: false })
-    @JoinColumn({ name: 'pedido_id' })
-    pedido: Pedido;
-
-    // Muchos "detalles" (de diferentes pedidos) pueden referirse al mismo Producto
-    @ManyToOne(() => Producto, (producto) => producto.detallesPedido, { nullable: false })
-    @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    @ManyToOne(() => Product, (product) => product.orderItems, { nullable: false }) // <-- Relación inversa será 'product.orderItems'
+    @JoinColumn({ name: 'product_id' })
+    product: Product; // <-- 'producto' -> 'product'
+    
 }

@@ -3,7 +3,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Promocion} from '../entity/promotion.entity';
+import { Promotion} from '../entity/promotion.entity';
 
 // ¡Ya no importamos AppDataSource directamente!
 
@@ -12,22 +12,22 @@ export class PromotionService {
   // Inyectamos el Repositorio de User. NestJS y TypeOrmModule se encargan de crearlo
   // y dárnoslo listo para usar.
   constructor(
-    @InjectRepository(Promocion)
-    private readonly promotionRepository: Repository<Promocion>,
+    @InjectRepository(Promotion)
+    private readonly promotionRepository: Repository<Promotion>,
   ) {}
 
-  async createPromotion(promotion: Promocion): Promise<Promocion> {
+  async createPromotion(promotion: Promotion): Promise<Promotion> {
     // Usamos el repositorio para guardar la nueva entidad de producto.
     const newPromotion = this.promotionRepository.create(promotion); // 'create' prepara el objeto para guardarlo
     return await this.promotionRepository.save(newPromotion);
   }
 
-  async getAllPromotions(): Promise<Promocion[]> {
+  async getAllPromotions(): Promise<Promotion[]> {
     // Usamos el repositorio para encontrar todos los productos.
     return await this.promotionRepository.find();
   }
 
-  async getPromotionById(id: number): Promise<Promocion> {
+  async getPromotionById(id: number): Promise<Promotion> {
     const promotion = await this.promotionRepository.findOneBy({ id });
      // Buscamos por la propiedad 'id'
 
@@ -46,7 +46,7 @@ export class PromotionService {
     return { deleted: true, affected: result.affected ?? 0 };
   }
 
-  async updatePromotion(id: number, promotionUpdateData: Partial<Promocion>): Promise<Promocion> {
+  async updatePromotion(id: number, promotionUpdateData: Partial<Promotion>): Promise<Promotion> {
     
     // Usamos 'preload' para cargar el usuario existente y fusionar los nuevos datos.
     const promotionToUpdate = await this.promotionRepository.preload({

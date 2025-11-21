@@ -5,7 +5,6 @@ import type Pedido from '../models/order.model';
 import { OrderService } from '../services/order.service';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { OrderStatus } from '../models/order.model';
-// 💡 IMPORTANTE: Importamos los estilos como 'styles'
 import styles from './page.module.css'; 
 
 // --- TIPOS DE DATOS Y UTILS ---
@@ -69,7 +68,6 @@ const getStatusClass = (status: OrderStatus): string => {
 
 /**
  * Mapea el estado del modelo a un texto legible en español para la UI.
- * (La implementación es la misma que antes)
  */
 const mapStatusToText = (status: OrderStatus): string => {
   switch (status) {
@@ -85,7 +83,6 @@ const mapStatusToText = (status: OrderStatus): string => {
 
 /**
  * Formatea una fecha ISO 8601 a 'DD/MM/YY'.
- * (La implementación es la misma que antes)
  */
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
