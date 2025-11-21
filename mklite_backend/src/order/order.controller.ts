@@ -1,56 +1,32 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
-import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
-import { get } from 'http';
+import { PedidoService } from './order.service';
 
-@Controller('orders')
-export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
-  //Reportes
-  @Get('report/total-sales')
-  getTotalSales(){
-    return this.orderService.getTotalSales();
-  }
-
-  @Get('report/pending-count')
-  getPendingOrderCount(){
-    return this.orderService.getPendingOrderCount();
-  }
-
-  @Get('report/weekly-sales')
-  getWeeklySales(){
-    return this.orderService.getWeeklySales();
-  }
-
-  @Get('report/latest')
-  getLatestOrders(){
-    return this.orderService.getLatestOrders();
-  }
-  //CRUD
+@Controller('pedidos')
+export class PedidoController {
+  constructor(private readonly pedidoService: PedidoService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  create(@Body() data: any) {
+    return this.pedidoService.create(data);
   }
 
   @Get()
   findAll() {
-    return this.orderService.findAll();
+    return this.pedidoService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.orderService.findOne(id);
+    return this.pedidoService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto){
-    return this.orderService.update(id, updateOrderDto);
+  update(@Param('id') id: number, @Body() data: any) {
+    return this.pedidoService.update(id, data);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    return this.orderService.remove(id);
+    return this.pedidoService.remove(id);
   }
 }
