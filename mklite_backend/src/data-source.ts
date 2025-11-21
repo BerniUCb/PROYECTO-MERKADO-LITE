@@ -6,7 +6,7 @@ import { join } from 'path';
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5433,
+    port: 5432,
     username: 'merkado_admin',
     password: 'merkado_pass',
     database: 'merkadolite_db',
