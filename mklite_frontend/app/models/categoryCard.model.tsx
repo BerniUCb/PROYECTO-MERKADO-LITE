@@ -3,8 +3,8 @@ import ProductModel from "./productCard.model";
 
 interface CategoryCardModel {
    id: number;
-  nombre: string;
-  descripcion: string; 
+  name: string;
+  description: string; 
   IconComponent?: IconType;
   products: ProductModel[];
 }

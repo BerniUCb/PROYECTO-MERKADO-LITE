@@ -45,12 +45,12 @@
   align-items: center;
   background-color: #f9f9f9;
   border-radius: 10px;
-  margin: 0 auto 10px; /* centrado y margen abajo */
+  margin: 0 auto 10px; 
   padding: 10px;
 }
 
 .icon {
   width: 60px;
   height: 60px;
-  color: #f40009; /* color principal  */
+  color: #f40009; 
 }

@@ -1,69 +1,84 @@
-
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import styles from "./page.module.css"; // opcional si luego agregas CSS por módulo
+import styles from "./page.module.css"; // tu CSS actual
 
-export default function SignupPage() {
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Correo o contraseña incorrectos");
+
+      setSuccess("¡Inicio de sesión correcto!");
+      setEmail("");
+      setPassword("");
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <>
-    <Header />
+      <Header />
       <div className={styles.loginContainer}>
-        <form className={styles.loginForm}>
+        <form className={styles.loginForm} onSubmit={handleLogin}>
+          <h2 className={styles.formTitle}>Iniciar Sesión</h2>
+
           <div>
-            <label htmlFor="correo">Correo electrónico</label>
+            <label htmlFor="email">Correo electrónico</label>
             <input
-              type="text"
-              id="correo"
-              name="correo"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="ejemplo@correo.com"
+              required
             />
           </div>
 
           <div>
-            <label htmlFor="contrasena">Contraseña</label>
+            <label htmlFor="password">Contraseña</label>
             <input
               type="password"
-              id="contrasena"
-              name="contrasena"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              required
             />
-            <p className={styles.reset}>
-              ¿Olvidaste tu contraseña?{" "}
-              <a href="#">
-                <b>Restablécela aquí</b>
-              </a>
-            </p>
           </div>
 
-          <div className={styles.divider}>— O —</div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {success && <p style={{ color: "green" }}>{success}</p>}
 
-          <div className={styles.google}>
-            <img
-              src="https://www.svgrepo.com/show/355037/google.svg"
-              width="18"
-              alt="Google"
-            />
-            <a href="#">Continuar con Google</a>
-          </div>
+          <button type="submit" className={styles.button}>Continuar</button>
 
-          <button type="submit" className={styles.button}>
-             Continuar
-            </button>
-
-
-          <div className={styles.crearCuenta}>
-            ¿No tienes una cuenta?{" "}
-            <a href="#">
-              <b>Crea una cuenta</b>
-            </a>
-          </div>
+          <p className={styles.crearCuenta}>
+            ¿No tienes cuenta? <a href="/signup"><b>Crear cuenta</b></a>
+          </p>
         </form>
       </div>
       <Footer />
     </>
   );
 }
+
 

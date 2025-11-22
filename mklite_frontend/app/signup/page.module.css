@@ -3,20 +3,23 @@
   background-color: white;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 60px 0;
-  min-height: 100vh;
+  align-items: flex-start; /* Deja que el formulario suba un poco */
+  padding: 40px 10px; /* Ajusta según quieras más o menos espacio */
+  box-sizing: border-box;
+  min-height: auto; /* No fuerza altura completa */
 }
 
 .signupForm {
-  background-color: white;
-  box-shadow: 0 0 10px rgb(86, 80, 80);
-  padding: 40px;
+  background-color: rgb(250, 250, 250);
+  box-shadow: 0 0 10px rgba(86, 80, 80, 0.5);
+  padding: 25px;
   border-radius: 10px;
   width: 100%;
-  max-width: 450px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
 }
 
 /* Labels */
@@ -27,15 +30,18 @@
   color: rgb(60, 53, 53);
 }
 
+/* Inputs */
 .signupForm input[type="text"],
-.signupForm input[type="password"] {
+.signupForm input[type="password"],
+.signupForm input[type="email"],
+.signupForm select {
   width: 100%;
   padding: 10px;
   border: 1px solid lightgrey;
   border-radius: 5px;
-  margin-bottom: 15px;
   font-size: 14px;
   color: black;
+  box-sizing: border-box;
 }
 
 /* Botón */
@@ -47,16 +53,43 @@
   border-radius: 5px;
   font-size: 15px;
   margin-top: 10px;
-  align-self: flex-end;
+  align-self: center;
   cursor: pointer;
 }
 
-/* Divider */
-.divider {
-  margin: 20px 0;
-  color: gray;
-  font-size: 14px;
+/* Título */
+.signupForm h2 {
+  color: black; 
+  margin-bottom: 15px;  
   text-align: center;
+}
+
+/* Enlace login */
+.loginRedirect {
+  margin-top: 10px;
+  font-size: 13px;
+  text-align: center;
+}
+.loginRedirect a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+.loginRedirect a:hover {
+  color: #555;
+}
+
+/* Mensajes */
+.errorMessage {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.terms {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
 }
 
 /* Google button */
@@ -73,16 +106,20 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Textos */
-.crearcuenta {
-  margin-top: 10px;
-  font-size: 13px;
-  text-align: right;
-  color: rgb(0, 0, 0);
+/* Divider */
+.divider {
+  margin: 20px 0;
+  color: gray;
+  font-size: 14px;
+  text-align: center;
 }
 
-.terms {
-  font-size: 12px;
-  color: gray;
-  margin-top: 5px;
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .signupForm {
+    padding: 20px;
+    max-width: 100%;
+  }
 }
+
+

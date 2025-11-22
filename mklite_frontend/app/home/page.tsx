@@ -18,6 +18,8 @@ import { getProducts, getProductById } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   // 🔹 Estado para categorías
@@ -27,7 +29,7 @@ export default function HomePage() {
   const [products, setProducts] = useState<ProductCardModel[]>([]);
 
   // ================================================================
-  // 🔥 CARGAR CATEGORÍAS DESDE BACKEND (NO SE TOCA NADA AQUÍ)
+  //  CARGAR CATEGORÍAS DESDE BACKEND 
   // ================================================================
   useEffect(() => {
     const loadCategories = async () => {
@@ -36,7 +38,7 @@ export default function HomePage() {
 
         const mapped = data.map((cat: CategoryCardModel) => ({
           ...cat,
-          IconComponent: categoryIcons[cat.nombre] ?? defaultIcon,
+          IconComponent: categoryIcons[cat.name] ?? defaultIcon,
         }));
 
         setCategories(mapped);
@@ -77,10 +79,11 @@ export default function HomePage() {
   return (
     <>
       //header
+      <Header />
 
       <main className={styles.main}>
 
-        {/* 🔹 SECCIÓN: Productos desde el BACKEND */}
+        {/* 🔹 SECCIÓN: Productos */}
       
         <section id="productos" className={styles.productsSection}>
           <h2>Productos</h2>
@@ -92,8 +95,7 @@ export default function HomePage() {
           </div>
         </section>
 
-       
-        {/* 🔹 SECCIÓN: Categorías  */}
+        {/* SECCIÓN: Categorías  */}
        
         <section id="categorias" className={styles.categoriesSection}>
           <h2>Categorías</h2>
@@ -102,13 +104,15 @@ export default function HomePage() {
           {categories.map((cat) => (
             <CategoryCard
               key={cat.id}
-              name={cat.nombre}
-              slug={cat.nombre.toLowerCase()}
+              name={cat.name}
+              slug={(cat.name ?? "sin-nombre").toLowerCase()}
               IconComponent={cat.IconComponent!}
             />
           ))}
         </div>
       </section>
+
+      
 
       
         {/* Showcase + Benefits  */}
@@ -119,6 +123,8 @@ export default function HomePage() {
       </main>
 
       //footer
+      <Footer />
+
       
     </>
   );

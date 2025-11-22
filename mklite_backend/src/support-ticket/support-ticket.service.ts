@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/*import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import {  DeepPartial } from 'typeorm';
 import { SupportTicket } from '../entity/support-ticket.entity';
 import { User } from '../entity/user.entity';
 import { Order } from '../entity/order.entity';
@@ -23,8 +23,8 @@ export class TicketService {
   ) {}
 
   async create(createDto: CreateTicketDto): Promise<SupportTicket> {
-    const cliente = await this.userRepo.findOne({ where: { id: createDto.clienteId }});
-    if (!cliente) throw new NotFoundException(`Cliente ${createDto.clienteId} not found`);
+    const cliente = await this.userRepo.findOne({ where: { id: createDto.clientId }});
+    if (!cliente) throw new NotFoundException(`Cliente ${createDto.clientId} not found`);
 
     const Order = await this.OrderRepo.findOne({ where: { id: createDto.orderId }});
     if (!Order) throw new NotFoundException(`Order ${createDto.orderId} not found`);
@@ -36,10 +36,10 @@ export class TicketService {
     }
 
     const ticket = this.ticketRepo.create({
-      subject: createDto.asunto,
-      cliente,
-      pedido,
-      agente,
+      subject: createDto.reason,
+      user: cliente,
+      order: Order,
+      agent: agent,
     });
 
     return await this.ticketRepo.save(ticket);
@@ -76,8 +76,8 @@ export class TicketService {
       }
     }
 
-    if ((updateDto as any).OrderId !== undefined) {
-      const order = await this.OrderRepo.findOne({ where: { id: (updateDto as any).orderId }});
+    if ((updateDto as any).orderId !== undefined) {
+      const order = await this.orderRepo.findOne({ where: { id: (updateDto as any).orderId }});
       if (!order) throw new NotFoundException(`Order ${(updateDto as any).orderId} not found`);
       ticket.order = order;
     }
@@ -94,4 +94,4 @@ export class TicketService {
     if (res.affected === 0) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return { deleted: true };
   }
-}
+}*/
