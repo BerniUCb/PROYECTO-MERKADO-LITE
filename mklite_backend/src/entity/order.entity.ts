@@ -41,7 +41,7 @@ export class Order { // <-- 'Pedido' -> 'Order'
     @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
     user: User; // <-- 'cliente' -> 'user'
 
-    @OneToMany(() => OrderItem, (item) => item.order) // <-- 'DetallePedido' -> 'OrderItem', '(detalle) => detalle.pedido' -> '(item) => item.order'
+    @OneToMany(() => OrderItem, (item) => item.order, {cascade:true}) // <-- 'DetallePedido' -> 'OrderItem', '(detalle) => detalle.pedido' -> '(item) => item.order'
     items: OrderItem[]; // <-- 'detalles' -> 'items'
     @OneToOne(() => Payment, (payment) => payment.order) // Relación inversa
     payment: Payment;

@@ -5,8 +5,6 @@ import { Order } from 'src/entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
-import { OrderItemService } from 'src/order-item/order-item.service';
-import { OrderItemController } from 'src/order-item/order-item.controller';
 import { QueryHelpers } from 'src/utils/query-helpers';
 
 @Injectable()
@@ -14,6 +12,8 @@ export class OrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
@@ -24,7 +24,7 @@ export class OrderService {
       status: createOrderDto.status || 'pending',
       items: createOrderDto.items.map(item => {
         const orderItem = new OrderItem();
-        orderItem.product.id= item.productId;
+        orderItem.product = { id: item.productId } as any;
         orderItem.quantity = item.quantity;
         orderItem.unitPrice = item.price;
         return orderItem;
