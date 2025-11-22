@@ -6,12 +6,12 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 @Controller('support-ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
-
+/*
   @Post()
   create(@Body() createDto: CreateTicketDto) {
     return this.ticketService.create(createDto);
   }
-
+*/
   @Get()
   findAll() {
     return this.ticketService.findAll();
