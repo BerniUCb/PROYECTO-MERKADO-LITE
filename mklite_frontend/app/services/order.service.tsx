@@ -2,27 +2,56 @@ import { instance } from "../utils/axios";
 import Order from "../models/order.model";
 
 export const OrderService = {
-  create: async (data: Order): Promise<Order> => {
-    const res = await instance.post("/order", data);
+  // --- REPORTES ---
+  getTotalSales: async () => {
+    const res = await instance.get("/orders/report/total-sales");
     return res.data;
   },
 
-  getAll: async (): Promise<Order[]> => {
-    const res = await instance.get("/order");
+  getPendingOrderCount: async () => {
+    const res = await instance.get("/orders/report/pending-count");
+    return res.data;
+  },
+
+  getWeeklySales: async () => {
+    const res = await instance.get("/orders/report/weekly-sales");
+    return res.data;
+  },
+
+  getLatestOrders: async () :Promise<Order[]> => {
+    const res = await instance.get("/orders/report/latest");
+    return res.data;
+  },
+
+  // --- CRUD ---
+  create: async (data: Omit<Order, "id" |"items">): Promise<Order> => {
+    const res = await instance.post("/orders", data);
+    return res.data;
+  },
+
+  getAll: async (
+    page?: number,
+    limit?: number,
+    sort?: string,
+    order?: "asc" | "desc"
+  ): Promise<Order[]> => {
+    const params = { page, limit, sort, order };
+    const res = await instance.get("/orders", { params });
     return res.data;
   },
 
   getById: async (id: number): Promise<Order> => {
-    const res = await instance.get(`/order/${id}`);
+    const res = await instance.get(`/orders/${id}`);
     return res.data;
   },
 
   update: async (id: number, data: Partial<Order>): Promise<Order> => {
-    const res = await instance.patch(`/order/${id}`, data);
+    // Controlador usa PATCH
+    const res = await instance.patch(`/orders/${id}`, data);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/order/${id}`);
+    await instance.delete(`/orders/${id}`);
   },
 };

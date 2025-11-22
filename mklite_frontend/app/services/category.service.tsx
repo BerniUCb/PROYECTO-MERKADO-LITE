@@ -2,7 +2,7 @@ import { instance } from "../utils/axios";
 import CategoryModel from "../models/categoryCard.model";
 
 export const CategoryService = {
-  create: async (category: CategoryModel): Promise<CategoryModel> => {
+  create: async (category: Omit<CategoryModel, "id" | "products">): Promise<CategoryModel> => {
     const res = await instance.post("/category", category);
     return res.data;
   },
@@ -21,7 +21,7 @@ export const CategoryService = {
     await instance.delete(`/category/${id}`);
   },
 
-  update: async (id: number, category: CategoryModel): Promise<CategoryModel> => {
+  update: async (id: number, category: Partial<CategoryModel>): Promise<CategoryModel> => {
     const res = await instance.put(`/category/${id}`, category);
     return res.data;
   },
