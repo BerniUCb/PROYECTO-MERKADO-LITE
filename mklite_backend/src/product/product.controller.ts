@@ -33,7 +33,13 @@ export class ProductController {
     @Put('/:id')
     updateProduct(@Param('id') id: number, @Body() dto: UpdateProductDto) {
         return this.productService.updateProduct(id, dto);
+    }   
+
+    @Get('/top-selling')
+    getTopSellingProducts() {
+        return this.productService.getTopSellingProducts();
     }
+
 
 
 }

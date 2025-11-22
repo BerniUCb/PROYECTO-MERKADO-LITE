@@ -1,35 +1,35 @@
-// src/lote/lot.controller.ts
+// src/Lot/lot.controller.ts
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { Lot } from "src/entity/lot.entity";
 import { LotService } from "./lot.service";
 
-@Controller('/lotes') 
+@Controller('/lot') 
 export class LotController {
 
   constructor(private readonly lotService: LotService) {}
 
   @Post()
-  createLote(@Body() lote: Lot) {
-    return this.lotService.createLote(lote);
+  createLot(@Body() Lot: Lot) {
+    return this.lotService.createLot(Lot);
   }
 
   @Get()
-  getAllLotes() {
-    return this.lotService.getAllLotes();
+  getAllLots() {
+    return this.lotService.getAllLots();
   }
 
   @Get('/:id')
-  getLoteById(@Param() params: any) {
-    return this.lotService.getLoteById(params.id);
+  getLotById(@Param() params: any) {
+    return this.lotService.getLotById(params.id);
   }
 
   @Delete('/:id')
-  deleteLote(@Param() params: any) {
-    return this.lotService.deleteLote(params.id);
+  deleteLot(@Param() params: any) {
+    return this.lotService.deleteLot(params.id);
   }
 
   @Put('/:id')
-  updateLote(@Param() params: any, @Body() lote: Partial<Lot>) {
-    return this.lotService.updateLote(params.id, lote);
+  updateLot(@Param() params: any, @Body() Lot: Partial<Lot>) {
+    return this.lotService.updateLot(params.id, Lot);
   }
 }

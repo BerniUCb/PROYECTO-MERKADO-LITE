@@ -23,12 +23,8 @@ import { AddressModule } from './address/address.module';
     CategoryModule,
     ProductModule,
     PromotionModule,
-
     OrderModule,
-
-
     TicketModule,
-
     AddressModule,
 
    
