@@ -368,7 +368,7 @@ const AdminProductPage: React.FC = () => {
 
   return (
     <div className={styles['full-page-container']}>
-      <Header />
+      
 
       <div className={styles['main-content-wrapper']}>
         <div className={styles['app-layout']}>
@@ -377,7 +377,7 @@ const AdminProductPage: React.FC = () => {
         </div>
       </div>
 
-      <Footer />
+      
     </div>
   );
 };

@@ -1,11 +1,18 @@
 
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+.layoutWrapper {
+  display: flex;
+  gap: 20px;
 }
+
+/* Sidebar fijo */
+.layoutWrapper > :first-child {
+  width: 250px;
+  flex-shrink: 0;
+  margin: 40px auto;
+}
+
 .mis-pedidos-container {
+  flex: 1;
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;

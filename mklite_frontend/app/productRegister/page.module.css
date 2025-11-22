@@ -1,9 +1,5 @@
 /* Base y Layout de la Aplicación */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-}
+
 
 /* Contenedor principal que envuelve toda la página (Header, Content, Footer) */
 .full-page-container {

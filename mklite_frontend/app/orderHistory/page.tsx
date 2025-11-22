@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import type Pedido from '../models/order.model';
+import type Order from '../models/order.model';
 import { OrderService } from '../services/order.service';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { OrderStatus } from '../models/order.model';
+import UserSidebar from '../components/UserSidebar';
 import styles from './page.module.css'; 
 
 // --- TIPOS DE DATOS Y UTILS ---
@@ -13,15 +14,15 @@ import styles from './page.module.css';
  * Función para simular la obtención de pedidos por ID de usuario.
  * (La implementación es la misma que antes)
  */
-const fetchPedidosByUser = async (
+const fetchOrdersByUser = async (
   userId: number,
   page: number,
   limit: number
-): Promise<{ data: Pedido[]; totalPages: number }> => {
+): Promise<{ data: Order[]; totalPages: number }> => {
   console.log(`Simulando obtener pedidos para el usuario ${userId}, página ${page}, límite ${limit}`);
 
   // Datos mockeados basados en la imagen y el modelo
-  const mockPedidos: Pedido[] = [
+  const mockPedidos: Order[] = [
     { id: 101, createdAt: '2025-09-25T10:00:00Z', status: 'delivered', orderTotal: 10.0, paymentMethod: 'Card', user: {} as any, items: [] },
     { id: 102, createdAt: '2025-09-25T11:30:00Z', status: 'cancelled', orderTotal: 10.0, paymentMethod: 'Card', user: {} as any, items: [] },
     { id: 103, createdAt: '2025-09-25T12:00:00Z', status: 'pending', orderTotal: 10.0, paymentMethod: 'Card', user: {} as any, items: [] },
@@ -100,18 +101,18 @@ const PAGE_LIMIT = 5;
 const MisPedidos: React.FC = () => {
   const MOCK_USER_ID = 1; 
 
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [Orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(5); 
   const [totalPages, setTotalPages] = useState<number>(8); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadPedidos = useCallback(async (page: number) => {
+  const loadOrders = useCallback(async (page: number) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchPedidosByUser(MOCK_USER_ID, page, PAGE_LIMIT);
-      setPedidos(result.data);
+      const result = await fetchOrdersByUser(MOCK_USER_ID, page, PAGE_LIMIT);
+      setOrders(result.data);
       setTotalPages(result.totalPages);
       setCurrentPage(page);
     } catch (err) {
@@ -123,8 +124,8 @@ const MisPedidos: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadPedidos(currentPage);
-  }, [loadPedidos, currentPage]);
+    loadOrders(currentPage);
+  }, [loadOrders, currentPage]);
 
 
   const paginationNumbers = useMemo(() => {
@@ -146,17 +147,21 @@ const MisPedidos: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      loadPedidos(page);
+      loadOrders(page);
     }
   };
 
-  if (loading && pedidos.length === 0) return <div className={styles["mis-pedidos-container"]}>Cargando pedidos...</div>;
+  if (loading && Orders.length === 0) return <div className={styles["mis-pedidos-container"]}>Cargando pedidos...</div>;
   if (error) return <div className={styles["mis-pedidos-container"] + " error"}>{error}</div>; // Nota: Concatenación para clases genéricas
 
   return (
-    <div className={styles["mis-pedidos-container"]}>
-      <h1>Mis Pedidos</h1>
+    
+    <div className={styles["layoutWrapper"]}>
+      <UserSidebar />
+      
+      <div className={styles["mis-pedidos-container"]}>
 
+      <h1>Mis Pedidos</h1>
       <div className={styles["pedidos-table-wrapper"]}>
         <table className={styles["pedidos-table"]}>
           <thead>
@@ -169,17 +174,17 @@ const MisPedidos: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {pedidos.map((pedido) => (
-              <tr key={pedido.id}>
-                <td data-label="Código Pedido">#{pedido.id}</td>
+            {Orders.map((order) => (
+              <tr key={order.id}>
+                <td data-label="Código Pedido">#{order.id}</td>
                 <td data-label="Estado">
                   {/* Uso de template strings para combinar clases dinámicas */}
-                  <span className={`${styles["estado-tag"]} ${getStatusClass(pedido.status)}`}>
-                    {mapStatusToText(pedido.status)}
+                  <span className={`${styles["estado-tag"]} ${getStatusClass(order.status)}`}>
+                    {mapStatusToText(order.status)}
                   </span>
                 </td>
-                <td data-label="Fecha">{formatDate(pedido.createdAt)}</td>
-                <td data-label="Total">Bs. {pedido.orderTotal.toFixed(2)}</td>
+                <td data-label="Fecha">{formatDate(order.createdAt)}</td>
+                <td data-label="Total">Bs. {order.orderTotal.toFixed(2)}</td>
                 <td data-label="Detalle">
                   <span className={styles["detalle-placeholder"]}>-</span>
                 </td>
@@ -220,7 +225,9 @@ const MisPedidos: React.FC = () => {
           <IoIosArrowForward />
         </button>
       </div>
+      </div>
     </div>
+    
   );
 };
 

@@ -1,8 +1,9 @@
 .sidebar {
-  background: #fff5f5;
+  background: #ffffff;
   border-radius: 15px;
   padding: 16px 18px;
   width: 270px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .header {
