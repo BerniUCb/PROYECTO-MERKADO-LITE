@@ -1,6 +1,6 @@
 // src/lote/lot.controller.ts
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { Lote } from "src/entity/lot.entity";
+import { Lot } from "src/entity/lot.entity";
 import { LotService } from "./lot.service";
 
 @Controller('/lotes') 
@@ -9,7 +9,7 @@ export class LotController {
   constructor(private readonly lotService: LotService) {}
 
   @Post()
-  createLote(@Body() lote: Lote) {
+  createLote(@Body() lote: Lot) {
     return this.lotService.createLote(lote);
   }
 
@@ -29,7 +29,7 @@ export class LotController {
   }
 
   @Put('/:id')
-  updateLote(@Param() params: any, @Body() lote: Partial<Lote>) {
+  updateLote(@Param() params: any, @Body() lote: Partial<Lot>) {
     return this.lotService.updateLote(params.id, lote);
   }
 }
