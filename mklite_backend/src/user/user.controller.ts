@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/entity/user.entity';
+import { QueryHelpers } from 'src/utils/query-helpers';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('usuarios')
 export class UserController {
@@ -23,13 +26,13 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() body: Partial<User>): Promise<User> {
-    return this.userService.create(body);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.userService.create(createUserDto);
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() body: Partial<User>): Promise<User> {
-    return this.userService.update(id, body);
+  async update(@Param('id') id: number, @Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.userService.update(id, createUserDto);
   }
 
   @Delete(':id')
