@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { SupportTicket } from '../entity/support-ticket.entity';
 import { User } from '../entity/user.entity';
@@ -16,14 +17,14 @@ export class TicketService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     @InjectRepository(Order)
-    private readonly OrderRepo: Repository<Order>,
+    private readonly pedidoRepo: Repository<Order>,
     @InjectRepository(SupportMessage)
     private readonly mensajeRepo: Repository<SupportMessage>,
   ) {}
 
   async create(createDto: CreateTicketDto): Promise<SupportTicket> {
-    const cliente = await this.userRepo.findOne({ where: { id: createDto.clientId }});
-    if (!cliente) throw new NotFoundException(`Cliente ${createDto.clientId} not found`);
+    const cliente = await this.userRepo.findOne({ where: { id: createDto.clienteId }});
+    if (!cliente) throw new NotFoundException(`Cliente ${createDto.clienteId} not found`);
 
     const Order = await this.OrderRepo.findOne({ where: { id: createDto.orderId }});
     if (!Order) throw new NotFoundException(`Order ${createDto.orderId} not found`);
@@ -35,21 +36,19 @@ export class TicketService {
     }
 
     const ticket = this.ticketRepo.create({
-      reason: createDto.reason,
-      Order,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      user: cliente,
-      agent,
-    } as DeepPartial<SupportTicket>);
+      subject: createDto.asunto,
+      cliente,
+      pedido,
+      agente,
+    });
 
     return await this.ticketRepo.save(ticket);
   }
 
   async findAll(): Promise<SupportTicket[]> {
     return await this.ticketRepo.find({
-      relations: ['cliente', 'agent', 'Order', 'mensajes'],
-      order: { createdAt : 'DESC' },
+      relations: ['cliente', 'agente', 'pedido', 'mensajes'],
+      order: { createdAt: 'DESC' },
     });
   }
 

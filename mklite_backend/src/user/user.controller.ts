@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/entity/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('usuarios')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // Ahora recibe query params: ?page=1&limit=10&sort=nombre&order=desc
   @Get()
   async getAll(
     @Query('page') page?: number,
@@ -23,13 +24,13 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() body: Partial<User>): Promise<User> {
-    return this.userService.create(body);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.userService.create(createUserDto);
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() body: Partial<User>): Promise<User> {
-    return this.userService.update(id, body);
+  async update(@Param('id') id: number, @Body() dto: UpdateUserDto): Promise<User> {
+    return this.userService.update(id, dto);
   }
 
   @Delete(':id')
