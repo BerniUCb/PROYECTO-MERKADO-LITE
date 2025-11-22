@@ -1,9 +1,9 @@
-import { User } from 'src/entity/user.entity';
+import { User, UserRole } from 'src/entity/user.entity';
 export class UpdateUserDto {
   fullName?: string;
   email?: string;
   password?: string;
-  role?: 'Admin' | 'Seller' | 'Warehouse' | 'DeliveryDriver' | 'Client' | 'Support' | 'Supplier';
+  role?: UserRole;
   isActive?: boolean;
 
   isTwoFactorEnabled?: boolean;
