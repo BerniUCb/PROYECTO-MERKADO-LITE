@@ -7,7 +7,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
 import { OrderItemService } from 'src/order-item/order-item.service';
 import { OrderItemController } from 'src/order-item/order-item.controller';
-
+import { QueryHelpers } from 'src/utils/query-helpers';
 
 @Injectable()
 export class OrderService {
@@ -33,10 +33,23 @@ export class OrderService {
     return await this.orderRepository.save(order);
   }
 
-  async findAll(): Promise<Order[]> {
-    return await this.orderRepository.find({ relations: ['user', 'items', 'payment']
-     });
-  }
+  async findAll(
+  page?: number,
+  limit?: number,
+  sort?: string,
+  order?: 'asc' | 'desc',
+): Promise<Order[]> {
+  const { page: p, limit: l } = QueryHelpers.normalizePage(page, limit);
+
+  const orders = await this.orderRepository.find({
+    relations: ['user', 'items', 'payment'],
+    skip: (p - 1) * l,
+    take: l,
+  });
+
+  return QueryHelpers.orderByProp(orders, sort, order);
+}
+
 
   async findOne(id: number): Promise<Order> {
     const order = await this.orderRepository.findOne({

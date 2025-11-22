@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/commo
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { get } from 'http';
+import { Query } from '@nestjs/common/decorators';
+import { Order } from 'src/entity/order.entity';
 
 @Controller('orders')
 export class OrderController {
@@ -35,8 +36,13 @@ export class OrderController {
   }
 
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('sort') sort?: string,
+    @Query('order') order?: 'asc' | 'desc',
+    ): Promise<Order[]> {
+        return this.orderService.findAll(page, limit, sort, order);
   }
 
   @Get(':id')
@@ -53,4 +59,5 @@ export class OrderController {
   remove(@Param('id') id: number) {
     return this.orderService.remove(id);
   }
+
 }
