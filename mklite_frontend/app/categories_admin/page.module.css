@@ -1,0 +1,173 @@
+/* CONTENEDOR GENERAL */
+.wrapper {
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+/* ANIMACIÓN DE ENTRADA GENERAL */
+.main {
+  padding: 40px 80px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TÍTULOS MÁS NEGRITOS */
+.welcome {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  color: #253d4e;
+  font-weight: 700;
+  animation: slideLeft 0.6s ease;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  margin-bottom: 25px;
+  color: #253d4e;
+  font-weight: 600;
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* CATEGORÍAS */
+.categories {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.card {
+  width: 140px;
+  height: 150px;
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.card img {
+  width: 55px;
+  margin-bottom: 10px;
+}
+
+/* TABLA */
+.tableBox {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tabs button {
+  background: #ff1717;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background .25s ease, transform .15s ease;
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  background: #ff1717;
+  transform: scale(1.05);
+}
+
+.active {
+  background: #ff1717;
+  color: rgb(233, 223, 223);
+}
+
+/* BUSCADOR */
+.search {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.search input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #2c2a2a;
+  transition: box-shadow .2s ease, border-color .2s ease;
+  font-weight: 500;
+  color :#201f1f
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #f85e61;
+  box-shadow: 0 0 5px rgba(248,94,97,0.5);
+}
+
+/* TABLA */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: hsl(0, 100%, 55%);
+  padding: 10px;
+  font-weight: 700;
+  color: #333;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+  color: #444;
+}
+
+/* FILA ANIMADA */
+.table tbody tr {
+  transition: background .2s ease;
+}
+
+.table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* PRODUCTO EN TABLA */
+.product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product img {
+  width: 35px;
+}
