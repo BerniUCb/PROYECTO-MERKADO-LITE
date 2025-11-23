@@ -135,8 +135,9 @@
 
 /* Botones activos (como el 5 en tu imagen) */
 .pagination .page-number.active {
-  background-color: #ff5722; /* Naranja/Rojo primario */
-  color: #fff;
+  background-color: #f0f0f0; /* Naranja/Rojo primario */
+  color: #666;
+  padding: 6px;
   border-color: #ff5722;
   font-weight: bold;
 }
