@@ -30,4 +30,21 @@ export const ProductService = {
   delete: async (id: number): Promise<void> => {
     await instance.delete(`/product/${id}`);
   },
+
+  getTotalProductsCount: async (): Promise<number> => {
+    const res = await instance.get("/product/count");
+    return res.data.totalProducts;
+  },
+
+  // Reporte: Productos en Stock
+  getInStockCount: async (): Promise<number> => {
+    const res = await instance.get("/product/count/in-stock");
+    return res.data.inStock;
+  },
+
+  // Reporte: Productos Fuera de Stock
+  getOutOfStockCount: async (): Promise<number> => {
+    const res = await instance.get("/product/count/out-of-stock");
+    return res.data.outOfStock;
+  },
 };
