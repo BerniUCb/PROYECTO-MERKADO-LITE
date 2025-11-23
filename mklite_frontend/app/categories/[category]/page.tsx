@@ -3,83 +3,92 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styles from "./page.module.css";
+
+// Servicios
 import { CategoryService } from "@/app/services/category.service";
+import { CartItemService } from "@/app/services/cartItem.service";
 
-// Sidebar fijo (igual al diseño)
-const categoriasSidebar = [
-  { id: "abarrotes", nombre: "Abarrotes", icono: "/icons/abarrotes.svg", count: 2 },
-  { id: "bebidas", nombre: "Bebidas", icono: "/icons/bebidas.svg", count: 2 },
-  { id: "frutas", nombre: "Frutas", icono: "/icons/frutas.svg", count: 2 },
-  { id: "vegetales", nombre: "Vegetales", icono: "/icons/verduras.svg", count: 2 },
-  { id: "mariscos", nombre: "Mariscos", icono: "/icons/mariscos.svg", count: 2 },
-  { id: "snacks", nombre: "Snack y golosinas", icono: "/icons/snacks.svg", count: 2 },
-  { id: "lacteos", nombre: "Lácteos y derivados", icono: "/icons/lacteos.svg", count: 2 },
-  { id: "mascotas", nombre: "Mascotas", icono: "/icons/mascotas.svg", count: 2 },
-];
+// Componentes
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
-// Datos de ejemplo mientras el backend esté vacío
-const dataCategorias = {
-  vegetales: {
-    titulo: "Vegetales",
-    productos: Array.from({ length: 29 }).map(() => ({
-      nombre: "Pimentón Verde 1 kg",
-      precio: 15.0,
-      img: "/images/pimiento.png",
-    })),
-  },
-  frutas: {
-    titulo: "Frutas",
-    productos: [
-      { nombre: "Manzana Roja 1kg", precio: 12, img: "/images/manzana.png" },
-      { nombre: "Banana 1kg", precio: 7.5, img: "/images/banana.png" },
-      { nombre: "Piña 1kg", precio: 14, img: "/images/pina.png" },
-    ],
-  },
-  bebidas: {
-    titulo: "Bebidas",
-    productos: [
-      { nombre: "Coca Cola 2L", precio: 12, img: "/images/cocacola.png" },
-      { nombre: "Fanta 2L", precio: 11, img: "/images/fanta.png" },
-      { nombre: "Sprite 2L", precio: 11, img: "/images/sprite.png" },
-    ],
-  },
-} as const;
+// Modelo UI para productos
+type UIProduct = {
+  id: number;
+  name: string;
+  price: number;
+  img: string;
+};
 
-type SortOption = "destacados" | "precio-asc" | "precio-desc" | "nombre-asc" | "nombre-desc";
+type SortOption =
+  | "destacados"
+  | "precio-asc"
+  | "precio-desc"
+  | "nombre-asc"
+  | "nombre-desc";
 
 export default function CategoriaDinamica() {
   const { category } = useParams<{ category: string }>();
 
-  const [categoriaBD, setCategoriaBD] = useState<any>(null);
-  const [productosBD, setProductosBD] = useState<any[]>([]);
+  const [categoryBD, setCategoryBD] = useState<{
+    id: number;
+    name: string;
+    description?: string;
+  } | null>(null);
+
+  const [productsBD, setProductsBD] = useState<UIProduct[]>([]);
+  const [sidebarCats, setSidebarCats] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 estados para mostrar / ordenar / paginar
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [sortOption, setSortOption] = useState<SortOption>("destacados");
 
-  // Cargar categorías desde el backend
+ //  Cargar categorías y productos reales
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        const categorias = await CategoryService.getAll();
 
-        const encontrada = categorias.find(
-          (c: any) =>
-            c.nombre?.toLowerCase() === category.toLowerCase()
+        // 1. Todas las categorías
+        const allCats = await CategoryService.getAll();
+
+        const mappedSidebar = allCats.map((c: any) => ({
+          id: c.id,
+          nombre: c.name,
+          descripcion: c.description,
+          url: c.name.toLowerCase().replace(/ /g, "-"),
+        }));
+
+        setSidebarCats(mappedSidebar);
+
+        // 2. Determinar categoría actual por URL
+        const found = mappedSidebar.find(
+          (c) => c.url === category.toLowerCase()
         );
 
-        if (encontrada) {
-          setCategoriaBD(encontrada);
-
-          // FUTURO: pedir productos reales por categoría
-          // const productos = await ProductService.getByCategory(encontrada.id);
-          // setProductosBD(productos);
+        if (!found) {
+          setCategoryBD(null);
+          return;
         }
-      } catch (error) {
-        console.error("Error al cargar categoría:", error);
+
+        setCategoryBD({
+          id: found.id,
+          name: found.nombre,
+          description: found.descripcion,
+        });
+
+        // 3. Productos REALES del backend
+        // Cuando exista ProductService, lo activas:
+        //
+        // const productos = await ProductService.getByCategory(found.id);
+        // setProductsBD(productos);
+
+        // Por ahora: VACÍO, pero ya conectado
+        setProductsBD([]);
+
+      } catch (err) {
+        console.error("Error al cargar datos:", err);
       } finally {
         setLoading(false);
       }
@@ -88,77 +97,48 @@ export default function CategoriaDinamica() {
     load();
   }, [category]);
 
-  const datosLocal =
-    dataCategorias[category as keyof typeof dataCategorias];
-
-  const titulo = categoriaBD?.nombre || datosLocal?.titulo || "Categoría";
-
-  const productosBase =
-    productosBD.length > 0
-      ? productosBD.map((p) => ({
-          nombre: p.nombre,
-          precio: p.precio,
-          img: p.imagen || "/images/pimiento.png",
-        }))
-      : datosLocal
-      ? datosLocal.productos
-      : [];
-
-  // 🔹 función para ordenar productos según opción elegida
-  function ordenarProductos(lista: typeof productosBase) {
-    const copia = [...lista];
-
-    switch (sortOption) {
-      case "precio-asc":
-        copia.sort((a, b) => a.precio - b.precio);
-        break;
-      case "precio-desc":
-        copia.sort((a, b) => b.precio - a.precio);
-        break;
-      case "nombre-asc":
-        copia.sort((a, b) => a.nombre.localeCompare(b.nombre));
-        break;
-      case "nombre-desc":
-        copia.sort((a, b) => b.nombre.localeCompare(a.nombre));
-        break;
-      case "destacados":
-      default:
-        // por ahora no hacemos nada especial
-        break;
-    }
-
-    return copia;
-  }
-
-  const productosOrdenados = ordenarProductos(productosBase);
-
-  const totalItems = productosOrdenados.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-
-  // si cambio itemsPerPage y la página actual queda fuera de rango, la ajusto
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const productos = productosOrdenados.slice(startIndex, endIndex);
-
-  if (!datosLocal && !categoriaBD && !loading) {
+  // Categoría NO existe
+  if (!categoryBD && !loading) {
     return (
       <main className={styles.page}>
+        <Header />
         <div className={styles.inner}>
           <h1 style={{ padding: 50 }}>
             La categoría "{category}" no existe aún.
           </h1>
         </div>
+        <Footer />
       </main>
     );
   }
 
-  // 🔹 lógica para pintar los números de página con "…"
+ // ORDENAMIENTO
+ const sortProducts = (list: UIProduct[]) => {
+    const copy = [...list];
+
+    switch (sortOption) {
+      case "precio-asc":
+        return copy.sort((a, b) => a.price - b.price);
+      case "precio-desc":
+        return copy.sort((a, b) => b.price - a.price);
+      case "nombre-asc":
+        return copy.sort((a, b) => a.name.localeCompare(b.name));
+      case "nombre-desc":
+        return copy.sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return copy;
+    }
+  };
+
+  const sortedProducts = sortProducts(productsBD);
+  const totalItems = sortedProducts.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+  const products = sortedProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    (currentPage - 1) * itemsPerPage + itemsPerPage
+  );
+
   const getPageNumbers = () => {
     const pages: (number | "ellipsis")[] = [];
 
@@ -170,56 +150,58 @@ export default function CategoriaDinamica() {
 
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
 
+      for (let i = start; i <= end; i++) pages.push(i);
       if (currentPage < totalPages - 2) pages.push("ellipsis");
+
       pages.push(totalPages);
     }
 
     return pages;
   };
 
+  // RENDER
   return (
     <main className={styles.page}>
+      <Header />
+
       <div className={styles.inner}>
+
         {/* BANNER */}
         <section className={styles.banner}>
           <div className={styles.breadcrumb}>
-            <a href="/">Inicio</a> / <span>{titulo}</span>
+            <a href="/">Inicio</a> /{" "}
+            <span>{categoryBD?.name}</span>
           </div>
-          <h2 className={styles.bannerTitle}>{titulo}</h2>
+          <h2 className={styles.bannerTitle}>{categoryBD?.name}</h2>
         </section>
 
-        {/* CONTENIDO PRINCIPAL */}
+        {/* MAIN */}
         <section className={styles.main}>
+
           {/* SIDEBAR */}
           <aside className={styles.sidebar}>
             <h3>Categorías</h3>
             <hr />
+
             <ul>
-              {categoriasSidebar.map((cat) => (
+              {sidebarCats.map((cat) => (
                 <li
                   key={cat.id}
                   className={styles.categoriaItem}
                   onClick={() =>
-                    (window.location.href = `/categories/${cat.id}`)
+                    (window.location.href = `/categories/${cat.url}`)
                   }
                 >
-                  <div className={styles.itemLeft}>
-                    <img src={cat.icono} width={24} height={24} alt={cat.nombre} />
-                    {cat.nombre}
-                  </div>
-                  <span className={styles.itemCount}>{cat.count}</span>
+                  <div className={styles.itemLeft}>{cat.nombre}</div>
+                  <span className={styles.itemCount}>—</span>
                 </li>
               ))}
             </ul>
           </aside>
 
-          {/* ZONA PRODUCTOS */}
+          {/* PRODUCTOS */}
           <div className={styles.productos}>
-            {/* Barra superior: texto + filtros */}
             <div className={styles.topBar}>
               <p className={styles.topText}>
                 Encontramos{" "}
@@ -227,10 +209,10 @@ export default function CategoriaDinamica() {
                 ítems para ti!
               </p>
 
+              {/* FILTROS */}
               <div className={styles.filters}>
-                {/* Mostrar: */}
                 <div className={styles.filterButton}>
-                  <span className={styles.filterIcon}>▦</span>
+                  <span>▦</span>
                   <select
                     value={itemsPerPage}
                     onChange={(e) => {
@@ -239,16 +221,15 @@ export default function CategoriaDinamica() {
                     }}
                     className={styles.filterSelect}
                   >
-                    <option value={12}>Mostrar: 12</option>
-                    <option value={24}>Mostrar: 24</option>
-                    <option value={50}>Mostrar: 50</option>
-                    <option value={100}>Mostrar: 100</option>
+                    <option value={12}>12</option>
+                    <option value={24}>24</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
                   </select>
                 </div>
 
-                {/* Ordenar por: */}
                 <div className={styles.filterButton}>
-                  <span className={styles.filterIcon}>⇅</span>
+                  <span>⇅</span>
                   <select
                     value={sortOption}
                     onChange={(e) => {
@@ -257,53 +238,66 @@ export default function CategoriaDinamica() {
                     }}
                     className={styles.filterSelect}
                   >
-                    <option value="destacados">Ordenar por: Destacados</option>
+                    <option value="destacados">Destacados</option>
                     <option value="precio-asc">Precio: menor a mayor</option>
                     <option value="precio-desc">Precio: mayor a menor</option>
-                    <option value="nombre-asc">Nombre: A–Z</option>
-                    <option value="nombre-desc">Nombre: Z–A</option>
+                    <option value="nombre-asc">Nombre A–Z</option>
+                    <option value="nombre-desc">Nombre Z–A</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            {/* Grid de productos */}
+            {/* GRID */}
             <div className={styles.grid}>
-              {productos.map((p, i) => (
-                <article key={i} className={styles.card}>
-                  <img
-                    src={p.img || "/images/pimiento.png"}
-                    alt={p.nombre}
-                    className={styles.cardImage}
-                  />
-                  <h4 className={styles.cardTitle}>{p.nombre}</h4>
+              {products.length === 0 && (
+                <p style={{ padding: 20 }}>
+                  No hay productos en esta categoría.
+                </p>
+              )}
+
+              {products.map((p) => (
+                <article key={p.id} className={styles.card}>
+                  <img src={p.img} alt={p.name} className={styles.cardImage} />
+                  <h4 className={styles.cardTitle}>{p.name}</h4>
                   <p className={styles.cardSubtitle}>1 kg</p>
-                  <p className={styles.precio}>Bs. {p.precio.toFixed(2)}</p>
-                  <button className={styles.btn}>🛒 Add</button>
+                  <p className={styles.precio}>Bs. {p.price.toFixed(2)}</p>
+
+                  <button
+                    className={styles.btn}
+                    onClick={async () => {
+                      try {
+                        await CartItemService.addToCart(1, p.id, 1);
+                        alert("Añadido al carrito!");
+                      } catch {
+                        alert("Error al añadir.");
+                      }
+                    }}
+                  >
+                    🛒 Add
+                  </button>
                 </article>
               ))}
             </div>
 
-            {/* Paginación */}
+            {/* PAGINACIÓN */}
             <div className={styles.paginacion}>
               <button
                 className={styles.pageControl}
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               >
-                &laquo;
+                «
               </button>
 
               {getPageNumbers().map((item, idx) =>
                 item === "ellipsis" ? (
-                  <span key={`e-${idx}`} className={styles.pageEllipsis}>
-                    …
-                  </span>
+                  <span key={`e-${idx}`} className={styles.pageEllipsis}>…</span>
                 ) : (
                   <button
                     key={item}
                     className={`${styles.pageDot} ${
-                      item === currentPage ? styles.activo : ""
+                      currentPage === item ? styles.activo : ""
                     }`}
                     onClick={() => setCurrentPage(item as number)}
                   >
@@ -315,16 +309,16 @@ export default function CategoriaDinamica() {
               <button
                 className={styles.pageControl}
                 disabled={currentPage === totalPages}
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               >
-                &raquo;
+                »
               </button>
             </div>
           </div>
         </section>
       </div>
+
+      <Footer />
     </main>
   );
 }

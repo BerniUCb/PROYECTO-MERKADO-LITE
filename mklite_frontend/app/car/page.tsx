@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import { CartItemService } from "@/app/services/cartItem.service";
 
+// HEADER & FOOTER
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
+// MODALES DE DIRECCIONES
 import AddressEmpty from "./components/AddressEmpty";
 import AddressForm from "./components/AddressForm";
 import AddressList from "./components/AddressList";
 import AddressConfirm from "./components/AddressConfirm";
 
-type Product = {
-  id: number;
+type ProductRow = {
+  id: number;          // id del cart-item
+  productId: number;   // id del producto real
   name: string;
   price: number;
   qty: number;
@@ -18,33 +24,11 @@ type Product = {
 };
 
 export default function CarPage() {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: 1,
-      name: "Lavavajilla Sapolio Manzana 750 ml",
-      price: 19,
-      qty: 2,
-      img: "/img/lavavajilla.png",
-    },
-    {
-      id: 2,
-      name: "Pasta Dental Natural 233 gr",
-      price: 19,
-      qty: 2,
-      img: "/img/pasta.png",
-    },
-    {
-      id: 3,
-      name: "Enjuague Bucal Dento Menta 500 ml",
-      price: 39,
-      qty: 1,
-      img: "/img/enjuague.png",
-    },
-  ]);
-
+  const userId = 1; // TEMPORAL hasta login
+  const [products, setProducts] = useState<ProductRow[]>([]);
   const [shipping, setShipping] = useState<number>(0);
 
-  // ESTADOS DE LOS MODALES
+  // Estados de modales
   const [showEmpty, setShowEmpty] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showList, setShowList] = useState(false);
@@ -53,42 +37,43 @@ export default function CarPage() {
   const [addressList, setAddressList] = useState<string[]>([]);
   const [selectedAddress, setSelectedAddress] = useState("");
 
-  // FUNCIONES PARA DIRECCIONES
-  const saveAddress = (e: any) => {
-    e.preventDefault();
-    const form = e.target;
-    const newAddress = form[0].value;
+  // --- Cargar carrito desde backend ---
+  useEffect(() => {
+    async function load() {
+      const cart = await CartItemService.getCartByUser(userId);
 
-    setAddressList([...addressList, newAddress]);
-    setSelectedAddress(newAddress);
+      const mapped = cart.map((item) => ({
+        id: item.id,
+        productId: item.product.id,
+        name: item.product.name,
+        price: item.product.salePrice,
+        qty: item.quantity,
+        img: item.product.imageUrl || "/img/default.png",
+      }));
 
-    setShowForm(false);
-    setShowList(true);
-  };
+      setProducts(mapped);
+    }
+    load();
+  }, []);
 
-  const selectAddress = (address: string) => {
-    setSelectedAddress(address);
-    setShowList(false);
-    setShowConfirm(true);
-  };
+  // --- Cambiar cantidad ---
+  const changeQty = async (id: number, delta: number) => {
+    const item = products.find((p) => p.id === id);
+    if (!item) return;
 
-  // FUNCIONES CARRITO
-  const changeQty = (id: number, delta: number) => {
-    setProducts(prev =>
-      prev.map(p =>
-        p.id === id ? { ...p, qty: Math.max(1, p.qty + delta) } : p
-      )
+    const newQty = Math.max(1, item.qty + delta);
+
+    await CartItemService.updateQuantityById(id, newQty);
+
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, qty: newQty } : p))
     );
   };
 
-  const removeProduct = (id: number) => {
-    const row = document.getElementById(`row-${id}`);
-    if (row) {
-      row.classList.add(styles.fadeOut);
-      setTimeout(() => {
-        setProducts(prev => prev.filter(p => p.id !== id));
-      }, 300);
-    }
+  // --- Eliminar producto ---
+  const removeProduct = async (id: number) => {
+    await CartItemService.deleteById(id);
+    setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
   const subtotal = products.reduce((sum, p) => sum + p.price * p.qty, 0);
@@ -96,17 +81,22 @@ export default function CarPage() {
 
   return (
     <>
-      {/* HEADER GLOBAL */}
-      
+      {/* HEADER */}
+      <Header />
 
-      <main>
-        {/* CONTENIDO DEL CARRITO */}
+      <main className={styles.page}>
         <div className={styles.container}>
+          {/*  Caja principal */}
           <section className={styles.cartBox}>
             <div className={styles.header}>
               <h1>Tu Carrito</h1>
               <p>Hay {products.length} productos en tu carrito!</p>
-              <button className={styles.clear}>Limpiar Carrito</button>
+              <button
+                className={styles.clear}
+                onClick={() => setProducts([])}
+              >
+                Limpiar Carrito
+              </button>
             </div>
 
             <table className={styles.table}>
@@ -120,8 +110,8 @@ export default function CarPage() {
               </thead>
 
               <tbody>
-                {products.map(p => (
-                  <tr key={p.id} id={`row-${p.id}`}>
+                {products.map((p) => (
+                  <tr key={p.id}>
                     <td className={styles.productCell}>
                       <img src={p.img} alt={p.name} />
                       <div>
@@ -138,7 +128,9 @@ export default function CarPage() {
                       <button onClick={() => changeQty(p.id, 1)}>+</button>
                     </td>
 
-                    <td className={styles.price}>Bs. {p.price.toFixed(2)}</td>
+                    <td className={styles.price}>
+                      Bs. {p.price.toFixed(2)}
+                    </td>
 
                     <td className={styles.subtotal}>
                       Bs. {(p.price * p.qty).toFixed(2)}
@@ -149,7 +141,7 @@ export default function CarPage() {
             </table>
           </section>
 
-          {/* RESUMEN LATERAL */}
+          {/*  RESUMEN */}
           <aside className={styles.summary}>
             <h3>Resumen de compra</h3>
 
@@ -195,9 +187,10 @@ export default function CarPage() {
           </aside>
         </div>
 
-        {/* MODALES */}
+        {/* MODALES ACTIVOS */}
         {showEmpty && (
           <AddressEmpty
+            onClose={() => setShowEmpty(false)}
             onAdd={() => {
               setShowEmpty(false);
               setShowForm(true);
@@ -207,22 +200,31 @@ export default function CarPage() {
 
         {showForm && (
           <AddressForm
-            onSave={saveAddress}
             onClose={() => setShowForm(false)}
+            onSave={(address) => {
+              setAddressList((prev) => [...prev, address]);
+              setShowForm(false);
+              setShowList(true);
+            }}
           />
         )}
 
-        {showList && (
-          <AddressList
-            addresses={addressList}
-            onSelect={selectAddress}
-            onAdd={() => {
-              setShowList(false);
-              setShowForm(true);
-            }}
-            onClose={() => setShowList(false)}
-          />
-        )}
+        
+{showList && (
+  <AddressList
+    addresses={addressList}
+    onClose={() => setShowList(false)}
+    onAdd={() => {
+      setShowList(false);
+      setShowForm(true);
+    }}
+    onSelect={(addr) => {
+      setSelectedAddress(addr);
+      setShowList(false);
+      setShowConfirm(true);
+    }}
+  />
+)}
 
         {showConfirm && (
           <AddressConfirm
@@ -232,8 +234,8 @@ export default function CarPage() {
         )}
       </main>
 
-      {/* FOOTER GLOBAL */}
-      
+      {/* FOOTER */}
+      <Footer />
     </>
   );
 }
