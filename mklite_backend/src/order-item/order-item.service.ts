@@ -2,28 +2,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DetallePedido } from '../entity/order-item.entity';
+import { OrderItem } from '../entity/order-item.entity';
 
 @Injectable()
 export class OrderItemService {
   
   constructor(
-    @InjectRepository(DetallePedido)
-    private readonly orderItemRepository: Repository<DetallePedido>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
   ) {}
 
-  async createOrderItem(orderItem: DetallePedido): Promise<DetallePedido> {
+  async createOrderItem(orderItem: OrderItem): Promise<OrderItem> {
     
     const newOrderItem = this.orderItemRepository.create(orderItem); 
     return await this.orderItemRepository.save(newOrderItem);
   }
 
-  async getAllOrderItems(): Promise<DetallePedido[]> {
+  async getAllOrderItems(): Promise<OrderItem[]> {
     
     return await this.orderItemRepository.find();
   }
 
-  async getOrderItemById(id: number): Promise<DetallePedido> {
+  async getOrderItemById(id: number): Promise<OrderItem> {
     const orderItem = await this.orderItemRepository.findOneBy({ id });
 
     if (!orderItem) {
@@ -41,7 +41,7 @@ export class OrderItemService {
     return { deleted: true, affected: result.affected ?? 0 };
   }
 
-  async updateOrderItem(id: number, orderItemUpdateData: Partial<DetallePedido>): Promise<DetallePedido> {
+  async updateOrderItem(id: number, orderItemUpdateData: Partial<OrderItem>): Promise<OrderItem> {
     
     
     const orderItemToUpdate = await this.orderItemRepository.preload({

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
-import LayoutShell from "./components/LayoutShell"; // ✅
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -21,8 +20,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={quicksand.className}>
-        <LayoutShell>{children}</LayoutShell>
+        {children}
       </body>
     </html>
   );
 }
+

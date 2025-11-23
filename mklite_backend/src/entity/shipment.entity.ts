@@ -1,50 +1,51 @@
-// shipment.entity.ts
+// src/entity/shipment.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
-import { Pedido } from "./order.entity";
+import { Order } from "./order.entity"; // <-- Actualizado
 import { User } from "./user.entity";
-import { Direccion } from "./address.entity"; // <-- Importar la nueva entidad
+import { Address } from "./address.entity"; // <-- Actualizado
 
-@Entity('envio')
-export class Envio {
+export type ShipmentStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
-    @PrimaryGeneratedColumn({ name: 'envio_id' })
+@Entity('shipments') // <-- 'envio' -> 'shipments'
+export class Shipment { // <-- 'Envio' -> 'Shipment'
+
+    @PrimaryGeneratedColumn({ name: 'shipment_id' }) // <-- 'envio_id'
     id: number;
 
     @Column({
         type: 'enum',
         enum: [
-            'pendiente', 
-            'procesando', 
-            'en camino', 
-            'entregado', 
-            'devuelto',
-            'cancelado'
+            'pending', 
+            'processing', 
+            'shipped', 
+            'delivered', 
+            'returned',
+            'cancelled'
         ],
-        default: 'pendiente'
+        default: 'pending'
     })
-    estado: string;
+    status: ShipmentStatus; // <-- 'estado' -> 'status'
 
-    @Column({ name: 'fecha_asignacion', type: 'timestamp with time zone', nullable: true })
-    fechaAsignacion: Date;
+    @Column({ name: 'assigned_at', type: 'timestamp with time zone', nullable: true })
+    assignedAt: Date; // <-- 'fechaAsignacion' -> 'assignedAt'
 
-    @Column({ name: 'fecha_entrega_estimada', type: 'timestamp with time zone', nullable: true })
-    fechaEntregaEstimada: Date;
+    @Column({ name: 'estimated_delivery_at', type: 'timestamp with time zone', nullable: true })
+    estimatedDeliveryAt: Date; // <-- 'fechaEntregaEstimada' -> 'estimatedDeliveryAt'
 
-    @Column({ name: 'fecha_entregado', type: 'timestamp with time zone', nullable: true })
-    fechaEntregado: Date;
+    @Column({ name: 'delivered_at', type: 'timestamp with time zone', nullable: true })
+    deliveredAt: Date; // <-- 'fechaEntregado' -> 'deliveredAt'
 
-    // --- Relaciones ---
-    @OneToOne(() => Pedido, { nullable: false })
-    @JoinColumn({ name: 'pedido_id' })
-    pedido: Pedido;
+    // --- Relationships ---
+    @OneToOne(() => Order, { nullable: false })
+    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
+    order: Order; // <-- 'pedido' -> 'order'
 
-    @ManyToOne(() => User, { nullable: true })
-    @JoinColumn({ name: 'repartidor_id' })
-    repartidor: User;
-    // --- ¡NUEVA RELACIÓN CRÍTICA! ---
-    // Un Envío está destinado a una Dirección específica.
-    @ManyToOne(() => Direccion, { nullable: false })
-    @JoinColumn({ name: 'direccion_entrega_id' })
-    direccionEntrega: Direccion;
+    @ManyToOne(() => User, (user) => user.assignedShipments, { nullable: true }) // <-- Relación inversa será 'user.assignedShipments'
+    @JoinColumn({ name: 'delivery_driver_id' }) // <-- 'repartidor_id' -> 'delivery_driver_id'
+    deliveryDriver: User; // <-- 'repartidor' -> 'deliveryDriver'
+    
+    @ManyToOne(() => Address, { nullable: false })
+    @JoinColumn({ name: 'delivery_address_id' }) // <-- 'direccion_entrega_id' -> 'delivery_address_id'
+    deliveryAddress: Address; // <-- 'direccionEntrega' -> 'deliveryAddress'
 }

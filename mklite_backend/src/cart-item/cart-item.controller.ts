@@ -17,17 +17,17 @@ export class CartItemController {
   }
 
   @Put('cart-item/:id')
-  updateCartItemById(@Param('id', ParseIntPipe) id: number, @Body() body: { cantidad: number }) {
-    return this.cartItemService.updateQuantityById(id, body.cantidad);
+  updateCartItemById(@Param('id', ParseIntPipe) id: number, @Body() body: { quantity: number }) {
+    return this.cartItemService.updateQuantityById(id, body.quantity);
   }
 
   // NUEVOS endpoints por user/product (recomendado)
   @Post('users/:userId/cart')
   addToCart(
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() body: { productId: number; cantidad?: number },
+    @Body() body: { productId: number; quantity?: number },
   ) {
-    return this.cartItemService.addToCart(userId, body.productId, body.cantidad ?? 1);
+    return this.cartItemService.addToCart(userId, body.productId, body.quantity ?? 1);
   }
 
   @Get('users/:userId/cart')
@@ -39,9 +39,9 @@ export class CartItemController {
   updateQuantity(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('productId', ParseIntPipe) productId: number,
-    @Body() body: { cantidad: number },
+    @Body() body: { quantity: number },
   ) {
-    return this.cartItemService.updateQuantityByUserProduct(userId, productId, body.cantidad);
+    return this.cartItemService.updateQuantityByUserProduct(userId, productId, body.quantity);
   }
 
   @Delete('users/:userId/cart/:productId')

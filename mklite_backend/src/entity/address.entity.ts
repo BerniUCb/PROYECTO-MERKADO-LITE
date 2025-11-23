@@ -3,41 +3,41 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
 
-@Entity('direccion')
-export class Direccion {
+@Entity('addresses') // <-- Nombre de la tabla en plural
+export class Address { // <-- Nombre de la clase en inglés
 
-    @PrimaryGeneratedColumn({ name: 'direccion_id' })
+    @PrimaryGeneratedColumn({ name: 'address_id' }) // <-- Columna ID
     id: number;
 
     @Column()
-    calle: string;
+    street: string; // <-- calle
 
-    @Column({ name: 'numero_exterior' })
-    numeroExterior: string;
+    @Column({ name: 'street_number' }) // <-- numero_exterior
+    streetNumber: string;
 
-    @Column({ name: 'numero_interior', nullable: true })
-    numeroInterior: string;
+    @Column({ name: 'internal_number', nullable: true }) // <-- numero_interior
+    internalNumber: string;
 
-    @Column({ name: 'codigo_postal' })
-    codigoPostal: string;
-
-    @Column()
-    ciudad: string;
+    @Column({ name: 'postal_code' }) // <-- codigo_postal
+    postalCode: string;
 
     @Column()
-    estado: string;
+    city: string; // <-- ciudad
+
+    @Column()
+    state: string; // <-- estado
 
     @Column({ nullable: true })
-    referencias: string;
+    references: string; // <-- referencias
 
-    @Column({ name: 'alias_direccion', default: 'Casa' }) // Ej: "Casa", "Oficina", "Casa de mis padres tipo pedidos ya "
-    aliasDireccion: string;
+    @Column({ name: 'address_alias', default: 'Home' }) // <-- alias_direccion
+    addressAlias: string;
 
-    @Column({ name: 'is_default', default: false }) // Para saber cual es la dirección principal
+    @Column({ name: 'is_default', default: false })
     isDefault: boolean;
 
-    // --- Relaciones ---
-    @ManyToOne(() => User, (usuario) => usuario.direcciones, { nullable: false })
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: User;
+    // --- Relationships ---
+    @ManyToOne(() => User, (user) => user.addresses, { nullable: false }) // <-- 'user.addresses'
+    @JoinColumn({ name: 'user_id' }) // <-- 'user_id'
+    user: User; // <-- 'usuario'
 }

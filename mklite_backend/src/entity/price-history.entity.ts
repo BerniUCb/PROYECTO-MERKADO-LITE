@@ -1,28 +1,27 @@
 // src/entity/price-history.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Producto } from "./product.entity";
+import { Product } from "./product.entity"; // Anticipamos 'Product'
 import { User } from "./user.entity";
 
-@Entity('historial_precio')
-export class HistorialPrecio { // <-- ¡Corregido! Nombre de la clase en español.
+@Entity('price_history') // <-- 'historial_precio' -> 'price_history'
+export class PriceHistory { // <-- 'HistorialPrecio' -> 'PriceHistory'
 
-    @PrimaryGeneratedColumn({ name: 'historial_precio_id' })
+    @PrimaryGeneratedColumn({ name: 'price_history_id' }) // <-- 'historial_precio_id'
     id: number;
 
-    @Column({ type: 'numeric', name: 'precio_nuevo', precision: 10, scale: 2 })
-    precioNuevo: number;
+    @Column({ type: 'numeric', name: 'new_price', precision: 10, scale: 2 })
+    newPrice: number; // <-- 'precioNuevo' -> 'newPrice'
 
-    @CreateDateColumn({ name: 'fecha_cambio', type: 'timestamp with time zone' })
-    fechaCambio: Date;
+    @CreateDateColumn({ name: 'changed_at', type: 'timestamp with time zone' })
+    changedAt: Date; // <-- 'fechaCambio' -> 'changedAt'
 
-    // --- Relaciones ---
-
-    @ManyToOne(() => Producto, (producto) => producto.historialPrecios, { nullable: false, onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    // --- Relationships ---
+    @ManyToOne(() => Product, (product) => product.priceHistory, { nullable: false, onDelete: 'CASCADE' }) // <-- Relación inversa será 'product.priceHistory'
+    @JoinColumn({ name: 'product_id' })
+    product: Product; // <-- 'producto'
 
     @ManyToOne(() => User, { nullable: false })
-    @JoinColumn({ name: 'usuario_modifico_id' })
-    usuarioModifico: User;
+    @JoinColumn({ name: 'changed_by_user_id' }) // <-- 'usuario_modifico_id' -> 'changed_by_user_id'
+    changedByUser: User; // <-- 'usuarioModifico' -> 'changedByUser'
 }

@@ -1,31 +1,31 @@
-// cart-item.entity.ts
+// src/entity/cart-item.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { User } from "./user.entity";
-import { Producto } from "./product.entity";
+import { Product } from "./product.entity"; // <-- Anticipamos que 'Producto' se llamará 'Product'
 
-@Entity('carrito_item')
-@Unique(['cliente', 'producto'])
-export class CarritoItem {
+@Entity('cart_items') // <-- 'carrito_item' -> 'cart_items'
+@Unique(['user', 'product']) // <-- Propiedades en inglés
+export class CartItem { // <-- 'CarritoItem' -> 'CartItem'
 
-    @PrimaryGeneratedColumn({ name: 'carrito_item_id' })
+    @PrimaryGeneratedColumn({ name: 'cart_item_id' }) // <-- 'carrito_item_id'
     id: number;
 
     @Column({ type: 'integer', default: 1 })
-    cantidad: number;
-        // --- ¡NUEVA PROPIEDAD AÑADIDA! ---
-     @Column({ type: 'numeric', name: 'precio_unitario', nullable: false }) // 'nullable: false' para que siempre se guarde un precio.
-    precioUnitario: number;
+    quantity: number; // <-- 'cantidad' -> 'quantity'
 
-    @CreateDateColumn({ name: 'fecha_agregado', type: 'timestamp with time zone' })
-    fechaAgregado: Date;
+    @Column({ type: 'numeric', name: 'unit_price', nullable: false })
+    unitPrice: number; // <-- 'precioUnitario' -> 'unitPrice'
+
+    @CreateDateColumn({ name: 'added_at', type: 'timestamp with time zone' })
+    addedAt: Date; // <-- 'fechaAgregado' -> 'addedAt'
     
-    // --- Relaciones ---
-    @ManyToOne(() => User, { nullable: false })
-    @JoinColumn({ name: 'cliente_id' })
-    cliente: User;
+    // --- Relationships ---
+    @ManyToOne(() => User, (user) => user.cartItems, { nullable: false }) // <-- Relación con 'user.cartItems'
+    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
+    user: User; // <-- 'cliente' -> 'user'
 
-    @ManyToOne(() => Producto, { nullable: false })
-    @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    @ManyToOne(() => Product, { nullable: false }) // <-- Apunta a la futura clase 'Product'
+    @JoinColumn({ name: 'product_id' })
+    product: Product; // <-- 'producto' -> 'product'
 }

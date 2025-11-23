@@ -1,32 +1,63 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
-import { PedidoService } from './order.service';
+import { OrderService } from './order.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { Query } from '@nestjs/common/decorators';
+import { Order } from 'src/entity/order.entity';
 
-@Controller('pedido')
-export class PedidoController {
-  constructor(private readonly pedidoService: PedidoService) {}
+@Controller('orders')
+export class OrderController {
+  constructor(private readonly orderService: OrderService) {}
+  //Reportes
+  @Get('report/total-sales')
+  getTotalSales(){
+    return this.orderService.getTotalSales();
+  }
+
+  @Get('report/pending-count')
+  getPendingOrderCount(){
+    return this.orderService.getPendingOrderCount();
+  }
+
+  @Get('report/weekly-sales')
+  getWeeklySales(){
+    return this.orderService.getWeeklySales();
+  }
+
+  @Get('report/latest')
+  getLatestOrders(){
+    return this.orderService.getLatestOrders();
+  }
+  //CRUD
 
   @Post()
-  create(@Body() data: any) {
-    return this.pedidoService.create(data);
+  create(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(createOrderDto);
   }
 
   @Get()
-  findAll() {
-    return this.pedidoService.findAll();
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('sort') sort?: string,
+    @Query('order') order?: 'asc' | 'desc',
+    ): Promise<Order[]> {
+        return this.orderService.findAll(page, limit, sort, order);
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.pedidoService.findOne(id);
+    return this.orderService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() data: any) {
-    return this.pedidoService.update(id, data);
+  update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto){
+    return this.orderService.update(id, updateOrderDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    return this.pedidoService.remove(id);
+    return this.orderService.remove(id);
   }
+
 }

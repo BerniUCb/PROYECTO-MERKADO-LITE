@@ -5,41 +5,33 @@ import styles from "./productCard.module.css";
 import ProductCardModel from "../../models/productCard.model";
 import Link from "next/link";
 
-
 interface Props {
   product: ProductCardModel;
 }
 
 const ProductCard: React.FC<Props> = ({ product }) => {
-  const hasDiscount = product.discount && product.discount > 0;
-  const discountedPrice = hasDiscount
-    ? product.precioVenta - (product.precioVenta * product.discount!) / 100
-    : product.precioVenta;
+  const { name, description, imageUrl } = product;
+  const price = Number(product.salePrice) || 0;
 
   return (
     <div className={styles.card}>
-      {hasDiscount && (
-        <span className={styles.discountTag}>-{product.discount}%</span>
-      )}
       <img
-        src={product.urlImagen}
-        alt={product.nombre}
+        src={imageUrl || "/products/no-image.png"}
+        alt={name}
         className={styles.image}
       />
+
       <div className={styles.content}>
-        <h3 className={styles.name}>{product.nombre}</h3>
-        <p className={styles.description}>{product.descripcion}</p>
+        <h3 className={styles.name}>{name}</h3>
+        <p className={styles.description}>{description}</p>
+
         <div className={styles.priceContainer}>
-          {hasDiscount && (
-            <span className={styles.originalPrice}>
-              Bs. {product.precioVenta.toFixed(2)}
-            </span>
-          )}
           <span className={styles.finalPrice}>
-            Bs. {discountedPrice.toFixed(2)}
+            Bs. {price.toFixed(2)}
           </span>
         </div>
-        <Link href="/viewproduct">
+
+        <Link href={`/product/${product.id}`}>
           <button className={styles.addButton}>🛒 Add</button>
         </Link>
       </div>
@@ -48,6 +40,8 @@ const ProductCard: React.FC<Props> = ({ product }) => {
 };
 
 export default ProductCard;
+
+
 
 
 

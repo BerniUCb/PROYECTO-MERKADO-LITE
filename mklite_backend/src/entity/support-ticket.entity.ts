@@ -1,45 +1,47 @@
+// src/entity/support-ticket.entity.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Pedido } from "./order.entity";
+import { Order } from "./order.entity"; // <-- Actualizado
 import { User } from "./user.entity";
-import { MensajeSoporte } from "./support-message.entity"; // <-- Importamos la clase con el nombre correcto
+import { SupportMessage } from "./support-message.entity"; // <-- Actualizado
 
-export type EstadoTicket = 'abierto' | 'en_proceso' | 'resuelto' | 'cerrado';
+export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 
-@Entity('ticket_soporte')
-export class TicketSoporte {
+@Entity('support_tickets') // <-- 'ticket_soporte' -> 'support_tickets'
+export class SupportTicket { // <-- 'TicketSoporte' -> 'SupportTicket'
 
-    @PrimaryGeneratedColumn({ name: 'ticket_soporte_id' })
+    @PrimaryGeneratedColumn({ name: 'support_ticket_id' }) // <-- 'ticket_soporte_id'
     id: number;
 
     @Column()
-    asunto: string;
+    subject: string; // <-- 'asunto' -> 'subject'
 
     @Column({
         type: 'enum',
-        enum: ['abierto', 'en_proceso', 'resuelto', 'cerrado'],
-        default: 'abierto'
+        enum: ['open', 'in_progress', 'resolved', 'closed'],
+        default: 'open'
     })
-    estado: EstadoTicket;
+    status: TicketStatus; // <-- 'estado' -> 'status'
 
-    @CreateDateColumn({ name: 'fecha_creacion' })
-    fechaCreacion: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
 
-    @UpdateDateColumn({ name: 'fecha_actualizacion' })
-    fechaActualizacion: Date;
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date; // <-- 'fechaActualizacion' -> 'updatedAt'
 
-    // --- Relaciones ---
-    @ManyToOne(() => Pedido, { nullable: false })
-    @JoinColumn({ name: 'pedido_id' })
-    pedido: Pedido;
+    // --- Relationships ---
+    @ManyToOne(() => Order, { nullable: false })
+    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
+    order: Order; // <-- 'pedido' -> 'order'
 
-    @ManyToOne(() => User, { nullable: false }) // El cliente que abrió el ticket
-    @JoinColumn({ name: 'cliente_id' })
-    cliente: User;
+    @ManyToOne(() => User, { nullable: false })
+    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
+    user: User; // <-- 'cliente' -> 'user'
 
-    @ManyToOne(() => User, { nullable: true }) // El agente de soporte asignado
-    @JoinColumn({ name: 'agente_id' })
-    agente: User;
+    @ManyToOne(() => User, { nullable: true })
+    @JoinColumn({ name: 'agent_id' }) // <-- 'agente_id' -> 'agent_id'
+    agent: User; // <-- 'agente' -> 'agent'
     
-    @OneToMany(() => MensajeSoporte, (mensaje) => mensaje.ticket)
-    mensajes: MensajeSoporte[];
+    @OneToMany(() => SupportMessage, (message) => message.ticket) // <-- 'MensajeSoporte' -> 'SupportMessage'
+    messages: SupportMessage[]; // <-- 'mensajes' -> 'messages'
 }
