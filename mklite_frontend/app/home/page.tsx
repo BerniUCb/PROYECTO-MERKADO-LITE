@@ -14,7 +14,7 @@ import styles from "./page.module.css";
 
 // Servicios
 import { CategoryService } from "../services/category.service";
-import { getProducts, getProductById } from "../services/product.service";
+import { ProductService } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
@@ -56,7 +56,7 @@ export default function HomePage() {
  useEffect(() => {
     const loadProducts = async () => {
       try {
-        const products = await getProducts();
+        const products = await ProductService.getAll ();
 
         // 🔄 Asegurar que haya imagen o colocar placeholder
         const mapped = products.map((p: ProductCardModel) => ({
@@ -78,7 +78,7 @@ export default function HomePage() {
   
   return (
     <>
-      //header
+      
       <Header />
 
       <main className={styles.main}>
@@ -122,7 +122,7 @@ export default function HomePage() {
 
       </main>
 
-      //footer
+  
       <Footer />
 
       
