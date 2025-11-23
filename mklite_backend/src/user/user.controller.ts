@@ -37,4 +37,9 @@ export class UserController {
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
   }
+  @Get('totalUsers')
+  async getRegisteredClientsCount(): Promise<{totalUsers: number}>{
+    const count = await this.userService.countUsers();
+    return {totalUsers: count};
+  }
 }
