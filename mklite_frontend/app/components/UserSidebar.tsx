@@ -5,7 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./UserSidebar.module.css";
 
-const menuItems = [
+type UserMenuItem = {
+  label: string;
+  href: string;
+  icon: string;
+};
+
+const menuItems: UserMenuItem[] = [
   { label: "Detalles de la Cuenta", href: "/user/account", icon: "/user-menu/account.svg" },
   { label: "Mis Pedidos", href: "/user/orders", icon: "/user-menu/orders.svg" },
   { label: "Mi Carrito", href: "/cart", icon: "/user-menu/cart.svg" },
@@ -16,29 +22,71 @@ const menuItems = [
   { label: "Configuración de la cuenta", href: "/user/settings", icon: "/user-menu/settings.svg" },
 ];
 
-export default function UserSidebar({ userName = "Pepe" }) {
+type UserSidebarProps = {
+  userName?: string;
+  // onLogout?: () => void; // si luego quieres manejar logout desde props
+};
+
+export default function UserSidebar({ userName = "Juan Pablo" }: UserSidebarProps) {
   const pathname = usePathname();
+
+  const renderItem = (item: UserMenuItem) => {
+    const isActive =
+      pathname === item.href || pathname.startsWith(item.href + "/");
+
+    return (
+      <li
+        key={item.href}
+        className={isActive ? styles.itemActive : styles.item}
+      >
+        <Link href={item.href} className={styles.link}>
+          <span className={styles.iconWrapper}>
+            <Image
+              src={item.icon}
+              alt={item.label}
+              width={18}
+              height={18}
+            />
+          </span>
+          <span className={styles.label}>{item.label}</span>
+        </Link>
+      </li>
+    );
+  };
+
+  const handleLogout = () => {
+    // TODO: aquí luego conectan con el sistema real de logout
+    console.log("Cerrar sesión");
+  };
 
   return (
     <aside className={styles.sidebar}>
+      {/* Cabecera con nombre */}
       <div className={styles.header}>
         <span className={styles.userName}>{userName}</span>
       </div>
 
-      <ul className={styles.menu}>
-        {menuItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+      {/* Menú principal */}
+      <nav className={styles.menu}>
+        <ul className={styles.list}>{menuItems.map(renderItem)}</ul>
+      </nav>
 
-          return (
-            <li key={item.href} className={isActive ? styles.active : styles.item}>
-              <Link href={item.href} className={styles.link}>
-                <Image src={item.icon} alt={item.label} width={20} height={20} />
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {/* Cerrar sesión al fondo */}
+      <button
+        type="button"
+        className={styles.logoutButton}
+        onClick={handleLogout}
+      >
+        <span className={styles.iconWrapper}>
+          <Image
+            src="/user-menu/logOut.svg"
+            alt="Cerrar sesión"
+            width={18}
+            height={18}
+          />
+        </span>
+        <span className={styles.logoutLabel}>Cerrar Sesión</span>
+      </button>
     </aside>
   );
 }

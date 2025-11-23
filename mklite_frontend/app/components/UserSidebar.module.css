@@ -3,40 +3,92 @@
   border-radius: 15px;
   padding: 16px 18px;
   width: 270px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .header {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .userName {
   font-weight: 600;
   font-size: 16px;
-  color: #222;
+  color: #222222;
 }
 
 .menu {
+  margin-top: 4px;
+}
+
+.list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .item,
-.active {
-  margin-bottom: 10px;
+.itemActive {
+  margin-bottom: 8px;
 }
 
 .link {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   font-size: 14px;
-  color: #9a9a9a;
+  color: #b0a6a6; /* gris por defecto */
 }
 
-.active .link {
-  color: #e53935;
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.iconWrapper img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* item seleccionado en rojo (texto + icono) */
+.itemActive .link {
+  color: #e30613;
   font-weight: 600;
+}
+
+/* si tus SVG usan currentColor, esto hará el icono rojo también */
+.itemActive .iconWrapper img {
+  filter: none;
+}
+
+/* --- Cerrar sesión --- */
+
+.logoutButton {
+  margin-top: auto; /* lo manda al fondo del sidebar */
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 10px 14px;
+  background: #fdfbfb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #111111;
+}
+
+.logoutButton:hover {
+  background: #f3efef;
+}
+
+.logoutLabel {
+  font-weight: 500;
 }

@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  gap: 24px;
+  padding: 24px 40px;
+  min-height: calc(100vh - 120px);
+
+  /* 👇 AÑADE ESTO */
+  background-color: #f5f5f5;  /* fondo general clarito */
+}
+.content {
+  flex: 1;
+  background: #ffffff;        /* tarjeta blanca */
+  padding: 24px;
+  border-radius: 10px;
+  color: #111111;             /* texto oscuro */
+}
