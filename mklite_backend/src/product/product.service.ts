@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Product } from '../entity/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product-dto';
+import { MoreThan } from 'typeorm';
+
 
 @Injectable()
 export class ProductService {
@@ -35,17 +37,13 @@ export class ProductService {
   }
 
   async getProductById(id: number): Promise<Product> {
-    // const product = await this.productRepository.findOneBy({ id });
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: {
-        category: true,   // 👈 Trae la categoría asociada
-      },
-    });
-    if (!product) {
-      throw new NotFoundException(`Product with ID "${id}" not found`);
-    }
-    return product;
+   const product = await this.productRepository.findOne({where: { id },relations: {category: true, },});
+
+  if (!product) {
+    throw new NotFoundException(`Product with ID "${id}" not found`);
+  }
+
+  return product;
   }
 
   async deleteProduct(id: number): Promise<{ deleted: boolean; affected?: number }> {
@@ -93,6 +91,24 @@ async getTopSellingProducts(limit = 10): Promise<any[]> {
     totalSold: Number(result.raw[index].totalSold || 0),
   }));
 }
+
+/////////////////////
+async getTotalProductsCount(): Promise<number> {
+  return await this.productRepository.count();
+}
+
+async getInStockCount(): Promise<number> {
+  return await this.productRepository.count({
+    where: { physicalStock: MoreThan(0) }, 
+  });
+}
+
+async getOutOfStockCount(): Promise<number> {
+  return await this.productRepository.count({
+    where: { physicalStock: 0 },
+  });
+}
+
 
 
 }
