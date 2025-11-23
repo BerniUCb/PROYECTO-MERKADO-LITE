@@ -23,8 +23,8 @@ export const OrderService = {
     return res.data;
   },
   
-  getSalesHistory: async (): Promise<number[]> => {
-    const res = await instance.get("/orders/report/sales-history");
+  getLast7DaysSales: async (): Promise<number[]> => {
+    const res = await instance.get("/orders/stats/last-7-days");
     return res.data;
   },
 

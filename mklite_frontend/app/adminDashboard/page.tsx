@@ -126,7 +126,7 @@ const AdminDashboard: React.FC = () => {
           ProductService.getTotalProductsCount(),
           ProductService.getInStockCount(),
           ProductService.getOutOfStockCount(),
-          OrderService.getSalesHistory(), // ← Nuevo servicio para historial de ventas
+          OrderService.getLast7DaysSales(), // ← Nuevo servicio para historial de ventas
         ]);
 
         // Asignación segura de datos
