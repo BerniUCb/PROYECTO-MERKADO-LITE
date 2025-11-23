@@ -1,4 +1,4 @@
-/*import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { SupportTicket } from '../entity/support-ticket.entity';
@@ -85,4 +85,4 @@ export class TicketService {
     if (res.affected === 0) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return { deleted: true };
   }
-}*/
+}
