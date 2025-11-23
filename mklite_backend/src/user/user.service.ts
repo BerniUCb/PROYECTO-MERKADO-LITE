@@ -103,4 +103,7 @@ export class UserService {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
   }
+  async countUsers(): Promise<number>{
+    return this.userRepository.count();
+  }
 }
