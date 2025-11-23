@@ -71,7 +71,7 @@ export class UserService {
     if (exists) throw new BadRequestException('El email ya está registrado');
 
     const user = this.userRepository.create({
-      fullName: dto.fullname,
+      fullName: dto.fullName,
       email: dto.email,
       passwordHash: dto.password, // Aquí luego aplicas bcrypt
       role: dto.role,
@@ -106,4 +106,7 @@ export class UserService {
   async countUsers(): Promise<number>{
     return this.userRepository.count();
   }
+  async findByEmail(email: string): Promise<User | null> {
+  return await this.userRepository.findOne({ where: { email } });
+}
 }
