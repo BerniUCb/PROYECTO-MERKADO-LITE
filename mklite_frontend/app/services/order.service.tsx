@@ -22,6 +22,11 @@ export const OrderService = {
     const res = await instance.get("/orders/report/latest");
     return res.data;
   },
+  
+  getSalesHistory: async (): Promise<number[]> => {
+    const res = await instance.get("/orders/report/sales-history");
+    return res.data;
+  },
 
   // --- CRUD ---
   create: async (data: Omit<Order, "id" |"items">): Promise<Order> => {

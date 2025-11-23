@@ -255,15 +255,6 @@
   margin-bottom: 1.5rem;
 }
 
-.filterBtn {
-  background-color: #d32f2f;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
 
 .tableWrapper {
   overflow-x: auto;
