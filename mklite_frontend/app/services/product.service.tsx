@@ -30,3 +30,4 @@ export const deleteProduct = async (id: number) => {
     const res = await instance.delete(`/product/${id}`);
     return res.data;
 };
+

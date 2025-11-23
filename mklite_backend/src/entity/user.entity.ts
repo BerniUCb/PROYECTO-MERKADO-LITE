@@ -1,24 +1,25 @@
-// user.entity.ts
+// src/entity/user.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Pedido } from "./order.entity";
-import { Envio } from "./shipment.entity";
-import { CarritoItem } from "./cart-item.entity";
-import { Calificacion } from "./rating.entity";
-import { MovimientoStock } from "./stock-movement.entity";
-import { Direccion } from "./address.entity"; // <-- Nueva entidad aniadida
+import { Order } from "./order.entity";
+import { Shipment } from "./shipment.entity";
+import { CartItem } from "./cart-item.entity";
+import { Rating } from "./rating.entity";
+import { StockMovement } from "./stock-movement.entity";
+import { Address } from "./address.entity";
+import { Notification } from "./notification.entity";
 
-// Definimos el tipo para que sea más fácil de usar
-export type RolUsuario = 'Administrador' | 'Vendedor' | 'Almacen' | 'Repartidor' | 'Cliente' | 'Soporte' | 'Proveedor';
+// Define the user roles in English
+export type UserRole = 'Admin' | 'Seller' | 'Warehouse' | 'DeliveryDriver' | 'Client' | 'Support' | 'Supplier';
 
-@Entity('usuario') 
+@Entity('users') // <-- 'usuario' -> 'users'
 export class User {
 
-    @PrimaryGeneratedColumn({ name: 'usuario_id' })
+    @PrimaryGeneratedColumn({ name: 'user_id' }) // <-- 'usuario_id'
     id: number;
 
-    @Column({ name: 'nombre_completo' })
-    nombreCompleto: string;
+    @Column({ name: 'full_name' })
+    fullName: string; // <-- 'nombreCompleto' -> 'fullName'
 
     @Column({ unique: true })
     email: string;
@@ -29,43 +30,45 @@ export class User {
     @Column({
         type: 'enum',
         enum: [ 
-            'Administrador', 
-            'Vendedor', 
-            'Almacen', 
-            'Repartidor', 
-            'Cliente', 
-            'Soporte', 
-            'Proveedor'
+            'Admin', 
+            'Seller', 
+            'Warehouse', 
+            'DeliveryDriver', 
+            'Client', 
+            'Support', 
+            'Supplier'
         ]
     })
-    rol: RolUsuario;
+    role: UserRole; // <-- 'rol' -> 'role'
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
+        // --- NUEVOS CAMPOS PARA 2FA (HU21) ---
+    @Column({ name: 'is_two_factor_enabled', default: false })
+    isTwoFactorEnabled: boolean;
 
-    // --- Relaciones ---
+    @Column({ name: 'two_factor_secret', nullable: true, select: false }) // Select false por seguridad
+    twoFactorSecret: string;
+ 
+    // --- Relationships ---
+    @OneToMany(() => Order, (order) => order.user)
+    orders: Order[];
 
-    // Un Usuario (Cliente) puede tener muchos Pedidos
-    @OneToMany(() => Pedido, (pedido) => pedido.cliente)
-    pedidos: Pedido[];
+    @OneToMany(() => Shipment, (shipment) => shipment.deliveryDriver)
+    assignedShipments: Shipment[];
 
-    // --- ¡NUEVAS RELACIONES AÑADIDAS! ---
+    @OneToMany(() => CartItem, (item) => item.user)
+    cartItems: CartItem[];
 
-    // Un Usuario (Repartidor) puede tener muchos Envíos asignados
-    @OneToMany(() => Envio, (envio) => envio.repartidor)
-    enviosAsignados: Envio[];
+    @OneToMany(() => Rating, (rating) => rating.user)
+    ratings: Rating[];
 
-    // Un Usuario (Cliente) puede tener muchos items en el carrito
-    @OneToMany(() => CarritoItem, (item) => item.cliente)
-    carritoItems: CarritoItem[];
+    @OneToMany(() => StockMovement, (movement) => movement.user)
+    stockMovements: StockMovement[];
 
-    // Un Usuario (Cliente) puede realizar muchas calificaciones
-    @OneToMany(() => Calificacion, (calificacion) => calificacion.cliente)
-    calificaciones: Calificacion[];
+    @OneToMany(() => Address, (address) => address.user)
+    addresses: Address[];
 
-    // Un Usuario (Admin/Almacen) puede registrar muchos movimientos de stock
-    @OneToMany(() => MovimientoStock, (movimiento) => movimiento.usuario)
-    movimientosStock: MovimientoStock[];
-    @OneToMany(() => Direccion, (direccion) => direccion.usuario)
-    direcciones: Direccion[];
+    @OneToMany(() => Notification, (notification) => notification.user)
+    notifications: Notification[];
 }

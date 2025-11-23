@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, ParseIntPipe } from '@nestjs/common';
-import { TicketService } from './support-ticket.service';
+/*import { Body, Controller, Delete, Get, Param, Post, Put, ParseIntPipe } from '@nestjs/common';
+//import { TicketService } from './support-ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 
@@ -31,4 +31,4 @@ export class TicketController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.ticketService.remove(id);
   }
-}
+}*/

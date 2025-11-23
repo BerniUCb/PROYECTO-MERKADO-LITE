@@ -1,46 +1,46 @@
-// stock-movement.entity.ts
+// src/entity/stock-movement.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Producto } from "./product.entity";
-import { Lote } from "./lot.entity"; // <-- Import actualizado
+import { Product } from "./product.entity"; // <-- Actualizado
+import { Lot } from "./lot.entity"; // <-- Actualizado
 import { User } from "./user.entity";
 
-export type TipoMovimiento = 'entrada_compra' | 'salida_venta' | 'ajuste_vencido' | 'ajuste_devolucion';
+export type MovementType = 'purchase_entry' | 'sale_exit' | 'expired_adjustment' | 'return_adjustment';
 
-@Entity('movimiento_stock')
-export class MovimientoStock {
+@Entity('stock_movements') // <-- 'movimiento_stock' -> 'stock_movements'
+export class StockMovement { // <-- 'MovimientoStock' -> 'StockMovement'
 
-    @PrimaryGeneratedColumn({ name: 'movimiento_id' })
+    @PrimaryGeneratedColumn({ name: 'movement_id' }) // <-- 'movimiento_id'
     id: number;
 
     @Column({ type: 'integer' })
-    cantidad: number;
+    quantity: number; // <-- 'cantidad' -> 'quantity'
 
     @Column({
         type: 'enum',
         enum: [
-            'entrada_compra',
-            'salida_venta',
-            'ajuste_vencido',
-            'ajuste_devolucion'
+            'purchase_entry',
+            'sale_exit',
+            'expired_adjustment',
+            'return_adjustment'
         ],
-        name: 'tipo'
+        name: 'type'
     })
-    tipo: TipoMovimiento;
+    type: MovementType; // <-- 'tipo' -> 'type'
 
-    @CreateDateColumn({ name: 'fecha_movimiento', type: 'timestamp with time zone' })
-    fechaMovimiento: Date;
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+    createdAt: Date; // <-- 'fechaMovimiento' -> 'createdAt'
 
-    // --- Relaciones ---
-    @ManyToOne(() => Producto, { nullable: false })
-    @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    // --- Relationships ---
+    @ManyToOne(() => Product, { nullable: false })
+    @JoinColumn({ name: 'product_id' })
+    product: Product; // <-- 'producto'
 
-    @ManyToOne(() => Lote, (lote) => lote.movimientos, { nullable: true })
-    @JoinColumn({ name: 'lote_id' })
-    lote: Lote;
+    @ManyToOne(() => Lot, (lot) => lot.stockMovements, { nullable: true }) // <-- Relación inversa será 'lot.stockMovements'
+    @JoinColumn({ name: 'lot_id' })
+    lot: Lot; // <-- 'lote'
 
-    @ManyToOne(() => User, { nullable: true })
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: User;
+    @ManyToOne(() => User, (user) => user.stockMovements, { nullable: true }) // <-- Relación inversa será 'user.stockMovements'
+    @JoinColumn({ name: 'user_id' })
+    user: User; // <-- 'usuario' -> 'user'
 }

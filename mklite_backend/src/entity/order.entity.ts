@@ -1,51 +1,49 @@
 // src/entity/order.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany, OneToOne } from "typeorm";
 import { User } from "./user.entity";
-import { DetallePedido } from "./order-item.entity"; // ¡Importante que esté importado!
+import { OrderItem } from "./order-item.entity"; // <-- Actualizado de 'DetallePedido' a 'OrderItem'
+import { Payment } from "./payment.entity";
 
-@Entity('pedido')
-export class Pedido {
+// Define el enum para los estados del pedido en inglés
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
-    @PrimaryGeneratedColumn({ name: 'pedido_id' })
+@Entity('orders') // <-- 'pedido' -> 'orders'
+export class Order { // <-- 'Pedido' -> 'Order'
+
+    @PrimaryGeneratedColumn({ name: 'order_id' }) // <-- 'pedido_id'
     id: number;
 
-    @CreateDateColumn({ name: 'fecha_pedido' }) 
-    fechaPedido: Date;
+    @CreateDateColumn({ name: 'created_at' }) 
+    createdAt: Date; // <-- 'fechaPedido' -> 'createdAt'
 
     @Column({
         type: 'enum',
         enum: [
-            'pendiente', 
-            'procesando', 
-            'en camino', 
-            'entregado', 
-            'devuelto',
-            'cancelado'
+            'pending', 
+            'processing', 
+            'shipped', 
+            'delivered', 
+            'returned',
+            'cancelled'
         ],
-        default: 'pendiente'
+        default: 'pending'
     })
-    estado: string;
+    status: OrderStatus; // <-- 'estado' -> 'status'
 
-    @Column({ type: 'numeric', name: 'total_pedido' })
-    totalPedido: number;
+    @Column({ type: 'numeric', name: 'order_total' })
+    orderTotal: number; // <-- 'totalPedido' -> 'orderTotal'
 
-    @Column({ name: 'metodo_pago' })
-    metodoPago: string;
+    @Column({ name: 'payment_method' })
+    paymentMethod: string; // <-- 'metodoPago' -> 'paymentMethod'
 
-    // --- Relaciones ---
+    // --- Relationships ---
+    @ManyToOne(() => User, (user) => user.orders) // <-- Relación inversa será 'user.orders'
+    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
+    user: User; // <-- 'cliente' -> 'user'
 
-    // Muchos Pedidos pertenecen a un Usuario (Cliente)
-    @ManyToOne(() => User, (user) => user.pedidos)
-    @JoinColumn({ name: 'cliente_id' })
-    cliente: User;
-
-    // --- ¡NUEVA RELACIÓN COMPLETA! ---
-    
-    // Un Pedido tiene muchos DetallePedido.
-    // El primer argumento "() => DetallePedido" le dice a TypeORM qué entidad está al otro lado.
-    // El segundo argumento "(detalle) => detalle.pedido" le dice a TypeORM:
-    // "Dentro de la entidad DetallePedido, busca la propiedad 'pedido' para saber cómo conectar de vuelta".
-    @OneToMany(() => DetallePedido, (detalle) => detalle.pedido)
-    detalles: DetallePedido[];
+    @OneToMany(() => OrderItem, (item) => item.order) // <-- 'DetallePedido' -> 'OrderItem', '(detalle) => detalle.pedido' -> '(item) => item.order'
+    items: OrderItem[]; // <-- 'detalles' -> 'items'
+    @OneToOne(() => Payment, (payment) => payment.order) // Relación inversa
+    payment: Payment;
 }

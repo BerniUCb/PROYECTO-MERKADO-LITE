@@ -1,15 +1,15 @@
-import { GiFruitBowl, GiCarrot, GiMilkCarton, GiMeat, GiChipsBag, GiDrinkMe, GiBroom } from "react-icons/gi";
+import { GiWorld, GiMilkCarton, GiMeat, GiChipsBag, GiDrinkMe, GiBroom, GiShoppingBag } from "react-icons/gi";
 
-//  Mapa de nombreCategoria → Icono
+// Mapa de nombreCategoria → Icono
 export const categoryIcons: Record<string, any> = {
-  "Frutas": GiFruitBowl,
-  "Verduras": GiCarrot,
-  "Lácteos": GiMilkCarton,
-  "Carnes": GiMeat,
-  "Snacks": GiChipsBag,
+  "Despensa y Abarrotes": GiShoppingBag, // nuevo icono
+  "Lácteos y Derivados": GiMilkCarton,
+  "Carnes y Embutidos": GiMeat,
+  "Snacks y Golosinas": GiChipsBag,
   "Bebidas": GiDrinkMe,
-  "Limpieza": GiBroom,
+  "Limpieza del Hogar": GiBroom,
 };
 
 // Si no hay un ícono definido, se usa este
-export const defaultIcon = GiFruitBowl;
+export const defaultIcon = GiWorld;
+
