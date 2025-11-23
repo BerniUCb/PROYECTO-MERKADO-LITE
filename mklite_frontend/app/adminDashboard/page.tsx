@@ -12,7 +12,6 @@ import type Order from '../models/order.model';
 import type ProductModel from '../models/productCard.model';
 
 
-
 // --- COMPONENTE DE GRÁFICA FUNCIONAL (Interno) ---
 
 interface FunctionalAreaChartProps {
@@ -162,13 +161,13 @@ const AdminDashboard: React.FC = () => {
   if (loading) return <div className={styles.loadingScreen}>Cargando Panel de Control...</div>;
 
   return (
-    <div className={styles.dashboardContainer}>
-      {/* Header*/
+    <div className={styles.layout}>
+
+      <AdminSidebar />
+      <div className={styles.dashboardContainer}>
+       {/* Header*/
       <header className={styles.header}>
         <h1 className={styles.welcomeTitle}>Bienvenido Admin</h1>
-        <button className={styles.panelButton}>
-          <FaClipboardList className={styles.iconBtn} /> Panel de Control
-        </button>
       </header> }
       
 
@@ -343,6 +342,7 @@ const AdminDashboard: React.FC = () => {
           </table>
         </div>
       </section>
+    </div>
     </div>
   );
 };
