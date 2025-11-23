@@ -33,16 +33,17 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
    
-    return await this.productRepository.find();
+    return await this.productRepository.find({relations: {category: true,},});
   }
 
   async getProductById(id: number): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id });
-     
-    if (!product) {
-      throw new NotFoundException(`Product with ID "${id}" not found`);
-    }
-    return product;
+   const product = await this.productRepository.findOne({where: { id },relations: {category: true, },});
+
+  if (!product) {
+    throw new NotFoundException(`Product with ID "${id}" not found`);
+  }
+
+  return product;
   }
 
   async deleteProduct(id: number): Promise<{ deleted: boolean; affected?: number }> {
