@@ -4,7 +4,7 @@ import { User } from 'src/entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('usuarios')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -36,5 +36,10 @@ export class UserController {
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
+  }
+  @Get('totalUsers')
+  async getRegisteredClientsCount(): Promise<{totalUsers: number}>{
+    const count = await this.userService.countUsers();
+    return {totalUsers: count};
   }
 }

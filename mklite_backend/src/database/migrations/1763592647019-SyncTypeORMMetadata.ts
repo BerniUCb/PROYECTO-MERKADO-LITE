@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class PruebaDeSincronizacion1763592647019 implements MigrationInterface {
-    name = 'PruebaDeSincronizacion1763592647019'
+export class SyncTypeORMMetadata1763592647019 implements MigrationInterface {
+    // La línea "name" ha sido eliminada.
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "supplier_returns" DROP CONSTRAINT "FK_return_product"`);
