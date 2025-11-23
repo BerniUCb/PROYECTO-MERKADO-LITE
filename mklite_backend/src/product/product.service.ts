@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Product } from '../entity/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product-dto';
+import { MoreThan } from 'typeorm';
+
 
 @Injectable()
 export class ProductService {
@@ -88,6 +90,24 @@ async getTopSellingProducts(limit = 10): Promise<any[]> {
     totalSold: Number(result.raw[index].totalSold || 0),
   }));
 }
+
+/////////////////////
+async getTotalProductsCount(): Promise<number> {
+  return await this.productRepository.count();
+}
+
+async getInStockCount(): Promise<number> {
+  return await this.productRepository.count({
+    where: { physicalStock: MoreThan(0) }, 
+  });
+}
+
+async getOutOfStockCount(): Promise<number> {
+  return await this.productRepository.count({
+    where: { physicalStock: 0 },
+  });
+}
+
 
 
 }

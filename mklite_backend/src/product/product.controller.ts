@@ -40,6 +40,20 @@ export class ProductController {
         return this.productService.getTopSellingProducts();
     }
 
+    //se maneja acon async y await para que las promesas funcionen bien en estos casos
+    @Get('count')
+    async getTotalProductsCount() {
+        return {totalProducts: await this.productService.getTotalProductsCount(),};
+    }
 
+    @Get('count/in-stock')
+    async getInStockCount() {
+        return {inStock: await this.productService.getInStockCount(),};  
+    }
+
+    @Get('count/out-of-stock')
+    async getOutOfStockCount() {
+        return {outOfStock: await this.productService.getOutOfStockCount(),};
+    }
 
 }
