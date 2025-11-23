@@ -14,22 +14,27 @@ export const UserService = {
   },
 
   getById: async (id: number): Promise<User> => {
-    const res = await instance.get(`/user/${id}`);
+    const res = await instance.get(`/users/${id}`);
     return res.data;
   },
 
   // Omitimos relaciones complejas al crear
   create: async (user: Omit<User, "id" | "orders" | "cartItems" | "notifications" | "addresses" | "stockMovements" | "ratings" | "assignedShipments">): Promise<User> => {
-    const res = await instance.post("/user", user);
+    const res = await instance.post("/users", user);
     return res.data;
   },
 
   update: async (id: number, user: Partial<User>): Promise<User> => {
-    const res = await instance.put(`/user/${id}`, user);
+    const res = await instance.put(`/users/${id}`, user);
     return res.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    await instance.delete(`/user/${id}`);
+    await instance.delete(`/users/${id}`);
+  },
+
+  getRegisteredClientsCount: async (): Promise<number> => {
+    const res = await instance.get("/users/totalUsers"); 
+    return res.data.totalUsers;
   },
 };
