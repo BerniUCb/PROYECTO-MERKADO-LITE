@@ -17,7 +17,7 @@ export const ProductService = {
     return res.data;
   },
 
-  create: async (product: Omit<ProductModel, "id">): Promise<ProductModel> => {
+  create: async (product: Partial<ProductModel>): Promise<ProductModel> => {
     const res = await instance.post("/product", product);
     return res.data;
   },

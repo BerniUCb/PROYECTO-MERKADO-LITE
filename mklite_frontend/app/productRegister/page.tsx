@@ -10,7 +10,7 @@ import Footer from "../components/Footer";
 // Modelos y servicios
 import type CategoryModel from "../models/categoryCard.model";
 import type ProductModel from "../models/productCard.model";
-import { createProduct, getProductById, updateProduct, deleteProduct } from "../services/product.service";
+import { ProductService } from "../services/product.service";
 import { CategoryService } from "../services/category.service";
 
 import { useParams, useRouter } from 'next/navigation';
@@ -106,7 +106,7 @@ const ProductFormContent: React.FC = () => {
     if (isEditMode && productId) {
       const fetchProductData = async () => {
         try {
-          const productData = await getProductById(productId);
+          const productData = await ProductService.getById(productId);
 
           setFormData(productData);
 
@@ -173,7 +173,7 @@ const ProductFormContent: React.FC = () => {
     if (!window.confirm(`¿Eliminar producto con ID ${idToDelete}?`)) return;
 
     try {
-      await deleteProduct(idToDelete);
+      await ProductService.delete(idToDelete);
       setMensaje(`🗑️ Producto eliminado.`);
       router.push("/admin/products");
     } catch {
@@ -198,10 +198,10 @@ const ProductFormContent: React.FC = () => {
 
     try {
       if (isEditMode && idToUse) {
-        const updated = await updateProduct(idToUse, dataToSend);
+        const updated = await ProductService.update(idToUse, dataToSend);
         setMensaje(`🔄 Producto "${updated.name}" actualizado.`);
       } else {
-        const created = await createProduct(dataToSend);
+        const created = await ProductService.create(dataToSend);
         setMensaje(`✅ Producto "${created.name}" agregado (ID: ${created.id}).`);
         resetForm();
       }

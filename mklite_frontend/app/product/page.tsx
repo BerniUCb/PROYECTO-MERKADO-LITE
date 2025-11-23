@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import type ProductModel from "@/app/models/productCard.model";
-import { getProductById, getProducts } from "@/app/services/product.service";
+import { ProductService } from "@/app/services/product.service";
 
 import { CartItemService } from "@/app/services/cartItem.service";
 import { useParams } from "next/navigation";
@@ -24,7 +24,7 @@ export default function ProductPage() {
     if (!productId) return;
 
     const loadProduct = async () => {
-      const data = await getProductById(productId);
+      const data = await ProductService.getById(productId);
       setProduct(data);
     };
 
@@ -38,7 +38,7 @@ export default function ProductPage() {
     const loadRelated = async () => {
       if (!product?.category?.id) return;
 
-      const all = await getProducts();
+      const all = await ProductService.getAll();
       const filtered = all.filter(
         (p) => p.category?.id === product.category?.id && p.id !== product.id
       );
