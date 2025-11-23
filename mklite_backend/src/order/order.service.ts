@@ -112,4 +112,38 @@ export class OrderService {
       relations: ['user', 'items', 'payment'],
     })
   }
+  //Pedidos de los ultimos 7 dias
+  async getLast7DaysSales(): Promise<number[]> {
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 6);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
+  const orders = await this.orderRepository
+    .createQueryBuilder('order')
+    .where('order.createdAt BETWEEN :start AND :end', {
+      start: sevenDaysAgo,
+      end: today,
+    })
+    .select(['order.orderTotal', 'order.createdAt'])
+    .getMany();
+
+  // Generar array de 7 días inicializado en 0
+  const salesByDay = Array(7).fill(0);
+
+  for (const order of orders) {
+    const orderDate = new Date(order.createdAt);
+    const diff = Math.floor(
+      (orderDate.getTime() - sevenDaysAgo.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (diff >= 0 && diff < 7) {
+      salesByDay[diff] += Number(order.orderTotal);
+    }
+  }
+
+  return salesByDay;
+}
 }
