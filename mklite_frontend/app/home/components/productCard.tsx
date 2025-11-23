@@ -31,7 +31,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
           </span>
         </div>
 
-        <Link href="/viewproduct">
+        <Link href={`/product/${product.id}`}>
           <button className={styles.addButton}>🛒 Add</button>
         </Link>
       </div>

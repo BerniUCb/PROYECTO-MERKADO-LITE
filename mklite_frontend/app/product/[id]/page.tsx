@@ -5,7 +5,8 @@ import styles from "./page.module.css";
 
 import type ProductModel from "@/app/models/productCard.model";
 import { ProductService } from "@/app/services/product.service";
-
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 import { CartItemService } from "@/app/services/cartItem.service";
 import { useParams } from "next/navigation";
 
@@ -64,13 +65,13 @@ export default function ProductPage() {
   // =========================================================
   // Render
   // =========================================================
-  //if (!product) 
-    // return <p style={{ padding: 30 }}>Cargando producto...</p>;
+  if (!product) 
+     return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
+    
     <div className={styles["product-page"]}>
-      
-
+      <Header/>
       <main className={styles["main-content"]}>
         {/* Imagen */}
         <div className={styles["product-image"]}>
@@ -145,7 +146,8 @@ export default function ProductPage() {
         </div>
       </section>
 
-      
+    <Footer/> 
     </div>
+     
   );
 }

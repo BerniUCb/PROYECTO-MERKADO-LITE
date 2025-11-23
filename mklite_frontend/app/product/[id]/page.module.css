@@ -6,7 +6,6 @@
   width: 100%;
   min-height: 100vh;
   margin: 0;
-  padding: 20px 40px; /* un padding pequeño interno */
 }
 
 /* === LAYOUT PRINCIPAL (3 COLUMNAS) === */
@@ -15,6 +14,7 @@
   grid-template-columns: 1.2fr 1fr 0.5fr;
   gap: 40px;
   align-items: start;
+  padding: 40px 20px;
 }
 
 /* === IMAGEN PRINCIPAL === */

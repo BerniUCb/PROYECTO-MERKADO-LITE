@@ -7,14 +7,14 @@ import ProductShowcase from "./components/productShowcase";
 import ProductCard from "./components/productCard";
 import CategoryCard from "./components/categoryCard";
 
-import ProductCardModel from "../models/productCard.model";
+import ProductModel from "../models/productCard.model";
 import CategoryCardModel from "../models/categoryCard.model";
 
 import styles from "./page.module.css";
 
 // Servicios
 import { CategoryService } from "../services/category.service";
-import { getProducts, getProductById } from "../services/product.service";
+import { ProductService } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
@@ -26,7 +26,7 @@ export default function HomePage() {
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
 
   // 🔹 Estado para productos reales desde backend
-  const [products, setProducts] = useState<ProductCardModel[]>([]);
+  const [products, setProducts] = useState<ProductModel[]>([]);
 
   // ================================================================
   //  CARGAR CATEGORÍAS DESDE BACKEND 
@@ -56,10 +56,10 @@ export default function HomePage() {
  useEffect(() => {
     const loadProducts = async () => {
       try {
-        const products = await getProducts();
+        const products = await ProductService.getAll();
 
         // 🔄 Asegurar que haya imagen o colocar placeholder
-        const mapped = products.map((p: ProductCardModel) => ({
+        const mapped = products.map((p: ProductModel) => ({
           ...p,
           imageUrl: p.imageUrl ?? "/products/no-image.png",
         }));
@@ -78,7 +78,7 @@ export default function HomePage() {
   
   return (
     <>
-      //header
+      
       <Header />
 
       <main className={styles.main}>
@@ -122,7 +122,7 @@ export default function HomePage() {
 
       </main>
 
-      //footer
+      
       <Footer />
 
       
