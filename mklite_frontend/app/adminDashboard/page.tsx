@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
 import { FaBoxOpen, FaClipboardList, FaExclamationCircle } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
-
+import AdminSidebar from '../components/AdminSidebar';
 // Services & Models
 import { OrderService } from '../services/order.service';
 import { ProductService } from '../services/product.service';
 import type Order from '../models/order.model';
 import type ProductModel from '../models/productCard.model';
+
+
 
 // --- COMPONENTE DE GRÁFICA FUNCIONAL (Interno) ---
 
@@ -161,13 +163,14 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Header */}
+      {/* Header*/
       <header className={styles.header}>
         <h1 className={styles.welcomeTitle}>Bienvenido Admin</h1>
         <button className={styles.panelButton}>
           <FaClipboardList className={styles.iconBtn} /> Panel de Control
         </button>
-      </header>
+      </header> }
+      
 
       {/* Stats Cards Row */}
       <div className={styles.statsGrid}>
