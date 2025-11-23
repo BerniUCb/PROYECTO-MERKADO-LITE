@@ -31,12 +31,17 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
    
-    return await this.productRepository.find();
+    return await this.productRepository.find({relations: {category: true,},});
   }
 
   async getProductById(id: number): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id });
-     
+    // const product = await this.productRepository.findOneBy({ id });
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        category: true,   // 👈 Trae la categoría asociada
+      },
+    });
     if (!product) {
       throw new NotFoundException(`Product with ID "${id}" not found`);
     }
