@@ -1,5 +1,5 @@
 import { instance } from "../utils/axios";
-import User  from "../models/user.model";
+import User from "../models/user.model";
 
 export const UserService = {
   getAll: async (
@@ -18,7 +18,8 @@ export const UserService = {
     return res.data;
   },
 
-  create: async (user: Partial<User>): Promise<User> => {
+  // Omitimos relaciones complejas al crear
+  create: async (user: Omit<User, "id" | "orders" | "cartItems" | "notifications" | "addresses" | "stockMovements" | "ratings" | "assignedShipments">): Promise<User> => {
     const res = await instance.post("/user", user);
     return res.data;
   },

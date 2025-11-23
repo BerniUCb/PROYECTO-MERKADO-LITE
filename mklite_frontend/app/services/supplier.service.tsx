@@ -1,8 +1,8 @@
 import { instance } from "../utils/axios";
-import Supplier  from "../models/supplier.model";
+import Supplier from "../models/supplier.model";
 
 export const SupplierService = {
-  create: async (supplier: Supplier): Promise<Supplier> => {
+  create: async (supplier: Omit<Supplier, "id" | "lots">): Promise<Supplier> => {
     const res = await instance.post("/supplier", supplier);
     return res.data;
   },
@@ -12,16 +12,16 @@ export const SupplierService = {
     return res.data;
   },
 
-  getById: async (id: string): Promise<Supplier> => {
+  getById: async (id: number): Promise<Supplier> => {
     const res = await instance.get(`/supplier/${id}`);
     return res.data;
   },
 
-  delete: async (id: string): Promise<void> => {
+  delete: async (id: number): Promise<void> => {
     await instance.delete(`/supplier/${id}`);
   },
 
-  update: async (id: string, supplier: Supplier): Promise<Supplier> => {
+  update: async (id: number, supplier: Partial<Supplier>): Promise<Supplier> => {
     const res = await instance.put(`/supplier/${id}`, supplier);
     return res.data;
   },

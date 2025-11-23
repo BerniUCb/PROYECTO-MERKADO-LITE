@@ -19,7 +19,7 @@ export const ShipmentService = {
   },
 
   create: async (
-    shipment: Partial<Shipment> // requiere direccionId y usuarioId
+    shipment:Omit<Shipment, "id"| "assignedAt" | "estimatedDelivery" | "deliveredAt"> // requiere direccionId y usuarioId
   ): Promise<Shipment> => {
     const res = await instance.post("/shipment", shipment);
     return res.data;

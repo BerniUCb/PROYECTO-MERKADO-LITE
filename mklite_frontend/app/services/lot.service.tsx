@@ -2,7 +2,7 @@ import { instance } from "../utils/axios";
 import Lot from "../models/lot.model";
 
 export const LotService = {
-  create: async (lot: Lot): Promise<Lot> => {
+  create: async (lot: Omit<Lot, "id" |"stockMovements">): Promise<Lot> => {
     const res = await instance.post("/lot", lot);
     return res.data;
   },

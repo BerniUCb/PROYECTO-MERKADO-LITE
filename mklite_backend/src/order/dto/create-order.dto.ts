@@ -4,5 +4,9 @@ export class CreateOrderDto {
   paymentMethod!: string;
   user_id!: number;
   status?: Order['status'];
-  items!: { productId: number; quantity: number; price: number; }[];
+  items!: { 
+    productId: number; 
+    quantity: number; 
+    price: number; 
+  }[];
 }
