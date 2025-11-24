@@ -71,7 +71,7 @@ export default function ProductPage() {
   return (
     
     <div className={styles["product-page"]}>
-      <Header/>
+      {/*<Header/>*/}
       <main className={styles["main-content"]}>
         {/* Imagen */}
         <div className={styles["product-image"]}>
@@ -146,7 +146,7 @@ export default function ProductPage() {
         </div>
       </section>
 
-    <Footer/> 
+    {/*<Footer/> */}
     </div>
      
   );

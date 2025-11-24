@@ -3,15 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { FaHome, FaShoppingBasket, FaUsers, FaTags, FaCheckCircle } from "react-icons/fa";
 import styles from "./page.module.css";
-import AdminSidebar from "../components/AdminSidebar";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import AdminSidebar from "../../../components/AdminSidebar";
+import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
 
 // Modelos y servicios
-import type CategoryModel from "../models/categoryCard.model";
-import type ProductModel from "../models/productCard.model";
-import { ProductService } from "../services/product.service";
-import { CategoryService } from "../services/category.service";
+import type CategoryModel from "../../../models/categoryCard.model";
+import type ProductModel from "../../../models/productCard.model";
+import { ProductService } from "../../../services/product.service";
+import { CategoryService } from "../../../services/category.service";
 
 import { useParams, useRouter } from 'next/navigation';
 
@@ -301,7 +301,7 @@ const AdminProductPage: React.FC = () => {
       <div className={styles['main-content-wrapper']}>
         <div className={styles['app-layout']}>
         { /*<Sidebar adminName={currentAdminName} />*/}
-          <AdminSidebar />
+          {/*<AdminSidebar />*/}
           <ProductFormContent />
         </div>
       </div>
