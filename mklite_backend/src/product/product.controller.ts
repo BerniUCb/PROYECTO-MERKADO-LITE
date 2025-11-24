@@ -55,5 +55,9 @@ export class ProductController {
     async getOutOfStockCount() {
         return {outOfStock: await this.productService.getOutOfStockCount(),};
     }
+    @Get('category/:categoryId')
+    async getProductsByCategory(@Param('categoryId') categoryId: number) {
+    return this.productService.getProductsByCategory(categoryId);
+    }
 
 }
