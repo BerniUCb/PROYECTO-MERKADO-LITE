@@ -9,6 +9,7 @@ import { ProductModule } from './product/product.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { Product } from 'src/entity/product.entity';
 import { OrderModule } from './order/order.module';
+import { AuthModule } from './auth/auth.module';
 
 
 import { TicketModule } from './support-ticket/support-ticket.module';
@@ -21,6 +22,7 @@ import { stockMovementModule } from './stock-movement/stock-movement.module';
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
+    AuthModule,
     CategoryModule,
     ProductModule,
     PromotionModule,
