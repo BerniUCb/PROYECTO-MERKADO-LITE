@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 
+import LayoutShell from "./components/LayoutShell"; // 👈 IMPORTANTE
+
 const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
@@ -20,9 +22,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={quicksand.className}>
-        {children}
+        {/* Aquí vuelve tu sistema de headers/footers */}
+        <LayoutShell>
+          {children}
+        </LayoutShell>
       </body>
     </html>
   );
 }
-
