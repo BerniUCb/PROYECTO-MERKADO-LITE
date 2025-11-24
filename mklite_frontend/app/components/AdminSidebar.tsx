@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import styles from "./AdminSidebar.module.css";
 
 type AdminMenuItem = {
@@ -28,6 +28,11 @@ const mainItems: AdminMenuItem[] = [
     icon: "/admin-menu/customers.svg",
   },
   {
+    label: "Repartidores",
+    href: "/admin/riders",
+    icon: "/admin-menu/repartidores.svg",
+  },
+  {
     label: "Categorias",
     href: "/admin/categories",
     icon: "/admin-menu/categories.svg",
@@ -44,9 +49,9 @@ const productItems: AdminMenuItem[] = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const renderItem = (item: AdminMenuItem) => {
-    // 👇 lógica de activación
     const isRootAdmin = item.href === "/admin";
     const isActive = isRootAdmin
       ? pathname === "/admin" || pathname === "/admin/"
@@ -67,12 +72,40 @@ export default function AdminSidebar() {
     );
   };
 
+  // LOGOUT
+  const handleLogout = () => {
+    // Por ahora solo redirigimos (luego lo conectamos con auth)
+    router.push("/home");
+  };
+
   return (
     <aside className={styles.sidebar}>
-      <ul className={styles.list}>{mainItems.map(renderItem)}</ul>
+      {/* Parte superior */}
+      <div className={styles.menuSection}>
+        <ul className={styles.list}>{mainItems.map(renderItem)}</ul>
 
-      <div className={styles.sectionTitle}>Product</div>
-      <ul className={styles.list}>{productItems.map(renderItem)}</ul>
+        <div className={styles.sectionTitle}>Product</div>
+        <ul className={styles.list}>{productItems.map(renderItem)}</ul>
+      </div>
+
+      {/* Logout abajo */}
+      <div className={styles.logoutSection}>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={styles.logoutButton}
+        >
+          <span className={styles.iconWrapper}>
+            <Image
+              src="/admin-menu/logOut.svg"
+              alt="Cerrar sesión"
+              width={18}
+              height={18}
+            />
+          </span>
+          <span className={styles.label}>Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
   );
 }
