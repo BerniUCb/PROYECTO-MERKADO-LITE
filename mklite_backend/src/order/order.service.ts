@@ -6,30 +6,47 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
 import { QueryHelpers } from 'src/utils/query-helpers';
+import { Product } from 'src/entity/product.entity';
 
 @Injectable()
 export class OrderService {
-  constructor(
+    constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
+    @InjectRepository(Product)
+  private readonly productRepository: Repository<Product>,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    const order = this.orderRepository.create({
-      orderTotal: createOrderDto.orderTotal,
-      paymentMethod: createOrderDto.paymentMethod,
-      user: { id: createOrderDto.user_id },
-      status: createOrderDto.status || 'pending',
-      items: createOrderDto.items.map(item => {
+      const items = await Promise.all(
+      createOrderDto.items.map(async (item) => {
+        const product = await this.productRepository.findOne({ where: { id: item.productId } });
+        if (!product) {
+          throw new NotFoundException(`Producto con ID ${item.productId} no encontrado`);
+        }
+
         const orderItem = new OrderItem();
-        orderItem.product = { id: item.productId } as any;
+        orderItem.product = product;
         orderItem.quantity = item.quantity;
-        orderItem.unitPrice = item.price;
+        orderItem.unitPrice = product.salePrice;
         return orderItem;
       }),
+    );
+
+    // calcular total
+    const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+
+    // crear order
+    const order = this.orderRepository.create({
+      paymentMethod: createOrderDto.paymentMethod,
+      user: { id: createOrderDto.user_id } as any,
+      status: createOrderDto.status || 'pending',
+      items,
+      orderTotal: total,
     });
+
     return await this.orderRepository.save(order);
   }
 

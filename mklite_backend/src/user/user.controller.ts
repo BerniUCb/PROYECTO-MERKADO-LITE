@@ -17,7 +17,10 @@ export class UserController {
   ): Promise<User[]> {
     return this.userService.findAll(page, limit, sort, order);
   }
-
+  @Get('with-orders')
+  async getUsersWithOrders() {
+    return this.userService.getUsersWithOrderCount();
+  }
   @Get(':id')
   async getOne(@Param('id') id: number): Promise<User> {
     return this.userService.findOne(id);
@@ -42,4 +45,12 @@ export class UserController {
     const count = await this.userService.countUsers();
     return {totalUsers: count};
   }
+  @Get(':id/orders/count')
+  async getOrdersCount(@Param('id') id: number): Promise<{ totalOrders: number }> {
+    const count = await this.userService.countOrdersByUser(id);
+    return { totalOrders: count };
+  }
+  
+
+
 }
