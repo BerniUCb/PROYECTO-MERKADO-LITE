@@ -1,110 +1,63 @@
-// Copia y pega este código completo en:
 // src/database/migrations/1763854213406-SeedUsersByRole.ts
 
-import { MigrationInterface, QueryRunner, In } from "typeorm";
-import { User } from "../../entity/user.entity"; // Verificamos que la ruta al User entity sea correcta
+import { MigrationInterface, QueryRunner } from "typeorm";
 import * as bcrypt from 'bcrypt';
 
-// ¡CRÍTICO! El nombre de la clase debe coincidir exactamente con el del archivo.
 export class SeedUsersByRole1763854213406 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // --- Seguridad: Hashear la contraseña antes de guardarla ---
+        // 1. Generar el hash de la contraseña una sola vez
         const password = 'Password123!';
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        // --- Definimos los usuarios a crear ---
-        const usersToSeed: Partial<User>[] = [
-            // 1. Un usuario por cada rol principal
-            {
-                fullName: 'Admin User',
-                email: 'admin@merkadolite.com',
-                passwordHash,
-                role: 'Admin',
-                isActive: true,
-            },
-            {
-                fullName: 'Warehouse User',
-                email: 'warehouse@merkadolite.com',
-                passwordHash,
-                role: 'Warehouse',
-                isActive: true,
-            },
-            {
-                fullName: 'Delivery Driver User',
-                email: 'delivery@merkadolite.com',
-                passwordHash,
-                role: 'DeliveryDriver',
-                isActive: true,
-            },
-            {
-                fullName: 'Support User',
-                email: 'support@merkadolite.com',
-                passwordHash,
-                role: 'Support',
-                isActive: true,
-            },
-            {
-                fullName: 'Supplier User',
-                email: 'supplier@merkadolite.com',
-                passwordHash,
-                role: 'Supplier',
-                isActive: true,
-            },
-            // 2. Dos "Cajeros" (rol 'Seller')
-            {
-                fullName: 'Seller User 1 (Cajero)',
-                email: 'seller1@merkadolite.com',
-                passwordHash,
-                role: 'Seller',
-                isActive: true,
-            },
-            {
-                fullName: 'Seller User 2 (Cajero)',
-                email: 'seller2@merkadolite.com',
-                passwordHash,
-                role: 'Seller',
-                isActive: true,
-            },
-            // 3. Dos Clientes
-            {
-                fullName: 'Client User 1',
-                email: 'client1@merkadolite.com',
-                passwordHash,
-                role: 'Client',
-                isActive: true,
-            },
-            {
-                fullName: 'Client User 2',
-                email: 'client2@merkadolite.com',
-                passwordHash,
-                role: 'Client',
-                isActive: true,
-            },
+        // 2. Definir la lista de usuarios a crear
+        // Formato: [Nombre Completo, Email, Rol]
+        const usersData = [
+            ['Admin User', 'admin@merkadolite.com', 'Admin'],
+            ['Warehouse User', 'warehouse@merkadolite.com', 'Warehouse'],
+            ['Delivery Driver User', 'delivery@merkadolite.com', 'DeliveryDriver'],
+            ['Support User', 'support@merkadolite.com', 'Support'],
+            ['Supplier User', 'supplier@merkadolite.com', 'Supplier'],
+            ['Seller User 1 (Cajero)', 'seller1@merkadolite.com', 'Seller'],
+            ['Seller User 2 (Cajero)', 'seller2@merkadolite.com', 'Seller'],
+            ['Client User 1', 'client1@merkadolite.com', 'Client'],
+            ['Client User 2', 'client2@merkadolite.com', 'Client'],
         ];
 
-        // --- Insertamos los usuarios en la base de datos ---
-        await queryRunner.manager.getRepository(User).save(usersToSeed);
-        console.log('✅ Users seeded successfully.');
+        // 3. Insertar usando SQL PURO
+        // Esto evita errores si la entidad User cambia en el futuro (ej. se agrega 'phone')
+        for (const user of usersData) {
+            // Verificamos si existe antes de insertar para evitar errores de duplicados
+            const exists = await queryRunner.query(`SELECT 1 FROM "users" WHERE "email" = $1`, [user[1]]);
+            
+            if (exists.length === 0) {
+                await queryRunner.query(
+                    `INSERT INTO "users" ("full_name", "email", "password_hash", "role", "is_active") 
+                     VALUES ($1, $2, $3, $4, true)`,
+                    [user[0], user[1], passwordHash, user[2]]
+                );
+            }
+        }
+
+        console.log('✅ Users seeded successfully using Raw SQL (Safe Mode).');
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // --- Método para revertir: eliminamos los usuarios creados por su email ---
-        const userEmails = [
-            'admin@merkadolite.com',
-            'warehouse@merkadolite.com',
-            'delivery@merkadolite.com',
-            'support@merkadolite.com',
-            'supplier@merkadolite.com',
-            'seller1@merkadolite.com',
-            'seller2@merkadolite.com',
-            'client1@merkadolite.com',
-            'client2@merkadolite.com',
-        ];
-
-        await queryRunner.manager.getRepository(User).delete({ email: In(userEmails) });
+        // Borrar los usuarios creados
+        await queryRunner.query(`
+            DELETE FROM "users" WHERE "email" IN (
+                'admin@merkadolite.com', 
+                'warehouse@merkadolite.com', 
+                'delivery@merkadolite.com',
+                'support@merkadolite.com', 
+                'supplier@merkadolite.com', 
+                'seller1@merkadolite.com',
+                'seller2@merkadolite.com', 
+                'client1@merkadolite.com', 
+                'client2@merkadolite.com'
+            )
+        `);
         console.log('🔥 Seeded users removed successfully.');
     }
-
 }
