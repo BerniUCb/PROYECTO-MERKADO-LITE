@@ -4,6 +4,12 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 100vh; /* Para poder empujar el logout al fondo */
+}
+
+/* Contenedor de la parte de arriba (menús) */
+.menuSection {
+  flex: 1; /* Ocupa todo lo posible y deja el logout abajo */
 }
 
 .list {
@@ -52,4 +58,72 @@
   font-size: 13px;
   color: #9aa0af;
   margin: 10px 4px 4px;
+}
+
+/* ===== Logout abajo ===== */
+
+.logoutSection {
+  margin-top: auto;         /* Empuja esta sección al fondo */
+  padding-top: 8px;
+  border-top: 1px solid #eeeeee;
+}
+
+.logoutButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #7b8395;
+  cursor: pointer;
+  text-align: left;
+}
+
+.logoutButton:hover {
+  background-color: #f5f5f5;
+  color: #e30613;
+}
+
+
+.sidebar {
+  width: 230px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+}
+
+.menuSection {
+  flex: 1;
+}
+
+.logoutSection {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #eeeeee;
+}
+
+.logoutButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #7b8395;
+  cursor: pointer;
+  text-align: left;
+}
+
+.logoutButton:hover {
+  background-color: #f5f5f5;
+  color: #e30613;
 }
