@@ -109,6 +109,18 @@ async getOutOfStockCount(): Promise<number> {
   });
 }
 
+async getProductsByCategory(categoryId: number): Promise<Product[]> {
+  const products = await this.productRepository.find({
+    where: { category: { id: categoryId } },
+    relations: { category: true },
+  });
+
+  if (products.length === 0) {
+    throw new NotFoundException(`No products found for category ID "${categoryId}"`);
+  }
+
+  return products;
+}
 
 
 }
