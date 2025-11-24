@@ -103,4 +103,39 @@ export class UserService {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
   }
+  async countUsers(): Promise<number>{
+    return this.userRepository.count();
+  }
+
+  async countOrdersByUser(userId: number): Promise<number> 
+  {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['orders'],
+    });
+
+    if (!user) 
+    {
+      throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
+    }
+
+    return user.orders.length;
+  }
+
+  async getUsersWithOrderCount(): Promise<
+  { id: number; fullName: string; totalOrders: number }[]
+> {
+  const users = await this.userRepository.find({
+    relations: ['orders'],
+    select: ['id', 'fullName'], 
+  });
+
+  return users.map((u) => ({
+    id: u.id,
+    fullName: u.fullName,
+    totalOrders: u.orders.length,
+  }));
+}
+
+
 }

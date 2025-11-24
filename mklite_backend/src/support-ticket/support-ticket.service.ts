@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { SupportTicket } from '../entity/support-ticket.entity';
 import { User } from '../entity/user.entity';
@@ -17,37 +16,29 @@ export class TicketService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     @InjectRepository(Order)
-    private readonly pedidoRepo: Repository<Order>,
+    private readonly orderRepo: Repository<Order>,
     @InjectRepository(SupportMessage)
     private readonly mensajeRepo: Repository<SupportMessage>,
   ) {}
 
   async create(createDto: CreateTicketDto): Promise<SupportTicket> {
-    const cliente = await this.userRepo.findOne({ where: { id: createDto.clienteId }});
-    if (!cliente) throw new NotFoundException(`Cliente ${createDto.clienteId} not found`);
+    const user = await this.userRepo.findOne({ where: { id: createDto.clientId }});
+    if (!user) throw new NotFoundException(`User with ID ${createDto.clientId} not found`);
 
-    const Order = await this.OrderRepo.findOne({ where: { id: createDto.orderId }});
-    if (!Order) throw new NotFoundException(`Order ${createDto.orderId} not found`);
-
-    let agent = null;
-    if (createDto.agentId) {
-      agent = await this.userRepo.findOne({ where: { id: createDto.agentId }});
-      if (!agent) throw new NotFoundException(`agent ${createDto.agentId} not found`);
-    }
-
-    const ticket = this.ticketRepo.create({
-      subject: createDto.asunto,
-      cliente,
-      pedido,
-      agente,
+    const order = await this.orderRepo.findOne({ where: { id: createDto.orderId }});
+    if (!order) throw new NotFoundException(`Order with ID ${createDto.orderId} not found`);
+    const newTicket = this.ticketRepo.create({
+      subject: createDto.reason, // Asumiendo que reason es el asunto
+      status: 'open',
+      user: user,
+      order: order,
     });
-
-    return await this.ticketRepo.save(ticket);
+    return await this.ticketRepo.save(newTicket);
   }
 
   async findAll(): Promise<SupportTicket[]> {
     return await this.ticketRepo.find({
-      relations: ['cliente', 'agente', 'pedido', 'mensajes'],
+      relations: ['user', 'agent', 'order', 'messages'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -55,7 +46,7 @@ export class TicketService {
   async findOne(id: number): Promise<SupportTicket> {
     const t = await this.ticketRepo.findOne({
       where: { id },
-      relations: ['user', 'agent', 'order', 'mensajes'],
+      relations: ['user', 'agent', 'order', 'messages'],
     });
     if (!t) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return t;
@@ -76,15 +67,15 @@ export class TicketService {
       }
     }
 
-    if ((updateDto as any).OrderId !== undefined) {
-      const order = await this.OrderRepo.findOne({ where: { id: (updateDto as any).orderId }});
+    if ((updateDto as any).orderId !== undefined) {
+      const order = await this.orderRepo.findOne({ where: { id: (updateDto as any).orderId }});
       if (!order) throw new NotFoundException(`Order ${(updateDto as any).orderId} not found`);
       ticket.order = order;
     }
 
 
     if (updateDto.reason !== undefined) ticket.subject = updateDto.reason;
-    if (updateDto !== undefined) ticket.status = updateDto.status as any;
+    if (updateDto.status !== undefined) ticket.status = updateDto.status as any;
 
     return await this.ticketRepo.save(ticket);
   }
