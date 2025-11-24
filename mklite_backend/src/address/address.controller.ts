@@ -1,46 +1,57 @@
-// src/address/address.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
+// En: src/address/address.controller.ts
+import { Controller, Get, Post, Body, Param, Delete, Patch, ParseIntPipe } from '@nestjs/common';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 
-
-@Controller('address')
+// La ruta base ahora puede ser más semántica
+@Controller('users/:userId/address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
-  // CREATE -> POST /address
+  // CREATE -> POST /users/1/address
   @Post()
-  create(@Body() createAddressDto: CreateAddressDto) {
-    // NOTA: Aquí asumimos un usuarioId fijo (1). En un sistema real,
-    // esto vendría de un sistema de autenticación (ej. un decorador @GetUser()).
-    const userId = 1; 
+  create(
+    @Param('userId', ParseIntPipe) userId: number, // <-- Obtenemos el userId de la URL
+    @Body() createAddressDto: CreateAddressDto,
+  ) {
     return this.addressService.create(createAddressDto, userId);
   }
 
-  // READ ALL -> GET /address
+  // READ ALL -> GET /users/1/address
   @Get()
-  findAll() {
-    const userId = 1; // De nuevo, esto sería dinámico.
+  findAll(
+    @Param('userId', ParseIntPipe) userId: number, // <-- Obtenemos el userId de la URL
+  ) {
     return this.addressService.findAllByUser(userId);
   }
 
-  // READ ONE -> GET /address/123
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    const userId = 1; // Sería dinámico.
-    return this.addressService.findOne(+id, userId);
+  // READ ONE -> GET /users/1/address/123
+  // Para que esto funcione, necesitamos mover el :id al final
+  @Get(':addressId')
+  findOne(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('addressId', ParseIntPipe) addressId: number, // <-- Nuevo parámetro para el ID de la dirección
+  ) {
+    return this.addressService.findOne(addressId, userId);
   }
 
-  // DELETE -> DELETE /address/123
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    const userId = 1; // Sería dinámico.
-    return this.addressService.remove(+id, userId);
+  // DELETE -> DELETE /users/1/address/123
+  @Delete(':addressId')
+  remove(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('addressId', ParseIntPipe) addressId: number,
+  ) {
+    return this.addressService.remove(addressId, userId);
   }
-    @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
-    const userId = 1; // De nuevo, esto sería dinámico.
-    return this.addressService.update(+id, updateAddressDto, userId);
+
+  // UPDATE -> PATCH /users/1/address/123
+  @Patch(':addressId')
+  update(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('addressId', ParseIntPipe) addressId: number,
+    @Body() updateAddressDto: UpdateAddressDto,
+  ) {
+    return this.addressService.update(addressId, updateAddressDto, userId);
   }
 }

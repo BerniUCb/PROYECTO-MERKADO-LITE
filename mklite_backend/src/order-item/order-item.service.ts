@@ -20,12 +20,11 @@ export class OrderItemService {
 
   async getAllOrderItems(): Promise<OrderItem[]> {
     
-    return await this.orderItemRepository.find();
+    return await this.orderItemRepository.find({relations: ['product', 'order'],});
   }
 
   async getOrderItemById(id: number): Promise<OrderItem> {
-    const orderItem = await this.orderItemRepository.findOneBy({ id });
-
+    const orderItem = await this.orderItemRepository.findOne({ where: { id }, relations: ['product', 'order'], });
     if (!orderItem) {
       throw new NotFoundException(`Order item with ID "${id}" not found`);
     }

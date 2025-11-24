@@ -1,6 +1,6 @@
 // src/entity/product.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { OrderItem } from "./order-item.entity";
 import { PriceHistory } from "./price-history.entity";
@@ -35,6 +35,11 @@ export class Product { // <-- 'Producto' -> 'Product'
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
+    updatedAt: Date;
 
     // --- Relationships ---
     @ManyToOne(() => Category, (category) => category.products) // <-- 'Categoria' -> 'Category'

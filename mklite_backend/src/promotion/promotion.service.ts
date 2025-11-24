@@ -1,37 +1,31 @@
-// src/user/user.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Promotion} from '../entity/promotion.entity';
 
-// ¡Ya no importamos AppDataSource directamente!
-
 @Injectable()
 export class PromotionService {
-  // Inyectamos el Repositorio de User. NestJS y TypeOrmModule se encargan de crearlo
-  // y dárnoslo listo para usar.
+
   constructor(
     @InjectRepository(Promotion)
     private readonly promotionRepository: Repository<Promotion>,
   ) {}
 
   async createPromotion(promotion: Promotion): Promise<Promotion> {
-    // Usamos el repositorio para guardar la nueva entidad de producto.
-    const newPromotion = this.promotionRepository.create(promotion); // 'create' prepara el objeto para guardarlo
+
+    const newPromotion = this.promotionRepository.create(promotion); 
     return await this.promotionRepository.save(newPromotion);
   }
 
   async getAllPromotions(): Promise<Promotion[]> {
-    // Usamos el repositorio para encontrar todos los productos.
-    return await this.promotionRepository.find();
+    
+    return await this.promotionRepository.find({relations: ['product'],});
   }
 
   async getPromotionById(id: number): Promise<Promotion> {
-    const promotion = await this.promotionRepository.findOneBy({ id });
-     // Buscamos por la propiedad 'id'
+    const promotion = await this.promotionRepository.findOne({ where: { id }, relations: ['product'],});
+    
 
-    // Es una buena práctica verificar si el producto fue encontrado.
     if (!promotion) {
       throw new NotFoundException(`Promotion with ID "${id}" not found`);
     }
@@ -39,7 +33,7 @@ export class PromotionService {
   }
 
   async deletePromotion(id: number): Promise<{ deleted: boolean; affected?: number }> {
-    const result = await this.promotionRepository.delete({ id }); // Borramos por la propiedad 'id'
+    const result = await this.promotionRepository.delete({ id }); 
     if (result.affected === 0) {
       throw new NotFoundException(`Promotion with ID "${id}" not found`);
     }
@@ -48,7 +42,6 @@ export class PromotionService {
 
   async updatePromotion(id: number, promotionUpdateData: Partial<Promotion>): Promise<Promotion> {
     
-    // Usamos 'preload' para cargar el usuario existente y fusionar los nuevos datos.
     const promotionToUpdate = await this.promotionRepository.preload({
       id: id,
       ...promotionUpdateData,
@@ -58,7 +51,6 @@ export class PromotionService {
       throw new NotFoundException(`Promotion with ID "${id}" not found`);
     }
 
-    // Guardamos la entidad actualizada.
     return await this.promotionRepository.save(promotionToUpdate);
   }
 }

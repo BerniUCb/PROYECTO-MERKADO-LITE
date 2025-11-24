@@ -6,30 +6,47 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
 import { QueryHelpers } from 'src/utils/query-helpers';
+import { Product } from 'src/entity/product.entity';
 
 @Injectable()
 export class OrderService {
-  constructor(
+    constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
+    @InjectRepository(Product)
+  private readonly productRepository: Repository<Product>,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    const order = this.orderRepository.create({
-      orderTotal: createOrderDto.orderTotal,
-      paymentMethod: createOrderDto.paymentMethod,
-      user: { id: createOrderDto.user_id },
-      status: createOrderDto.status || 'pending',
-      items: createOrderDto.items.map(item => {
+      const items = await Promise.all(
+      createOrderDto.items.map(async (item) => {
+        const product = await this.productRepository.findOne({ where: { id: item.productId } });
+        if (!product) {
+          throw new NotFoundException(`Producto con ID ${item.productId} no encontrado`);
+        }
+
         const orderItem = new OrderItem();
-        orderItem.product = { id: item.productId } as any;
+        orderItem.product = product;
         orderItem.quantity = item.quantity;
-        orderItem.unitPrice = item.price;
+        orderItem.unitPrice = product.salePrice;
         return orderItem;
       }),
+    );
+
+    // calcular total
+    const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+
+    // crear order
+    const order = this.orderRepository.create({
+      paymentMethod: createOrderDto.paymentMethod,
+      user: { id: createOrderDto.user_id } as any,
+      status: createOrderDto.status || 'pending',
+      items,
+      orderTotal: total,
     });
+
     return await this.orderRepository.save(order);
   }
 
@@ -112,4 +129,38 @@ export class OrderService {
       relations: ['user', 'items', 'payment'],
     })
   }
+  //Pedidos de los ultimos 7 dias
+  async getLast7DaysSales(): Promise<number[]> {
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 6);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
+  const orders = await this.orderRepository
+    .createQueryBuilder('order')
+    .where('order.createdAt BETWEEN :start AND :end', {
+      start: sevenDaysAgo,
+      end: today,
+    })
+    .select(['order.orderTotal', 'order.createdAt'])
+    .getMany();
+
+  // Generar array de 7 días inicializado en 0
+  const salesByDay = Array(7).fill(0);
+
+  for (const order of orders) {
+    const orderDate = new Date(order.createdAt);
+    const diff = Math.floor(
+      (orderDate.getTime() - sevenDaysAgo.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (diff >= 0 && diff < 7) {
+      salesByDay[diff] += Number(order.orderTotal);
+    }
+  }
+
+  return salesByDay;
+}
 }

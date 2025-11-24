@@ -23,7 +23,9 @@ export class User {
 
     @Column({ unique: true })
     email: string;
-
+    @Column({ nullable: true, unique: true }) // Puede ser nulo y debe ser único
+    phone: string;
+    
     @Column({ name: 'password_hash', select: false })
     passwordHash: string;
 
