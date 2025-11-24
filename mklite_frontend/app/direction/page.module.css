@@ -1,67 +1,191 @@
-.container {
-    width: 700px;
+/* Wrapper: Fondo blanco para la zona central */
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: white;
+  padding: 40px 0;
 }
 
+/* Contenedor centrado */
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 20px; /* espacio horizontal para móviles */
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Encabezado de la sección */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
 .header h2 {
-    font-size: 22px;
-    color: #333;
+  font-size: 35px;
+  color: #333;
+  font-weight: 600;
 }
 
 .add-btn {
-    background: #e02020;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
+  background: #e02020;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .add-btn:hover {
-    background: #c81b1b;
+  background: #c81b1b;
 }
 
+.modal {
+  color: #000; 
+}
+
+/* Tarjeta de dirección */
 .address-card {
-    width: 100%;
-    border: 1px solid #ddd;
-    padding: 12px 16px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  border: 1px solid #dcdcdc;
+  padding: 16px 20px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
 }
 
 .left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  font-size: 22px;
+  background: #f4f4f4;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.text p {
+  margin: 0;
 }
 
 .title {
-    font-weight: 600;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .desc {
-    font-size: 13px;
-    color: #666;
-    margin-top: 3px;
+  font-size: 15px;
+  color: #666;
+  margin-top: 3px;
 }
 
 .edit-btn {
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    color: #666;
-    cursor: pointer;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  color: #444;
 }
 
 .edit-btn:hover {
-    text-decoration: underline;
+  background: #e9e9e9;
 }
+
+/* ========= MODAL ========== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal {
+  width: 420px;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.formGroup {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.formGroup input,
+.formGroup textarea {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.modalButtons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel {
+  background: #ccc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.save {
+  background: #e02020;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #cc0000;
+}
+

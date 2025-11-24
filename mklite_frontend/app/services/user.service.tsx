@@ -9,7 +9,7 @@ export const UserService = {
     order?: "asc" | "desc"
   ): Promise<User[]> => {
     const params = { page, limit, sort, order };
-    const res = await instance.get("/user", { params });
+    const res = await instance.get("/users", { params });
     return res.data;
   },
 

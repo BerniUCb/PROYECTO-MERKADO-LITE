@@ -1,60 +1,126 @@
-import React from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { OrderService } from "@/app/services/order.service";
+import type Order from "@/app/models/order.model";
 
-export default function Pedidos() {
-    return (
-        <div className={styles.layout}>
+export default function OrderPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<"all" | "delivered" | "pending" | "cancelled">("all");
 
-            <div className={styles.container}>
-                <div className={styles["table-container"]}>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Código_Cliente</th>
-                                <th>Nombre</th>
-                                <th>Teléfono</th>
-                                <th>Nº Pedidos</th>
-                            </tr>
-                        </thead>
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const data = await OrderService.getAll(1, 50, "createdAt", "desc");
+        setOrders(data);
+      } catch (err) {
+        console.error("Error al cargar pedidos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                        <tbody>
-                            <tr>
-                                <td>#CUST001</td>
-                                <td>Pepe Ramírez</td>
-                                <td>+591 69520824</td>
-                                <td>25</td>
-                            </tr>
+    fetchOrders();
+  }, []);
 
-                            <tr className={styles.selected}>
-                                <td>#CUST002</td>
-                                <td>Ana Pérez</td>
-                                <td>+591 69845712</td>
-                                <td>18</td>
-                            </tr>
+  // FILTRO
+  const filteredOrders = orders.filter((order) => {
+    if (filter === "all") return true;
+    return order.status === filter;
+  });
 
-                            <tr>
-                                <td>#CUST003</td>
-                                <td>Carlos López</td>
-                                <td>+591 72035690</td>
-                                <td>30</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+  return (
+    <>
+      <Header />
 
-                <div className={styles.card}>
-                    <h2>Pedidos del Cliente</h2>
+      <div className={styles.wrapper}>
+        {/* Encabezado */}
+        <div className={styles.headerRow}>
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${filter === "all" ? styles.active : ""}`}
+              onClick={() => setFilter("all")}
+            >
+              Todos ({orders.length})
+            </button>
 
-                    <div className={styles.detalle}>
-                        <p><strong>Cliente:</strong> Ana Pérez</p>
-                        <p><strong>Teléfono:</strong> +591 69845712</p>
-                        <p><strong>Total de Pedidos:</strong> 18</p>
-                    </div>
+            <button
+              className={`${styles.tab} ${filter === "delivered" ? styles.active : ""}`}
+              onClick={() => setFilter("delivered")}
+            >
+              Completados
+            </button>
 
-                    <button className={styles["btn-verde"]}>Ver Detalles</button>
-                </div>
-            </div>
+            <button
+              className={`${styles.tab} ${filter === "pending" ? styles.active : ""}`}
+              onClick={() => setFilter("pending")}
+            >
+              Pendientes
+            </button>
 
+            <button
+              className={`${styles.tab} ${filter === "cancelled" ? styles.active : ""}`}
+              onClick={() => setFilter("cancelled")}
+            >
+              Cancelados
+            </button>
+          </div>
+
+          <div className={styles.searchBox}>
+            <input placeholder="Buscar Pedido" />
+            <span className={styles.searchIcon}>🔍</span>
+          </div>
         </div>
-    );
+
+        {/* Tabla */}
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Código Pedido</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {loading && (
+                <tr>
+                  <td colSpan={5}>Cargando pedidos...</td>
+                </tr>
+              )}
+
+              {!loading && filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan={5}>No hay pedidos para este filtro.</td>
+                </tr>
+              )}
+
+              {filteredOrders.map((order) => (
+                <tr key={order.id}>
+                  <td>#ORD{order.id.toString().padStart(4, "0")}</td>
+                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td>{order.orderTotal.toFixed(2)} Bs</td>
+                  <td>
+                    <span className={`${styles.status} ${styles[order.status]}`}>
+                      {order.status}
+                    </span>
+                  </td>
+                  <td>⋯</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <Footer />
+    </>
+  );
 }

@@ -1,52 +1,63 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  // Simulación de sesión (tu equipo luego puede reemplazar esto con su auth real)
-  const isLogged = typeof window !== "undefined" && localStorage.getItem("token");
+  // Estado para saber si el usuario está logueado
+  const [isLogged, setIsLogged] = useState<boolean | null>(null);
 
-  // Decide a qué ruta ir según login
+  useEffect(() => {
+    // Esto solo se ejecuta en el cliente → NO rompe SSR
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
+  // Mientras no sabemos si hay sesión, renderizamos una versión mínima
+  if (isLogged === null) {
+    return (
+      <header className={styles.header}>
+        {/* Cabecera mínima mientras cargan los estados del cliente */}
+      </header>
+    );
+  }
+
+  // Rutas dinámicas según sesión
   const goToUser = isLogged ? "/user" : "/signup";
   const goToCar = isLogged ? "/car" : "/signup";
   const goToWishlist = isLogged ? "/wishlist" : "/signup";
 
   return (
     <header className={styles.header}>
-      
       {/* Top Bar */}
       <div className={styles.topBar}>
-        
-        {/* 1. SECCIÓN IZQUIERDA */}
+        {/* Sección izquierda */}
         <div className={styles.topBarLeft}>
           <Link href="/about">Quiénes Somos</Link>
-
-          {/* MI CUENTA (CON LÓGICA) */}
           <Link href={goToUser}>Mi Cuenta</Link>
-
-          {/* LISTA DE DESEOS (CON LÓGICA) */}
           <Link href={goToWishlist}>Lista de Deseos</Link>
-
           <Link href="/tracking">Seguimiento de Pedido</Link>
         </div>
-        
-        {/* 2. SECCIÓN CENTRAL */}
+
+        {/* Sección central */}
         <div className={styles.topBarCenter}>
           <span>Pedidos protegidos y siempre a tiempo</span>
         </div>
 
-        {/* 3. SECCIÓN DERECHA */}
+        {/* Sección derecha */}
         <div className={styles.topBarRight}>
           <span>¿Necesitas ayuda? Llámanos: +591 7XXXXXXXX</span>
           <select>
             <option>BOB (Bs.)</option>
           </select>
         </div>
-        
       </div>
 
       {/* Main Header */}
       <div className={styles.mainHeader}>
+        {/* Logo */}
         <div className={styles.logo}>
           <Link href="/">
             <Image
@@ -65,23 +76,22 @@ export default function Header() {
           <button>Buscar</button>
         </div>
 
-        {/* ICONOS DE LA DERECHA (CON LÓGICA) */}
+        {/* Iconos de la derecha */}
         <div className={styles.mainHeaderIcons}>
-
-          {/* LISTA DE DESEOS */}
+          {/* Lista de deseos */}
           <Link href={goToWishlist}>
             <Image src="/header/corazonListaDeDeseos.png" alt="Lista de Deseos" width={24} height={24} />
             <span>Lista de Deseos</span>
           </Link>
 
-          {/* CARRITO */}
+          {/* Carrito */}
           <Link href={goToCar}>
             <Image src="/header/carrito.png" alt="Carrito" width={24} height={24} />
             <span className={styles.cartCount}>0</span>
             <span>Carrito</span>
           </Link>
 
-          {/* CUENTA */}
+          {/* Cuenta */}
           <Link href={goToUser}>
             <Image src="/header/iconoUsuario.png" alt="Cuenta" width={24} height={24} />
             <span>Cuenta</span>
@@ -99,7 +109,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* LINKS INFERIORES */}
         <div className={styles.bottomNavLinks}>
           <Link href="/offers">
             <Image src="/header/llamaDeFuego.png" alt="Ofertas" width={20} height={20} />

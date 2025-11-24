@@ -5,6 +5,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import styles from "./page.module.css";
 import Link from "next/link";
+import { instance } from "@/app/utils/axios";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -22,42 +23,39 @@ export default function SignupPage() {
     setSuccess("");
 
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName,
-          email,
-          passwordHash: password,
-          role,
-        }),
+      // ← CAMBIO IMPORTANTE: nombres correctos para el backend
+      const res = await instance.post("/users", {
+        fullName,
+        email,
+        password,
+        role,
+        city,
+        phone,
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Error al crear cuenta");
-      }
-
       setSuccess("Usuario creado correctamente. ¡Puedes iniciar sesión!");
+
       setFullName("");
       setEmail("");
       setPassword("");
       setCity("");
       setPhone("");
       setRole("Client");
+
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Error al crear cuenta");
     }
   };
 
   return (
     <>
       <Header />
+
       <div className={styles.signupContainer}>
         <form className={styles.signupForm} onSubmit={handleSignup}>
           <h2>Crear cuenta</h2>
 
-          {/* Campos del formulario */}
+          {/* Nombre completo */}
           <div>
             <label htmlFor="fullName">Nombre completo</label>
             <input
@@ -69,6 +67,7 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Email */}
           <div>
             <label htmlFor="email">Correo electrónico</label>
             <input
@@ -81,6 +80,7 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Contraseña */}
           <div>
             <label htmlFor="password">Contraseña</label>
             <input
@@ -93,6 +93,7 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Ciudad */}
           <div>
             <label htmlFor="city">Ciudad</label>
             <input
@@ -104,6 +105,7 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Teléfono */}
           <div>
             <label htmlFor="phone">Número de teléfono</label>
             <input
@@ -115,9 +117,14 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Rol */}
           <div>
             <label htmlFor="role">Tipo de usuario</label>
-            <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
               <option value="Client">Cliente</option>
               <option value="Seller">Vendedor</option>
               <option value="Warehouse">Almacén</option>
@@ -128,14 +135,22 @@ export default function SignupPage() {
             </select>
           </div>
 
-          {/* Mensajes de error / éxito */}
           {error && <p style={{ color: "red" }}>{error}</p>}
           {success && <p style={{ color: "green" }}>{success}</p>}
 
-          <button type="submit" className={styles.button}>Crear cuenta</button>
+          <button type="submit" className={styles.button}>
+            Crear cuenta
+          </button>
 
-          {/* Enlace para login */}
-          <div className={styles.loginRedirect} style={{ marginTop: "15px", fontSize: "13px", textAlign: "center", color: "gray" }}>
+          <div
+            className={styles.loginRedirect}
+            style={{
+              marginTop: "15px",
+              fontSize: "13px",
+              textAlign: "center",
+              color: "gray",
+            }}
+          >
             ¿Ya tienes una cuenta?{" "}
             <Link href="/login">
               <b>Iniciar Sesión</b>
@@ -143,12 +158,8 @@ export default function SignupPage() {
           </div>
         </form>
       </div>
+
       <Footer />
     </>
   );
 }
-
-
-
-
-
