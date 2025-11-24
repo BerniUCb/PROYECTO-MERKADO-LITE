@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
 import { FaBoxOpen, FaClipboardList, FaExclamationCircle } from 'react-icons/fa';
-import { IoIosArrowDown } from 'react-icons/io';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
 import AdminSidebar from '../components/AdminSidebar';
 // Services & Models
 import { OrderService } from '../services/order.service';
 import { ProductService } from '../services/product.service';
+import { UserService } from '../services/user.service';
 import type Order from '../models/order.model';
 import type ProductModel from '../models/productCard.model';
 
@@ -87,6 +88,10 @@ const AdminDashboard: React.FC = () => {
   const [topProducts, setTopProducts] = useState<ProductModel[]>([]);
   const [chartData, setChartData] = useState<number[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
+  const [registeredClientsCount, setRegisteredClientsCount] = useState<number>(0);
+  const [productsCount, setProductsCount] = useState<number>(0);
+  const [inStockCount, setInStockCount] = useState<number>(0);
+  const [outOfStockCount, setOutOfStockCount] = useState<number>(0);
 
   const chartLabels = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
@@ -106,20 +111,32 @@ const AdminDashboard: React.FC = () => {
           weeklyData,
           ordersData,
           topProductsData,
+          usersCountData,
+          productsCountData,
+          inStockData,
+          outOfStockData,
           chartValues
         ] = await Promise.all([
           OrderService.getTotalSales(),
           OrderService.getPendingOrderCount(),
           OrderService.getWeeklySales(),
           OrderService.getLatestOrders(), // Asegúrate de tener este método en tu OrderService o cambiarlo por getAll({limit: 5})
-          ProductService.getTopSelling(), // Asegúrate de tener este método en ProductService
-          mockChartDataPromise
+          ProductService.getTopSelling(), 
+          UserService.getRegisteredClientsCount(),
+          ProductService.getTotalProductsCount(),
+          ProductService.getInStockCount(),
+          ProductService.getOutOfStockCount(),
+          OrderService.getLast7DaysSales(), // ← Nuevo servicio para historial de ventas
         ]);
 
         // Asignación segura de datos
         setTotalSales(Number(salesData) || 0); 
         setPendingCount(Number(pendingData) || 0);
         setWeeklySales(Number(weeklyData) || 0); 
+        setRegisteredClientsCount(Number(usersCountData) || 0);
+        setProductsCount(Number(productsCountData) || 0);
+        setInStockCount(Number(inStockData) || 0);
+        setOutOfStockCount(Number(outOfStockData) || 0);
         
         setLatestOrders(Array.isArray(ordersData) ? ordersData : []);
         setTopProducts(Array.isArray(topProductsData) ? topProductsData : []);
@@ -165,10 +182,10 @@ const AdminDashboard: React.FC = () => {
 
       <AdminSidebar />
       <div className={styles.dashboardContainer}>
-       {/* Header*/
+       {/* Header*/}
       <header className={styles.header}>
         <h1 className={styles.welcomeTitle}>Bienvenido Admin</h1>
-      </header> }
+      </header> 
       
 
       {/* Stats Cards Row */}
@@ -230,20 +247,20 @@ const AdminDashboard: React.FC = () => {
         
         <div className={styles.chartSummary}>
           <div className={styles.summaryItem}>
-            <h4>52k</h4>
+            <h4>{registeredClientsCount}</h4>
             <span>Clientes</span>
             <div className={`${styles.indicatorBar} ${styles.redBar}`}></div>
           </div>
           <div className={styles.summaryItem}>
-            <h4>3.5k</h4>
+            <h4>{productsCount}</h4>
             <span>Total de Productos</span>
           </div>
           <div className={styles.summaryItem}>
-            <h4>2.5k</h4>
+            <h4>{inStockCount}</h4>
             <span>Productos en Stock</span>
           </div>
            <div className={styles.summaryItem}>
-            <h4>0.5k</h4>
+            <h4>{outOfStockCount}</h4>
             <span>Fuera de Stock</span>
           </div>
         </div>
@@ -255,7 +272,7 @@ const AdminDashboard: React.FC = () => {
       <section className={styles.tableSection}>
         <div className={styles.tableHeader}>
           <h3>Pedidos Recientes</h3>
-          <button className={styles.filterBtn}>Filtro</button>
+          
         </div>
         <div className={styles.tableWrapper}>
           <table className={styles.dataTable}>
@@ -266,7 +283,6 @@ const AdminDashboard: React.FC = () => {
                 <th>Fecha Orden</th>
                 <th>Estado</th>
                 <th>Monto Total</th>
-                <th>Acción</th>
               </tr>
             </thead>
             <tbody>
@@ -296,7 +312,7 @@ const AdminDashboard: React.FC = () => {
       <section className={styles.tableSection}>
         <div className={styles.tableHeader}>
           <h3>Productos mejor vendidos</h3>
-          <button className={styles.filterBtn}>Filtro</button>
+          
         </div>
         <div className={styles.tableWrapper}>
           <table className={styles.dataTable}>
@@ -306,7 +322,6 @@ const AdminDashboard: React.FC = () => {
                 <th>TOTAL VENDIDOS</th>
                 <th>ESTADO</th>
                 <th>PRECIO</th>
-                <th>ACCIÓN</th>
               </tr>
             </thead>
             <tbody>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHome, FaShoppingBasket, FaUsers, FaTags, FaCheckCircle } from "react-icons/fa";
 import styles from "./page.module.css";
-
+import AdminSidebar from "../components/AdminSidebar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -38,40 +38,34 @@ const ImageListItem: React.FC<ImageListItemProps> = ({ name, url, isUploaded, on
   </div>
 );
 
-interface SidebarProps {
-  adminName: string;
-}
-const Sidebar: React.FC<SidebarProps> = ({adminName}) => (
-  <div className={styles.sidebar}>
-    <div className={styles['sidebar-header']}>Bienvenido {adminName}</div>
-    <nav className={styles['sidebar-nav']}>
-      <ul>
-        <li className={styles['nav-item']}><FaHome /> Panel de Control</li>
-        <li className={styles['nav-item']}><FaShoppingBasket /> Manejo de Pedidos</li>
-        <li className={styles['nav-item']}><FaUsers /> Clientes</li>
-        <li className={styles['nav-item']}><FaTags /> Categorías</li>
-      </ul>
-      <div className={styles['product-section']}>
-        <p className={styles['product-title']}>Producto</p>
-        <button className={`${styles['add-product-btn']} ${styles.active}`}>Añadir producto</button>
-        <button className={styles['list-products-btn']}>Lista de productos</button>
-      </div>
-    </nav>
-  </div>
-);
+// interface SidebarProps {
+//   adminName: string;
+// }
+// const Sidebar: React.FC<SidebarProps> = ({adminName}) => (
+//   <div className={styles.sidebar}>
+//     <div className={styles['sidebar-header']}>Bienvenido {adminName}</div>
+//     <nav className={styles['sidebar-nav']}>
+//       <ul>
+//         <li className={styles['nav-item']}><FaHome /> Panel de Control</li>
+//         <li className={styles['nav-item']}><FaShoppingBasket /> Manejo de Pedidos</li>
+//         <li className={styles['nav-item']}><FaUsers /> Clientes</li>
+//         <li className={styles['nav-item']}><FaTags /> Categorías</li>
+//       </ul>
+//       <div className={styles['product-section']}>
+//         <p className={styles['product-title']}>Producto</p>
+//         <button className={`${styles['add-product-btn']} ${styles.active}`}>Añadir producto</button>
+//         <button className={styles['list-products-btn']}>Lista de productos</button>
+//       </div>
+//     </nav>
+//   </div>
+// );
 
 // =============================================================
 // FORMULARIO PRINCIPAL
 // =============================================================
 
 const ProductFormContent: React.FC = () => {
-  const params = useParams();
-  const router = useRouter();
-
-  const idParam = params.id as string | undefined;
-  const productId: number | undefined = idParam && !isNaN(Number(idParam)) ? Number(idParam) : undefined;
-  const isEditMode = !!productId;
-
+  
   const initialFormData: Partial<ProductModel> = {
     name: '',
     description: '',
@@ -102,36 +96,6 @@ const ProductFormContent: React.FC = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    if (isEditMode && productId) {
-      const fetchProductData = async () => {
-        try {
-          const productData = await ProductService.getById(productId);
-
-          setFormData(productData);
-
-          if (productData.imageUrl) {
-            setPreviewImage(productData.imageUrl);
-            setUploadedFiles([{
-              name: productData.name || "Existing Image",
-              url: productData.imageUrl,
-              isUploaded: true
-            }]);
-          }
-
-          setMensaje(`Cargando datos para editar: ${productData.name}`);
-        } catch (error) {
-          console.error("Error al cargar producto:", error);
-          setMensaje(`❌ Error al cargar producto con ID ${productId}.`);
-        }
-      };
-
-      fetchProductData();
-    } else {
-      setFormData(initialFormData);
-      setMensaje("Listo para añadir un nuevo producto.");
-    }
-  }, [productId, isEditMode]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -166,25 +130,10 @@ const ProductFormContent: React.FC = () => {
     setMensaje("Formulario reseteado.");
   };
 
-  const handleDelete = async () => {
-    const idToDelete = formData.id || productId;
-    if (!isEditMode || !idToDelete) return;
-
-    if (!window.confirm(`¿Eliminar producto con ID ${idToDelete}?`)) return;
-
-    try {
-      await ProductService.delete(idToDelete);
-      setMensaje(`🗑️ Producto eliminado.`);
-      router.push("/admin/products");
-    } catch {
-      setMensaje("❌ Error al eliminar el producto.");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const idToUse = formData.id || productId;
 
     const dataToSend: Partial<ProductModel> = {
       ...formData,
@@ -197,14 +146,10 @@ const ProductFormContent: React.FC = () => {
     };
 
     try {
-      if (isEditMode && idToUse) {
-        const updated = await ProductService.update(idToUse, dataToSend);
-        setMensaje(`🔄 Producto "${updated.name}" actualizado.`);
-      } else {
         const created = await ProductService.create(dataToSend);
         setMensaje(`✅ Producto "${created.name}" agregado (ID: ${created.id}).`);
         resetForm();
-      }
+
     } catch (error) {
       console.error(error);
       setMensaje("❌ Error al guardar el producto.");
@@ -243,21 +188,10 @@ const ProductFormContent: React.FC = () => {
           </div>
 
           <div className={styles['split-group']}>
-
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
-              <label>ID Producto</label>
-
-              {isEditMode ? (
-                <p><b>{formData.id}</b></p>
-              ) : (
-                <p style={{ color: "#777" }}>Se generará automáticamente</p>
-              )}
-
-              {isEditMode && (
-                <input type="hidden" name="id" value={formData.id} />
-              )}
+            <label>Codigo Producto</label>
+              <p style={{ color: "#777" }}>Se generará automáticamente</p>
             </div>
-
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
               <label>Stock Quantity</label>
               <input
@@ -286,12 +220,14 @@ const ProductFormContent: React.FC = () => {
 
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
               <label>Precio Oferta</label>
-              <input
-                type="number"
-                step="0.01"
-                name="discount"
-              //  value={formData.discount || ''}
-                onChange={handleChange}
+              <input 
+              value = "null"
+              disabled 
+                //type="number"
+                //step="0.01"
+                //name="discount"
+                //value={formData.discount || ''}
+                //onChange={handleChange}
               />
             </div>
           </div>
@@ -339,15 +275,9 @@ const ProductFormContent: React.FC = () => {
 
           <div className={styles['form-actions']}>
             <button type="submit" className={`${styles.btn} ${styles['btn-primary']}`}>
-              {isEditMode ? "GUARDAR CAMBIOS" : "AGREGAR"}
+              AGREGAR
             </button>
-
-            {isEditMode && (
-              <button type="button" onClick={handleDelete} className={`${styles.btn} ${styles['btn-delete']}`}>
-                ELIMINAR
-              </button>
-            )}
-
+                    
             <button type="button" onClick={resetForm} className={`${styles.btn} ${styles['btn-secondary']}`}>
               CANCELAR
             </button>
@@ -368,11 +298,10 @@ const AdminProductPage: React.FC = () => {
 
   return (
     <div className={styles['full-page-container']}>
-      
-
       <div className={styles['main-content-wrapper']}>
         <div className={styles['app-layout']}>
-          <Sidebar adminName={currentAdminName} />
+        { /*<Sidebar adminName={currentAdminName} />*/}
+          <AdminSidebar />
           <ProductFormContent />
         </div>
       </div>
