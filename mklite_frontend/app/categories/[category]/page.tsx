@@ -7,6 +7,8 @@ import styles from "./page.module.css";
 // Servicios
 import { CategoryService } from "@/app/services/category.service";
 import { CartItemService } from "@/app/services/cartItem.service";
+import { ProductService } from "@/app/services/product.service";
+
 
 // Componentes
 import Header from "@/app/components/Header";
@@ -81,11 +83,21 @@ export default function CategoriaDinamica() {
         // 3. Productos REALES del backend
         // Cuando exista ProductService, lo activas:
         //
-        // const productos = await ProductService.getByCategory(found.id);
-        // setProductsBD(productos);
+       const productos = await ProductService.getByCategory(found.id);
 
-        // Por ahora: VACÍO, pero ya conectado
-        setProductsBD([]);
+// 🔵 MAPEO DEL BACKEND → UIProduct
+const productosUI = productos.map((p: any) => ({
+  id: p.id,
+  name: p.name,
+  price: p.salePrice,
+  img: p.imageUrl || "/images/default.png",
+}));
+
+
+setProductsBD(productosUI);
+
+setProductsBD(productosUI);
+
 
       } catch (err) {
         console.error("Error al cargar datos:", err);
@@ -261,7 +273,10 @@ export default function CategoriaDinamica() {
                   <img src={p.img} alt={p.name} className={styles.cardImage} />
                   <h4 className={styles.cardTitle}>{p.name}</h4>
                   <p className={styles.cardSubtitle}>1 kg</p>
-                  <p className={styles.precio}>Bs. {p.price.toFixed(2)}</p>
+                  <p className={styles.precio}>
+                    Bs. {Number(p.price || 0).toFixed(2)}
+
+                    </p>
 
                   <button
                     className={styles.btn}

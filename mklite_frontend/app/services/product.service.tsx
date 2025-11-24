@@ -47,4 +47,8 @@ export const ProductService = {
     const res = await instance.get("/product/count/out-of-stock");
     return res.data.outOfStock;
   },
+  getByCategory: async (categoryId: number): Promise<ProductModel[]> => {
+    const res = await instance.get(`/product/category/${categoryId}`);
+    return res.data;
+  },
 };
