@@ -25,7 +25,7 @@ export default function Header() {
   }
 
   // Rutas dinámicas según sesión
-  const goToUser = isLogged ? "/user" : "/signup";
+  const goToUser = isLogged ? "/user/" : "/signup";
   const goToCar = isLogged ? "/car" : "/signup";
   const goToWishlist = isLogged ? "/wishlist" : "/signup";
 
@@ -117,7 +117,7 @@ export default function Header() {
           <Link href="/">Inicio</Link>
           <Link href="/about">Quiénes Somos</Link>
           <Link href="/shop">Tienda</Link>
-          <Link href="/categories/all">Categorías</Link>
+          <Link href="/categories/lácteos-y-derivados">Categorías</Link>
           <Link href="/contact">Contacto</Link>
         </div>
 

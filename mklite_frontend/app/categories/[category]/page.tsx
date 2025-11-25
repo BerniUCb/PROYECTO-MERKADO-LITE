@@ -64,10 +64,13 @@ export default function CategoriaDinamica() {
 
         setSidebarCats(mappedSidebar);
 
-        // 2. Determinar categoría actual por URL
-        const found = mappedSidebar.find(
-          (c) => c.url === category.toLowerCase()
+       // 2. Determinar categoría actual por URL (manejar acentos)
+        const cleanCategory = decodeURIComponent(category.toLowerCase());
+
+       const found = mappedSidebar.find(
+      (c) => c.url === cleanCategory
         );
+
 
         if (!found) {
           setCategoryBD(null);
@@ -85,7 +88,7 @@ export default function CategoriaDinamica() {
         //
        const productos = await ProductService.getByCategory(found.id);
 
-// 🔵 MAPEO DEL BACKEND → UIProduct
+//  MAPEO DEL BACKEND → UIProduct
 const productosUI = productos.map((p: any) => ({
   id: p.id,
   name: p.name,
