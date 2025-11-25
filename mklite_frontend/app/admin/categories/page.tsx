@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HeaderAdmin from "../components/HeaderAdmin";
+import HeaderAdmin from "../../components/HeaderAdmin";
 import styles from "./page.module.css";
 
 import { CategoryService } from "@/app/services/category.service";
+import { categoryIcons, defaultIcon } from "@/app/utils/categoryIcons";
 import { ProductService } from "@/app/services/product.service";
+
 
 export default function CategoriesAdminPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -77,9 +79,14 @@ export default function CategoriesAdminPage() {
       ? filteredProducts.filter(p => p.stock <= 0)
       : filteredProducts;
 
+  const renderCategoryIcon = (categoryName: string) => {
+    const IconComponent = categoryIcons[categoryName] || defaultIcon;
+    return <IconComponent size={32} />;
+  };
+
   return (
     <div className={styles.wrapper}>
-      <HeaderAdmin />
+      {/*<HeaderAdmin />*/}
 
       <main className={styles.main}>
         <h1 className={styles.welcome}>Bienvenido Pepe</h1>
@@ -99,7 +106,9 @@ export default function CategoriesAdminPage() {
                     : "1px solid transparent",
               }}
             >
-              <img src="/icons/abarrotes.svg" />
+              <div className={styles.iconContainer}>
+                {renderCategoryIcon(cat.name)}
+              </div>
               <span>{cat.name}</span>
             </div>
           ))}
