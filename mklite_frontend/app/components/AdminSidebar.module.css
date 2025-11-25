@@ -1,0 +1,129 @@
+.sidebar {
+  width: 230px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh; /* Para poder empujar el logout al fondo */
+}
+
+/* Contenedor de la parte de arriba (menús) */
+.menuSection {
+  flex: 1; /* Ocupa todo lo posible y deja el logout abajo */
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item,
+.itemActive {
+  margin-bottom: 6px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #7b8395; /* gris */
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+/* Item activo en rojo como en la imagen */
+.itemActive .link {
+  background-color: #e30613; /* rojo admin */
+  color: #ffffff;
+}
+
+.itemActive .link img {
+  filter: brightness(10); /* aclara el icono si es gris */
+}
+
+.sectionTitle {
+  font-size: 13px;
+  color: #9aa0af;
+  margin: 10px 4px 4px;
+}
+
+/* ===== Logout abajo ===== */
+
+.logoutSection {
+  margin-top: auto;         /* Empuja esta sección al fondo */
+  padding-top: 8px;
+  border-top: 1px solid #eeeeee;
+}
+
+.logoutButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #7b8395;
+  cursor: pointer;
+  text-align: left;
+}
+
+.logoutButton:hover {
+  background-color: #f5f5f5;
+  color: #e30613;
+}
+
+
+.sidebar {
+  width: 230px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+}
+
+.menuSection {
+  flex: 1;
+}
+
+.logoutSection {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #eeeeee;
+}
+
+.logoutButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #7b8395;
+  cursor: pointer;
+  text-align: left;
+}
+
+.logoutButton:hover {
+  background-color: #f5f5f5;
+  color: #e30613;
+}

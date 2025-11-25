@@ -1,0 +1,271 @@
+/* PAGE WRAPPER */
+.page {
+  background-color: #f6f6f6;
+}
+
+/* Contenedor central alineado */
+.inner {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* BANNER */
+.banner {
+  background-color: #f2f3f4;
+  padding: 40px 60px;
+  border-radius: 0 0 10px 10px;
+  background-image: url("/images/pattern.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  margin-top: 24px;
+}
+
+.breadcrumb {
+  font-size: 0.9rem;
+  color: #777777;
+  margin-bottom: 8px;
+}
+
+.breadcrumb a {
+  color: #f40009;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bannerTitle {
+  color: #253d4e;
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+/* CONTENIDO PRINCIPAL */
+.main {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 0 60px;
+  gap: 30px;
+  background-color: #ffffff;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 22px 20px;
+  border: 1px solid #efefef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #253d4e;
+  margin-bottom: 12px;
+}
+
+.sidebar hr {
+  border: 0;
+  height: 2px;
+  width: 40px;
+  background-color: #f40009;
+  border-radius: 2px;
+  margin-bottom: 18px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.categoriaItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e6e6e6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.categoriaItem:hover {
+  border-color: #f40009;
+  background: #fff6f6;
+}
+
+.itemLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #253d4e;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.itemCount {
+  background: #f2f2f2;
+  color: #253d4e;
+  font-size: 0.75rem;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+/* PRODUCTOS */
+.productos {
+  flex: 1;
+}
+
+/* Barra superior */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.topText {
+  font-size: 0.9rem;
+  color: #777777;
+}
+
+.topTextNumber {
+  color: #f40009;
+  font-weight: 700;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+}
+
+.filterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid #e3e3e3;
+  padding: 6px 14px;
+  background-color: #ffffff;
+  font-size: 0.8rem;
+  color: #777777;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.filterButton:hover {
+  border-color: #f40009;
+  color: #f40009;
+}
+
+.filterIcon {
+  font-size: 0.9rem;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+/* CARD */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  text-align: left;
+  padding: 18px 18px 16px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.03);
+  transition: 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: #f40009;
+}
+
+.cardImage {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #253d4e;
+  margin-bottom: 2px;
+}
+
+.cardSubtitle {
+  font-size: 0.8rem;
+  color: #999999;
+  margin-bottom: 10px;
+}
+
+.precio {
+  color: #f40009;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.btn {
+  background-color: #f40009;
+  color: white;
+  border: none;
+  padding: 7px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background-color: #d00000;
+}
+
+/* PAGINACIÓN */
+.paginacion {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.pageControl,
+.pageDot {
+  border: 0;
+  background-color: #ffffff;
+  color: #777777;
+  margin: 0 2px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  min-width: 28px;
+  transition: 0.2s;
+}
+
+.pageDot:hover,
+.pageControl:hover {
+  background-color: #f0f0f0;
+}
+
+.activo {
+  background-color: #f40009;
+  color: #ffffff !important;
+}
+
+.pageEllipsis {
+  margin: 0 4px;
+  font-size: 0.8rem;
+  color: #999999;
+}

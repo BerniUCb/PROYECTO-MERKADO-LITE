@@ -1,8 +1,85 @@
-export default function LoginPage() 
-{
+"use client";
+
+import React, { useState } from "react";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+import styles from "./page.module.css";
+import { instance } from "@/app/utils/axios";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await instance.post("/auth/login", { email, password });
+      const data = res.data;
+
+      // Guardar token y usuario
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setSuccess("¡Inicio de sesión correcto!");
+      setEmail("");
+      setPassword("");
+
+      // Redirigir a dashboard o home
+      router.push("/home");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Correo o contraseña incorrectos");
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-bold">Página de Log In</h1>
-    </div>
+    <>
+      <Header />
+      <div className={styles.loginContainer}>
+        <form className={styles.loginForm} onSubmit={handleLogin}>
+          <h2 className={styles.formTitle}>Iniciar Sesión</h2>
+
+          <div>
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="ejemplo@correo.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {success && <p style={{ color: "green" }}>{success}</p>}
+
+          <button type="submit" className={styles.button}>Continuar</button>
+
+          <p className={styles.crearCuenta}>
+            ¿No tienes cuenta? <a href="/signup"><b>Crear cuenta</b></a>
+          </p>
+        </form>
+      </div>
+      <Footer />
+    </>
   );
 }

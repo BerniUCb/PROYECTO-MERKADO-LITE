@@ -1,20 +1,17 @@
-import type { Metadata } from 'next';
-// 1. IMPORTAMOS QUICKSAND (en lugar de Inter o Geist)
-import { Quicksand } from 'next/font/google'; 
-import './globals.css';
+import type { Metadata } from "next";
+import { Quicksand } from "next/font/google";
+import "./globals.css";
 
-import Header from './components/Header'; 
-import Footer from './components/Footer';
+import LayoutShell from "./components/LayoutShell"; 
 
-// 2. CONFIGURAMOS QUICKSAND
 const quicksand = Quicksand({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'], // Normal, Semi-bold, Bold
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
-  title: 'Merkado Lite',
-  description: 'Tu mercado de confianza',
+  title: "Merkado Lite",
+  description: "Tu mercado de confianza",
 };
 
 export default function RootLayout({
@@ -24,17 +21,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      {/* 3. APLICAMOS LA FUENTE A TODA LA PÁGINA */}
-      <body className={quicksand.className}> 
-        
-        <Header />
-
-        <main style={{ minHeight: '80vh' }}>
+      <body className={quicksand.className}>
+        {/* Aquí vuelve tu sistema de headers/footers */}
+        <LayoutShell>
           {children}
-        </main>
-        
-        <Footer />
-
+        </LayoutShell>
       </body>
     </html>
   );

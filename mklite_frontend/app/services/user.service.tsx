@@ -1,22 +1,47 @@
-import UserModel from "../models/user.model";
-import { instance } from "../utils/axios"
+import { instance } from "../utils/axios";
+import User from "../models/user.model";
 
-export const getUsers = async () => {
-    const users = await instance.get('/user');
-    return users.data;
-}
+export const UserService = {
+  getAll: async (
+    page?: number,
+    limit?: number,
+    sort?: string,
+    order?: "asc" | "desc"
+  ): Promise<User[]> => {
+    const params = { page, limit, sort, order };
+    const res = await instance.get("/users", { params });
+    return res.data;
+  },
 
-export const createUser = async (user: Partial<UserModel>) => {
-    const newUser = await instance.post('/user', user);
-    return newUser.data;
-}
+  getById: async (id: number): Promise<User> => {
+    const res = await instance.get(`/users/${id}`);
+    return res.data;
+  },
 
-export const deleteUser = async (ci: string) => {
-    const deletedUser = await instance.delete(`/user/${ci}`);
-    return deletedUser.data;
-}
+  // Omitimos relaciones complejas al crear
+  create: async (user: Omit<User, "id" | "orders" | "cartItems" | "notifications" | "addresses" | "stockMovements" | "ratings" | "assignedShipments">): Promise<User> => {
+    const res = await instance.post("/users", user);
+    return res.data;
+  },
 
-export const updateUser = async (ci: string, user: any) => {
-    const updatedUser = await instance.put(`/user/${ci}`, user);
-    return updatedUser.data;
-}
+  update: async (id: number, user: Partial<User>): Promise<User> => {
+    const res = await instance.put(`/users/${id}`, user);
+    return res.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await instance.delete(`/users/${id}`);
+  },
+
+  getRegisteredClientsCount: async (): Promise<number> => {
+    const res = await instance.get("/users/totalUsers"); 
+    return res.data.totalUsers;
+  },
+
+  // new function in UserService
+getOrdersCount: async (userId: number): Promise<{ totalOrders: number }> => {
+  const res = await instance.get(`/users/${userId}/orders/count`);
+  return res.data;
+},
+
+};
