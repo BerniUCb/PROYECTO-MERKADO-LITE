@@ -14,7 +14,7 @@ type UserMenuItem = {
 const menuItems: UserMenuItem[] = [
   { label: "Detalles de la Cuenta", href: "/user/account", icon: "/user-menu/account.svg" },
   { label: "Mis Pedidos", href: "/user/orders", icon: "/user-menu/orders.svg" },
-  { label: "Mi Carrito", href: "/cart", icon: "/user-menu/cart.svg" },
+  { label: "Mi Carrito", href: "/car", icon: "/user-menu/cart.svg" },
   { label: "Mis Direcciones", href: "/user/addresses", icon: "/user-menu/addresses.svg" },
   { label: "Notificaciones", href: "/user/notifications", icon: "/user-menu/notifications.svg" },
   { label: "Cupones", href: "/user/coupons", icon: "/user-menu/coupons.svg" },
