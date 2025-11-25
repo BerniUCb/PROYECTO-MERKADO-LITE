@@ -3,6 +3,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderItem } from '../entity/order-item.entity';
+import { CreateOrderItemDto } from './dto/create-order-item.dto';
+import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 
 @Injectable()
 export class OrderItemService {
@@ -12,11 +14,17 @@ export class OrderItemService {
     private readonly orderItemRepository: Repository<OrderItem>,
   ) {}
 
-  async createOrderItem(orderItem: OrderItem): Promise<OrderItem> {
-    
-    const newOrderItem = this.orderItemRepository.create(orderItem); 
-    return await this.orderItemRepository.save(newOrderItem);
-  }
+  async createOrderItem(dto: CreateOrderItemDto): Promise<OrderItem> {
+  const newOrderItem = this.orderItemRepository.create({
+    quantity: dto.quantity,
+    unitPrice: dto.unitPrice,
+    product: { id: dto.productId },
+    order: { id: dto.orderId },
+  });
+
+  return await this.orderItemRepository.save(newOrderItem);
+}
+  
 
   async getAllOrderItems(): Promise<OrderItem[]> {
     
@@ -40,19 +48,20 @@ export class OrderItemService {
     return { deleted: true, affected: result.affected ?? 0 };
   }
 
-  async updateOrderItem(id: number, orderItemUpdateData: Partial<OrderItem>): Promise<OrderItem> {
-    
-    
-    const orderItemToUpdate = await this.orderItemRepository.preload({
-      id: id,
-      ...orderItemUpdateData,
-    });
+  async updateOrderItem(id: number, dto: UpdateOrderItemDto): Promise<OrderItem> {
+  const orderItem = await this.orderItemRepository.preload({
+    id,
+    quantity: dto.quantity,
+    unitPrice: dto.unitPrice,
+    product: dto.productId ? { id: dto.productId } : undefined,
+    order: dto.orderId ? { id: dto.orderId } : undefined,
+  });
 
-    if (!orderItemToUpdate) {
-      throw new NotFoundException(`Order item with ID "${id}" not found`);
-    }
-
-
-    return await this.orderItemRepository.save(orderItemToUpdate);
+  if (!orderItem) {
+    throw new NotFoundException(`Order item with ID "${id}" not found`);
   }
+
+  return await this.orderItemRepository.save(orderItem);
+}
+
 }
