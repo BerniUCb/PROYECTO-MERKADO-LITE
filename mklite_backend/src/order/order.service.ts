@@ -66,20 +66,12 @@ export class OrderService {
         product: true,   // 🔥 También aquí
       },
     },
-    relations: {
-      user: true,
-      payment: true,
-      items: {
-        product: true,   // 🔥 También aquí
-      },
-    },
     skip: (p - 1) * l,
     take: l,
   });
 
   return QueryHelpers.orderByProp(orders, sort, order);
 }
-
 
 
 
@@ -94,13 +86,17 @@ export class OrderService {
       },
     },
   });
-
-  if (!order) {
-    throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
-  }
-
-  return order;
-}
+ async findOne(id: number): Promise<Order> {
+  const order = await this.orderRepository.findOne({
+    where: { id },
+    relations: {
+      user: true,
+      payment: true,
+      items: {
+        product: true,  // 🔥 Cargar producto dentro de cada item
+      },
+    },
+  });
 
   if (!order) {
     throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
