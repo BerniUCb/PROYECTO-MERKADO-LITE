@@ -13,6 +13,17 @@ export const OrderService = {
     return res.data;
   },
 
+  getTotalOrdersCount: async (): Promise<number> => {
+    const res = await instance.get("/orders/report/total-count");
+    return res.data.totalOrders;
+  },
+
+  // NUEVO: Para la tarjeta "Cancelados"
+  getCancelledOrderCount: async (): Promise<number> => {
+    const res = await instance.get("/orders/report/cancelled-count-");
+    return res.data.cancelled;
+  },
+
   getWeeklySales: async () => {
     const res = await instance.get("/orders/report/weekly-sales");
     return res.data;

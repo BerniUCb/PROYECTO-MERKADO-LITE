@@ -20,6 +20,17 @@ interface FunctionalAreaChartProps {
   labels: string[];
 }
 
+const extractValue = (data: any, keyHint?: string): number => {
+  if (typeof data === 'number') return data;
+  if (data && typeof data === 'object') {
+    if (keyHint && data[keyHint] !== undefined) return Number(data[keyHint]);
+    const values = Object.values(data);
+    const foundNumber = values.find(v => typeof v === 'number');
+    if (foundNumber !== undefined) return Number(foundNumber);
+  }
+  return 0;
+};
+
 const FunctionalAreaChart: React.FC<FunctionalAreaChartProps> = ({ data, labels }) => {
   const width = 500;
   const height = 150;
@@ -92,6 +103,9 @@ const AdminDashboard: React.FC = () => {
   const [productsCount, setProductsCount] = useState<number>(0);
   const [inStockCount, setInStockCount] = useState<number>(0);
   const [outOfStockCount, setOutOfStockCount] = useState<number>(0);
+  const [totalOrdersCount, setTotalOrdersCount] = useState<number>(0);
+  const [cancelledCount, setCancelledCount] = useState<number>(0);
+
 
   const chartLabels = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
@@ -108,6 +122,8 @@ const AdminDashboard: React.FC = () => {
         const [
           salesData,
           pendingData,
+          totalOrdersData,
+          cancelledData,
           weeklyData,
           ordersData,
           topProductsData,
@@ -119,6 +135,8 @@ const AdminDashboard: React.FC = () => {
         ] = await Promise.all([
           OrderService.getTotalSales(),
           OrderService.getPendingOrderCount(),
+          OrderService.getTotalOrdersCount(),
+          OrderService.getCancelledOrderCount(),
           OrderService.getWeeklySales(),
           OrderService.getLatestOrders(), // Asegúrate de tener este método en tu OrderService o cambiarlo por getAll({limit: 5})
           ProductService.getTopSelling(), 
@@ -130,14 +148,18 @@ const AdminDashboard: React.FC = () => {
         ]);
 
         // Asignación segura de datos
-        setTotalSales(Number(salesData) || 0); 
-        setPendingCount(Number(pendingData) || 0);
-        setWeeklySales(Number(weeklyData) || 0); 
-        setRegisteredClientsCount(Number(usersCountData) || 0);
-        setProductsCount(Number(productsCountData) || 0);
-        setInStockCount(Number(inStockData) || 0);
-        setOutOfStockCount(Number(outOfStockData) || 0);
         
+        
+        setTotalSales(extractValue(salesData, 'totalSales'));
+        setPendingCount(extractValue(pendingData, 'pending'));
+        setTotalOrdersCount(extractValue(totalOrdersData, 'totalOrders'));
+        setCancelledCount(extractValue(cancelledData, 'cancelled'));
+        setWeeklySales(extractValue(weeklyData, 'total'));
+        setRegisteredClientsCount(extractValue(usersCountData, 'totalUsers'));
+        setProductsCount(extractValue(productsCountData, 'totalProducts'));
+        setInStockCount(extractValue(inStockData, 'inStock'));
+        setOutOfStockCount(extractValue(outOfStockData, 'outOfStock'));
+
         setLatestOrders(Array.isArray(ordersData) ? ordersData : []);
         setTopProducts(Array.isArray(topProductsData) ? topProductsData : []);
         setChartData(chartValues);
@@ -209,7 +231,7 @@ const AdminDashboard: React.FC = () => {
           </div>
           <span className={styles.cardSubtext}>Últimos 7 días</span>
           <h2 className={styles.cardValue}>
-             {weeklySales > 1000 ? (weeklySales / 1000).toFixed(1) + 'K' : weeklySales}
+             {(totalOrdersCount)}
           </h2>
           <div className={styles.cardFooterLine}></div>
         </div>
@@ -228,7 +250,7 @@ const AdminDashboard: React.FC = () => {
             </div>
             <div className={styles.statItem}>
               <span className={`${styles.statLabel} ${styles.redText}`}>Cancelados</span>
-              <span className={`${styles.statNumber} ${styles.redText}`}>--</span> 
+              <span className={`${styles.statNumber} ${styles.redText}`}>{cancelledCount}</span> 
             </div>
           </div>
           <div className={styles.cardFooterLine}></div>
@@ -297,7 +319,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td className={styles.boldText}>{formatCurrency(Number(order.orderTotal))}</td>
                   <td>
-                    <button className={styles.detailsBtn}>Detalles</button>
+                   {/* <button className={styles.detailsBtn}>Detalles</button>*/}
                   </td>
                 </tr>
               )) : (
@@ -347,7 +369,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td className={styles.boldText}>{formatCurrency(Number(product.salePrice))}</td>
                   <td>
-                    <button className={styles.detailsBtn}>Detalles</button>
+                    {/*<button className={styles.detailsBtn}>Detalles</button>*/}
                   </td>
                 </tr>
               )) : (

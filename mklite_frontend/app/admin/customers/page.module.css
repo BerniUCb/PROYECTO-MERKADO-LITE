@@ -9,7 +9,7 @@
 /* Espacio para el Sidebar  */
 .mainContent {
   flex: 1;
-  margin-left: 230px;/* <-- Descomentar cuando tengas el sidebar fijo */
+  /*margin-left: 230px;/* <-- Descomentar cuando tengas el sidebar fijo */
   padding: 2rem 3rem;
   width: 100%;
 }

@@ -9,7 +9,7 @@ export const UserService = {
     order?: "asc" | "desc"
   ): Promise<User[]> => {
     const params = { page, limit, sort, order };
-    const res = await instance.get("/user", { params });
+    const res = await instance.get("/users", { params });
     return res.data;
   },
 
@@ -37,4 +37,17 @@ export const UserService = {
     const res = await instance.get("/users/totalUsers"); 
     return res.data.totalUsers;
   },
+// NUEVO: GET /users/with-orders (Endpoint útil para listar clientes)
+  getUsersWithOrders: async (): Promise<User[]> => {
+    const res = await instance.get("/users/with-orders");
+    return res.data;
+  },
+  
+  // NUEVO: GET /users/:id/orders/count
+  countOrdersByUser: async (userId: number): Promise<number> => {
+    const res = await instance.get(`/users/${userId}/orders/count`);
+    // Extraemos la propiedad: { totalOrders: 10 }
+    return res.data.totalOrders;
+  }
+
 };
