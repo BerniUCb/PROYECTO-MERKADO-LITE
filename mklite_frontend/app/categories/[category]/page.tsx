@@ -9,7 +9,7 @@ import { CategoryService } from "@/app/services/category.service";
 import { CartItemService } from "@/app/services/cartItem.service";
 import { ProductService } from "@/app/services/product.service";
 
-
+import ProductCard from "@/app/home/components/productCard";
 // Componentes
 //import Header from "@/app/components/Header";
 //import Footer from "@/app/components/Footer";
@@ -209,7 +209,7 @@ setProductsBD(productosUI);
                   }
                 >
                   <div className={styles.itemLeft}>{cat.nombre}</div>
-                  <span className={styles.itemCount}>—</span>
+                  <span className={styles.topTextNumber}>{totalItems}</span>
                 </li>
               ))}
             </ul>
@@ -286,11 +286,11 @@ setProductsBD(productosUI);
                         onClick={async () => {
                            try {
                              await CartItemService.addToCart(1, p.id, 1);
-                             alert("Producto añadido al carrito 🛒✨");
+                             window.location.href=`/product/${p.id}`;
+                             ///alert("Producto añadido al carrito 🛒✨");
                            } catch (err) {
-                              console.error(err);
-                               alert("❌ Error al añadir al carrito");
-                                }
+                             console.error("Error al añadir al carrito:", err);
+                           }
                             }}
                     >
                      🛒 Add

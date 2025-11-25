@@ -13,6 +13,7 @@ export default function AddressForm({
 }) {
   const [street, setStreet] = useState("");
   const [streetNumber, setStreetNumber] = useState("");
+  const [internalNumber, setInternalNumber] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [references, setReferences] = useState("");
@@ -23,6 +24,7 @@ export default function AddressForm({
   const [errors, setErrors] = useState({
     street: false,
     streetNumber: false,
+    internalNumber: false,
     city: false,
     references: false,
     pointRef: false,
@@ -32,6 +34,7 @@ export default function AddressForm({
     const newErrors = {
       street: street.trim() === "",
       streetNumber: streetNumber.trim() === "",
+      internalNumber: internalNumber.trim() === "",
       city: city.trim() === "",
       references: references.trim() === "",
       pointRef: pointRef.trim() === "",
@@ -50,7 +53,7 @@ export default function AddressForm({
     const newAddress = {
       street,
       streetNumber,
-      internalNumber: null,
+      internalNumber: internalNumber || null,
       city,
       state,
       postalCode: "0000",
@@ -89,7 +92,7 @@ export default function AddressForm({
           {/* Nº CASA + CIUDAD */}
           <div className={styles.row}>
             <div>
-              <label>Número de casa / Departamento</label>
+              <label>N° de casa/ Departamento</label>
               <input
                 className={errors.streetNumber ? styles.errorInput : ""}
                 placeholder="#######"
@@ -98,6 +101,18 @@ export default function AddressForm({
               />
               {errorText(errors.streetNumber)}
             </div>
+            {/*numero interno*/}
+          <div>
+              <label>Numero interno de casa</label>
+              <input
+                className={errors.internalNumber? styles.errorInput : ""}
+                placeholder="###"
+                value={internalNumber}
+                onChange={(e) => setInternalNumber(e.target.value)}
+              />
+              {errorText(errors.city)}
+            </div>
+          </div>
 
             <div>
               <label>Ciudad / Localidad</label>
@@ -109,7 +124,7 @@ export default function AddressForm({
               />
               {errorText(errors.city)}
             </div>
-          </div>
+          
 
           {/* INDICACIONES */}
           <label>Indicaciones para la entrega</label>
@@ -134,8 +149,10 @@ export default function AddressForm({
           <button className={styles.primaryBigBtn}>
             Añadir Dirección Y Enviar Mi Pedido
           </button>
+          
         </form>
       </div>
     </div>
+    
   );
 }
