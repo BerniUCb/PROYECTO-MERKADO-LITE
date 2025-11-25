@@ -6,11 +6,15 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { OrderService } from "@/app/services/order.service";
 import type Order from "@/app/models/order.model";
+import OrderDetailModal from "./orderDetailModal";
 
 export default function OrderPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "delivered" | "pending" | "cancelled">("all");
+
+  // estado del modal
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -27,7 +31,6 @@ export default function OrderPage() {
     fetchOrders();
   }, []);
 
-  // FILTRO
   const filteredOrders = orders.filter((order) => {
     if (filter === "all") return true;
     return order.status === filter;
@@ -106,22 +109,33 @@ export default function OrderPage() {
                 <tr key={order.id}>
                   <td>#ORD{order.id.toString().padStart(4, "0")}</td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    {order.orderTotal ? Number(order.orderTotal).toFixed(2) : "0.00"} Bs
-                  </td>
+                  <td>{order.orderTotal ? Number(order.orderTotal).toFixed(2) : "0.00"} Bs</td>
 
                   <td>
                     <span className={`${styles.status} ${styles[order.status]}`}>
                       {order.status}
                     </span>
                   </td>
-                  <td>⋯</td>
+
+                  <td
+                    className={styles.detailButton}
+                    onClick={() => setSelectedOrder(order)}
+                  >
+                    Ver detalle
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+        />
+      )}
 
       <Footer />
     </>
