@@ -33,11 +33,10 @@ export default function OrderDetailModal({ order, onClose }: Props) {
 
         <ul className={styles.list}>
           {order.items?.map((item) => (
-           <li key={item.id}>
-              {item.product?.name}: {item.quantity} x {Number(item.unitPrice).toFixed(2)} Bs ={" "}
+            <li key={item.id}>
+              {item.name}: {item.quantity} x {Number(item.unitPrice).toFixed(2)} Bs ={" "}
               {Number(item.quantity * item.unitPrice).toFixed(2)} Bs
-          </li>
-
+            </li>
           ))}
         </ul>
 

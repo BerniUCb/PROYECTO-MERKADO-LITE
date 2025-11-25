@@ -60,7 +60,7 @@ export default function HomePage() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const { products, totalPages } = await ProductService.getPaginated(page, 12);
+        const { products, totalPages } = await ProductService.getPaginated(page, 15);
 
         const mapped = products.map((p: ProductModel) => ({
           ...p,
