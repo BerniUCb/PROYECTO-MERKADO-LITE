@@ -51,4 +51,10 @@ export const ProductService = {
     const res = await instance.get(`/product/category/${categoryId}`);
     return res.data;
   },
+  getPaginated: async (page: number = 1, limit: number = 12) => {
+    const res = await instance.get(`/product/paginated?page=${page}&limit=${limit}`);
+    return res.data; 
+  },
+
+  
 };
