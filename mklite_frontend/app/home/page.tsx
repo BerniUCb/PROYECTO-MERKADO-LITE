@@ -105,7 +105,7 @@ export default function HomePage() {
             <CategoryCard
               key={cat.id}
               name={cat.name}
-              slug={(cat.name ?? "sin-nombre").toLowerCase()}
+              slug={(cat.name ?? "sin-nombre").toLowerCase().replace(/ /g, "-")}
               IconComponent={cat.IconComponent!}
             />
           ))}
