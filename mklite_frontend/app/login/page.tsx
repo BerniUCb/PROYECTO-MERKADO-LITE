@@ -3,9 +3,12 @@
 import React, { useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import styles from "./page.module.css"; // tu CSS actual
+import styles from "./page.module.css";
+import { instance } from "@/app/utils/axios";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,21 +20,21 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await instance.post("/auth/login", { email, password });
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Correo o contraseña incorrectos");
+      // Guardar token y usuario
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       setSuccess("¡Inicio de sesión correcto!");
       setEmail("");
       setPassword("");
+
+      // Redirigir a dashboard o home
+      router.push("/home");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Correo o contraseña incorrectos");
     }
   };
 
@@ -80,5 +83,3 @@ export default function LoginPage() {
     </>
   );
 }
-
-

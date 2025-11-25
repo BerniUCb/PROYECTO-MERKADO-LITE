@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 
-import LayoutShell from "./components/LayoutShell"; // 👈 IMPORTANTE
+import LayoutShell from "./components/LayoutShell"; 
 
 const quicksand = Quicksand({
   subsets: ["latin"],

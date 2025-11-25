@@ -106,6 +106,13 @@ export class UserService {
   async countUsers(): Promise<number>{
     return this.userRepository.count();
   }
+  async findByEmail(email: string) {
+  return this.userRepository.findOne({
+    where: { email },
+    select: ['id', 'email', 'fullName', 'role', 'isActive', 'passwordHash']
+  });
+}
+
 
   async countOrdersByUser(userId: number): Promise<number> 
   {
