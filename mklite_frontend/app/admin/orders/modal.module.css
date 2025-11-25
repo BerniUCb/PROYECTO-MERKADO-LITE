@@ -49,8 +49,14 @@
 .list {
   margin-top: 10px;
   padding-left: 15px;
-  /* los productos se mantienen rojos desde el inline de JSX */
+  
 }
+
+.list li {
+  color: #616161; 
+  font-weight: 600;
+}
+
 
 .closeBtn {
   margin-top: 20px;

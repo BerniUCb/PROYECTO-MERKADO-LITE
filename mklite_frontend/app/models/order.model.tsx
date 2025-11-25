@@ -11,6 +11,7 @@ export type OrderStatus =
 
 export default interface Order {
   id: number;
+  name: string;
   createdAt: string;
   status: OrderStatus;
   orderTotal: number;
