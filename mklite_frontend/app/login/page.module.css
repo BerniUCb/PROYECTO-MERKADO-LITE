@@ -1,0 +1,136 @@
+
+/* Contenedor principal */
+.loginContainer {
+  font-family: "Poppins", sans-serif;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Deja que el formulario suba un poco */
+  padding: 40px 10px; /* Ajusta según quieras más o menos espacio */
+  box-sizing: border-box;
+  min-height: auto; /* No fuerza altura completa */
+}
+
+/* Formulario */
+.loginForm {
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 25px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+/* Título */
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Labels */
+.loginForm label {
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: rgb(0, 0, 0);
+  display: block;
+}
+
+/* Inputs */
+.loginForm input[type="text"],
+.loginForm input[type="email"],
+.loginForm input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgb(127, 121, 121);
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: black;
+  box-sizing: border-box;
+}
+
+/* Botón */
+.button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 15px;
+  margin-top: 10px;
+  align-self: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #333;
+}
+
+/* Texto de enlace para crear cuenta */
+.crearCuenta {
+  margin-top: 10px;
+  font-size: 13px;
+  text-align: center;
+  color: black;
+}
+
+.crearCuenta a {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.crearCuenta a:hover {
+  color: #555;
+}
+
+/* Mensaje de error */
+.errorMessage {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* Divider opcional */
+.divider {
+  margin: 20px 0;
+  color: gray;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Botón Google opcional */
+.google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: white;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+}
+
+.google img {
+  display: inline-block;
+}
+
+/* Responsive: móvil */
+@media (max-width: 480px) {
+  .loginForm {
+    padding: 20px;
+    max-width: 100%;
+  }
+}

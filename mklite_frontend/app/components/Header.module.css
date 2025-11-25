@@ -2,7 +2,10 @@
 
 .header {
   width: 100%;
+  position: relative; /* NO sticky aquí */
 }
+
+
 
 /* --- Top Bar --- */
 .topBar {
@@ -162,8 +165,11 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
 
+  position: sticky;  /* 👈 clave */
+  top: 0;            /* pegada arriba */
+  z-index: 50;       /* por encima del contenido */
+}
 .categoriesDropdown button {
   background-color: #F40009;
   color: #FFFFFF;
@@ -221,4 +227,19 @@
 .contactInfo > div {
   display: flex;
   flex-direction: column;
+}
+
+.iconButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer !important;
+}
+
+.iconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

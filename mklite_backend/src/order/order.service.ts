@@ -163,4 +163,15 @@ export class OrderService {
 
   return salesByDay;
 }
+// TOTAL de órdenes
+  async getTotalOrdersCount(): Promise<number> {
+    return await this.orderRepository.count();
+  }
+
+  // TOTAL de órdenes canceladas
+  async getCancelledOrdersCount(): Promise<number> {
+    return await this.orderRepository.count({
+      where: { status: 'cancelled' },
+    });
+  }
 }

@@ -1,65 +1,98 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import styles from './Header.module.css';
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import styles from "./Header.module.css";
 
 export default function Header() {
+  // Estado para saber si el usuario está logueado
+  const [isLogged, setIsLogged] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Esto solo se ejecuta en el cliente → NO rompe SSR
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
+  // Mientras no sabemos si hay sesión, renderizamos una versión mínima
+  if (isLogged === null) {
+    return (
+      <header className={styles.header}>
+        {/* Cabecera mínima mientras cargan los estados del cliente */}
+      </header>
+    );
+  }
+
+  // Rutas dinámicas según sesión
+  const goToUser = isLogged ? "/user" : "/signup";
+  const goToCar = isLogged ? "/car" : "/signup";
+  const goToWishlist = isLogged ? "/wishlist" : "/signup";
+
   return (
     <header className={styles.header}>
-      
       {/* Top Bar */}
       <div className={styles.topBar}>
-        
-        {/* 1. SECCIÓN IZQUIERDA (sin cambios) */}
+        {/* Sección izquierda */}
         <div className={styles.topBarLeft}>
           <Link href="/about">Quiénes Somos</Link>
-          <Link href="/account">Mi Cuenta</Link>
-          <Link href="/wishlist">Lista de Deseos</Link>
+          <Link href={goToUser}>Mi Cuenta</Link>
+          <Link href={goToWishlist}>Lista de Deseos</Link>
           <Link href="/tracking">Seguimiento de Pedido</Link>
         </div>
-        
-        {/* 2. ¡NUEVA SECCIÓN CENTRAL! */}
+
+        {/* Sección central */}
         <div className={styles.topBarCenter}>
           <span>Pedidos protegidos y siempre a tiempo</span>
         </div>
 
-        {/* 3. SECCIÓN DERECHA (modificada) */}
+        {/* Sección derecha */}
         <div className={styles.topBarRight}>
           <span>¿Necesitas ayuda? Llámanos: +591 7XXXXXXXX</span>
           <select>
             <option>BOB (Bs.)</option>
           </select>
         </div>
-        
       </div>
 
       {/* Main Header */}
       <div className={styles.mainHeader}>
+        {/* Logo */}
         <div className={styles.logo}>
           <Link href="/">
             <Image
               src="/header/logoMKLite.png"
               alt="Merkado Lite Logo"
-              width={300}  // <-- ¡Tu tamaño correcto!
-              height={100} // <-- ¡Tu tamaño correcto!
+              width={300}
+              height={100}
               priority
             />
           </Link>
         </div>
+
+        {/* Barra de búsqueda */}
         <div className={styles.searchBar}>
           <input type="text" placeholder="Buscar productos..." />
           <button>Buscar</button>
         </div>
+
+        {/* Iconos de la derecha */}
         <div className={styles.mainHeaderIcons}>
-          <Link href="/wishlist">
+          {/* Lista de deseos */}
+          <Link href={goToWishlist}>
             <Image src="/header/corazonListaDeDeseos.png" alt="Lista de Deseos" width={24} height={24} />
             <span>Lista de Deseos</span>
           </Link>
-          <Link href="/cart">
+
+          {/* Carrito */}
+          <Link href={goToCar}>
             <Image src="/header/carrito.png" alt="Carrito" width={24} height={24} />
             <span className={styles.cartCount}>0</span>
             <span>Carrito</span>
           </Link>
-          <Link href="/account">
+
+          {/* Cuenta */}
+          <Link href={goToUser}>
             <Image src="/header/iconoUsuario.png" alt="Cuenta" width={24} height={24} />
             <span>Cuenta</span>
           </Link>
@@ -75,6 +108,7 @@ export default function Header() {
             <Image src="/header/flechaSenalAbajo.png" alt="Flecha" width={16} height={16} />
           </button>
         </div>
+
         <div className={styles.bottomNavLinks}>
           <Link href="/offers">
             <Image src="/header/llamaDeFuego.png" alt="Ofertas" width={20} height={20} />
@@ -86,6 +120,7 @@ export default function Header() {
           <Link href="/categories/all">Categorías</Link>
           <Link href="/contact">Contacto</Link>
         </div>
+
         <div className={styles.contactInfo}>
           <Image src="/header/headphonesIcono.png" alt="Atención" width={32} height={32} />
           <div>

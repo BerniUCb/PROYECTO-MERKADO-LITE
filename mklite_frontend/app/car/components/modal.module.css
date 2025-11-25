@@ -1,0 +1,167 @@
+/* ---- FONDO DEL MODAL ---- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35); /* más suave */
+  backdrop-filter: blur(3px);   /* desenfoque elegante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* ---- CONTENEDOR PRINCIPAL DEL MODAL ---- */
+.modal {
+  width: 450px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* sombra bonita */
+  position: relative;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modalSmall {
+  width: 350px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ---- ANIMACIÓN DE APARICIÓN ---- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---- BOTÓN CERRAR ---- */
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #555;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.closeBtn:hover {
+  color: #ff3030;
+}
+
+/* ---- BOTÓN PRINCIPAL ROJO ---- */
+.primaryBtn {
+  width: 100%;
+  padding: 13px;
+  background: #ff3030;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.primaryBtn:hover {
+  background: #d62525; /* rojo más elegante */
+}
+
+/* ---- LISTA DE DIRECCIONES ---- */
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addressItem {
+  background: #ff3030;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.addressItem:hover {
+  background: #d62525; /* rojo suave y estético */
+}
+
+/* ---- BOTÓN ENLACE ---- */
+.addLink {
+  background: none;
+  border: none;
+  color: #ff3030;
+  cursor: pointer;
+  margin: 10px 0;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.addLink:hover {
+  color: #d62525;
+}
+
+/* ---- FILAS DEL FORM ---- */
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+/* ---- LABELS ---- */
+.modal label,
+.modalSmall label {
+  color: #444;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ---- INPUTS BONITOS ---- */
+.form input,
+.modal input,
+.modalSmall input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ff8a8a;   /* rojo suave elegante */
+  border-radius: 8px;
+  color: #333;
+  background: #fff;
+  transition: 0.25s ease;
+  font-size: 15px;
+}
+
+/* ---- INPUT AL HACER FOCUS ---- */
+.modal input:focus,
+.modalSmall input:focus {
+  border-color: #ff3030;       /* rojo fuerte */
+  box-shadow: 0 0 6px rgba(255, 50, 50, 0.35);
+  background: #fff;
+}
+
+/* ---- TEXTO GLOBAL ---- */
+.modal,
+.modalSmall {
+  color: #333;
+}
+
+.modal p,
+.modalSmall p {
+  color: #555;
+  line-height: 1.5;
+}
