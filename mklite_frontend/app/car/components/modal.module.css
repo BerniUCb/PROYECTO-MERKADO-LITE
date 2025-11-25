@@ -24,6 +24,17 @@
   animation: fadeIn 0.25s ease-out;
 }
 
+/* ---- MODAL GRANDE (NUEVO, COMO EN LA FOTO) ---- */
+.modalLarge {
+  width: 650px;
+  background: #fff;
+  padding: 35px 40px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  position: relative;
+  animation: fadeIn 0.25s ease-out;
+}
+
 .modalSmall {
   width: 350px;
   background: #fff;
@@ -124,7 +135,8 @@
 
 /* ---- LABELS ---- */
 .modal label,
-.modalSmall label {
+.modalSmall label,
+.modalLarge label {
   color: #444;
   font-weight: 600;
   margin-bottom: 4px;
@@ -134,7 +146,8 @@
 /* ---- INPUTS BONITOS ---- */
 .form input,
 .modal input,
-.modalSmall input {
+.modalSmall input,
+.modalLarge input {
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
@@ -148,20 +161,80 @@
 
 /* ---- INPUT AL HACER FOCUS ---- */
 .modal input:focus,
-.modalSmall input:focus {
-  border-color: #ff3030;       /* rojo fuerte */
+.modalSmall input:focus,
+.modalLarge input:focus {
+  border-color: #ff3030;
   box-shadow: 0 0 6px rgba(255, 50, 50, 0.35);
   background: #fff;
 }
 
+/* ---- TEXTAREA BONITO ---- */
+/* ---- TEXTAREA BONITO ---- */
+.modal textarea,
+.modalLarge textarea,
+.modalSmall textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ff8a8a;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+  min-height: 85px;
+  transition: 0.25s ease;
+  margin-bottom: 12px;
+}
+
+.modal textarea:focus,
+.modalLarge textarea:focus,
+.modalSmall textarea:focus {
+  border-color: #ff3030;
+  box-shadow: 0 0 6px rgba(255, 50, 50, 0.35);
+}
+
+/* ---- INPUT ERROR ---- */
+.errorInput {
+  border: 2px solid #ff3b3b !important;
+  background: #ffecec;
+}
+
+/* ---- TEXTO DE ERROR ---- */
+.errorText {
+  margin-top: -8px;
+  margin-bottom: 10px;
+  color: #ff3b3b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---- BOTÓN GRANDE (ENVIAR DIRECCIÓN) ---- */
+.primaryBigBtn {
+  width: 100%;
+  padding: 16px;
+  background: #ff3030;
+  color: white;
+  font-size: 17px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.primaryBigBtn:hover {
+  background: #d62525;
+}
+
 /* ---- TEXTO GLOBAL ---- */
 .modal,
-.modalSmall {
+.modalSmall,
+.modalLarge {
   color: #333;
 }
 
 .modal p,
-.modalSmall p {
+.modalSmall p,
+.modalLarge p {
   color: #555;
   line-height: 1.5;
 }

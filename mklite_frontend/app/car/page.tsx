@@ -4,19 +4,17 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { CartItemService } from "@/app/services/cartItem.service";
 
-// HEADER & FOOTER
-///import Header from "@/app/components/Header";
-///import Footer from "@/app/components/Footer";
-
 // MODALES DE DIRECCIONES
 import AddressEmpty from "./components/AddressEmpty";
 import AddressForm from "./components/AddressForm";
 import AddressList from "./components/AddressList";
 import AddressConfirm from "./components/AddressConfirm";
 
+import type AddressModel from "@/app/models/address.model";
+
 type ProductRow = {
-  id: number;          // id del cart-item
-  productId: number;   // id del producto real
+  id: number;
+  productId: number;
   name: string;
   price: number;
   qty: number;
@@ -34,10 +32,11 @@ export default function CarPage() {
   const [showList, setShowList] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [addressList, setAddressList] = useState<string[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState("");
+  // SOLO CAMBIO NECESARIO: ahora son objetos reales
+  const [addressList, setAddressList] = useState<AddressModel[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<AddressModel | null>(null);
 
-  // --- Cargar carrito desde backend ---
+  // Cargar carrito desde backend
   useEffect(() => {
     async function load() {
       const cart = await CartItemService.getCartByUser(userId);
@@ -56,7 +55,7 @@ export default function CarPage() {
     load();
   }, []);
 
-  // --- Cambiar cantidad ---
+  // Cambiar cantidad
   const changeQty = async (id: number, delta: number) => {
     const item = products.find((p) => p.id === id);
     if (!item) return;
@@ -70,7 +69,7 @@ export default function CarPage() {
     );
   };
 
-  // --- Eliminar producto ---
+  // Eliminar producto
   const removeProduct = async (id: number) => {
     await CartItemService.deleteById(id);
     setProducts((prev) => prev.filter((p) => p.id !== id));
@@ -81,11 +80,10 @@ export default function CarPage() {
 
   return (
     <>
-      {/* HEADER */}
-
       <main className={styles.page}>
         <div className={styles.container}>
-          {/*  Caja principal */}
+          
+          {/* Carrito */}
           <section className={styles.cartBox}>
             <div className={styles.header}>
               <h1>Tu Carrito</h1>
@@ -127,10 +125,7 @@ export default function CarPage() {
                       <button onClick={() => changeQty(p.id, 1)}>+</button>
                     </td>
 
-                    <td className={styles.price}>
-                      Bs. {p.price.toFixed(2)}
-                    </td>
-
+                    <td className={styles.price}>Bs. {p.price.toFixed(2)}</td>
                     <td className={styles.subtotal}>
                       Bs. {(p.price * p.qty).toFixed(2)}
                     </td>
@@ -140,7 +135,7 @@ export default function CarPage() {
             </table>
           </section>
 
-          {/*  RESUMEN */}
+          {/* RESUMEN */}
           <aside className={styles.summary}>
             <h3>Resumen de compra</h3>
 
@@ -186,7 +181,7 @@ export default function CarPage() {
           </aside>
         </div>
 
-        {/* MODALES ACTIVOS */}
+        {/* MODALES */}
         {showEmpty && (
           <AddressEmpty
             onClose={() => setShowEmpty(false)}
@@ -208,33 +203,30 @@ export default function CarPage() {
           />
         )}
 
-        
-{showList && (
-  <AddressList
-    addresses={addressList}
-    onClose={() => setShowList(false)}
-    onAdd={() => {
-      setShowList(false);
-      setShowForm(true);
-    }}
-    onSelect={(addr) => {
-      setSelectedAddress(addr);
-      setShowList(false);
-      setShowConfirm(true);
-    }}
-  />
-)}
+        {showList && (
+          <AddressList
+            addresses={addressList}
+            onClose={() => setShowList(false)}
+            onAdd={() => {
+              setShowList(false);
+              setShowForm(true);
+            }}
+            onSelect={(addr) => {
+              setSelectedAddress(addr);
+              setShowList(false);
+              setShowConfirm(true);
+            }}
+          />
+        )}
 
-        {showConfirm && (
+        {showConfirm && selectedAddress && (
           <AddressConfirm
             address={selectedAddress}
             onClose={() => setShowConfirm(false)}
           />
         )}
-      </main>
 
-      {/* FOOTER */}
-      
+      </main>
     </>
   );
 }
