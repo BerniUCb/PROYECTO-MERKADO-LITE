@@ -5,8 +5,8 @@ import styles from "./page.module.css";
 import { CartItemService } from "@/app/services/cartItem.service";
 
 // HEADER & FOOTER
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+///import Header from "@/app/components/Header";
+///import Footer from "@/app/components/Footer";
 
 // MODALES DE DIRECCIONES
 import AddressEmpty from "./components/AddressEmpty";
@@ -82,7 +82,6 @@ export default function CarPage() {
   return (
     <>
       {/* HEADER */}
-      <Header />
 
       <main className={styles.page}>
         <div className={styles.container}>
@@ -235,7 +234,7 @@ export default function CarPage() {
       </main>
 
       {/* FOOTER */}
-      <Footer />
+      
     </>
   );
 }

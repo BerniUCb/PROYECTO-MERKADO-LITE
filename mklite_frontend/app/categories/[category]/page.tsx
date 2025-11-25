@@ -11,8 +11,8 @@ import { ProductService } from "@/app/services/product.service";
 
 
 // Componentes
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+//import Header from "@/app/components/Header";
+//import Footer from "@/app/components/Footer";
 
 // Modelo UI para productos
 type UIProduct = {
@@ -113,13 +113,13 @@ setProductsBD(productosUI);
   if (!categoryBD && !loading) {
     return (
       <main className={styles.page}>
-        <Header />
+        //commented out Header
         <div className={styles.inner}>
           <h1 style={{ padding: 50 }}>
             La categoría "{category}" no existe aún.
           </h1>
         </div>
-        <Footer />
+       //commented out Footer 
       </main>
     );
   }
@@ -175,7 +175,7 @@ setProductsBD(productosUI);
   // RENDER
   return (
     <main className={styles.page}>
-      <Header />
+      //commented out Header 
 
       <div className={styles.inner}>
 
@@ -279,17 +279,19 @@ setProductsBD(productosUI);
                     </p>
 
                   <button
-                    className={styles.btn}
-                    onClick={async () => {
-                      try {
-                        await CartItemService.addToCart(1, p.id, 1);
-                        alert("Añadido al carrito!");
-                      } catch {
-                        alert("Error al añadir.");
-                      }
-                    }}
-                  >
-                    🛒 Add
+                       className={styles.btn}
+                        onClick={async () => {
+                           try {
+                             await CartItemService.addToCart(1, p.id, 1);
+                             alert("Producto añadido al carrito 🛒✨");
+                           } catch (err) {
+                              console.error(err);
+                               alert("❌ Error al añadir al carrito");
+                                }
+                            }}
+                    >
+                     🛒 Add
+
                   </button>
                 </article>
               ))}
@@ -333,7 +335,7 @@ setProductsBD(productosUI);
         </section>
       </div>
 
-      <Footer />
+//commented out Footer for now
     </main>
   );
 }
