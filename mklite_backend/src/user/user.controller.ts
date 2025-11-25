@@ -29,7 +29,7 @@ export class UserController {
   async getOne(@Param('id') id: number): Promise<User> {
     return this.userService.findOne(id);
   }
-
+  
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
@@ -56,7 +56,6 @@ export class UserController {
     const count = await this.userService.countOrdersByUser(id);
     return { totalOrders: count };
   }
-  
 
 
 }

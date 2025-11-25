@@ -10,6 +10,33 @@ export class ProductController {
 
     constructor(private readonly productService: ProductService) {}
 
+    
+    @Get('/top-selling')
+    getTopSellingProducts() {
+        return this.productService.getTopSellingProducts();
+    }
+
+    //se maneja acon async y await para que las promesas funcionen bien en estos casos
+    @Get('count')
+    async getTotalProductsCount() {
+        return {totalProducts: await this.productService.getTotalProductsCount(),};
+    }
+
+    @Get('count/in-stock')
+    async getInStockCount() {
+        return {inStock: await this.productService.getInStockCount(),};  
+    }
+
+    @Get('count/out-of-stock')
+    async getOutOfStockCount() {
+        return {outOfStock: await this.productService.getOutOfStockCount(),};
+    }
+
+    @Get('category/:categoryId')
+    async getProductsByCategory(@Param('categoryId') categoryId: number) {
+    return this.productService.getProductsByCategory(categoryId);
+    }
+    
     @Post()
     createProduct(@Body() dto: CreateProductDto) {
         return this.productService.createProduct(dto);
@@ -35,29 +62,6 @@ export class ProductController {
         return this.productService.updateProduct(id, dto);
     }   
 
-    @Get('/top-selling')
-    getTopSellingProducts() {
-        return this.productService.getTopSellingProducts();
-    }
-
-    //se maneja acon async y await para que las promesas funcionen bien en estos casos
-    @Get('count')
-    async getTotalProductsCount() {
-        return {totalProducts: await this.productService.getTotalProductsCount(),};
-    }
-
-    @Get('count/in-stock')
-    async getInStockCount() {
-        return {inStock: await this.productService.getInStockCount(),};  
-    }
-
-    @Get('count/out-of-stock')
-    async getOutOfStockCount() {
-        return {outOfStock: await this.productService.getOutOfStockCount(),};
-    }
-    @Get('category/:categoryId')
-    async getProductsByCategory(@Param('categoryId') categoryId: number) {
-    return this.productService.getProductsByCategory(categoryId);
-    }
+    
 
 }

@@ -28,6 +28,12 @@ export class OrderController {
   getLatestOrders(){
     return this.orderService.getLatestOrders();
   }
+  
+  @Get('stats/last-7-days')
+  async getLast7DaysSales(): Promise<number[]> {
+  return this.orderService.getLast7DaysSales();
+  }
+
   //CRUD
 
   @Post()

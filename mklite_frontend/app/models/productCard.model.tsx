@@ -13,6 +13,9 @@ export default interface ProductModel {
   imageUrl?: string | null; // también nullable en la entidad
   isActive: boolean;
 
+  createdAt: string;
+  updatedAt: string;
+
   // Relaciones
   category: CategoryModel;
 

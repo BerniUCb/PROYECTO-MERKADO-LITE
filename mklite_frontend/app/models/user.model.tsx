@@ -19,6 +19,7 @@ export default interface User {
   id: number;
   fullName: string;
   email: string;
+  phone :string ;
   passwordHash: string;
   role: UserRole;
   isActive: boolean;
