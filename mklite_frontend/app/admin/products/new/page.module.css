@@ -96,11 +96,11 @@
 /* -------------------- Content/Form Styles (Ajustados) -------------------- */
 .content {
   flex-grow: 1;
-  padding: 40px;
+ /* padding: 40px;*/
   background-color: #fff;
   margin-left: 20px; /* Separación del sidebar */
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);*/
   color: #333;
 }
 
