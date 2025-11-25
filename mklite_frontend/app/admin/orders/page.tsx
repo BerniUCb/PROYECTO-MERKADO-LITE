@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { OrderService } from "@/app/services/order.service";
 import type Order from "@/app/models/order.model";
 
@@ -35,7 +35,7 @@ export default function OrderPage() {
 
   return (
     <>
-      <Header />
+     {/* <Header />*/}
 
       <div className={styles.wrapper}>
         {/* Encabezado */}
@@ -123,7 +123,7 @@ export default function OrderPage() {
         </div>
       </div>
 
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }
