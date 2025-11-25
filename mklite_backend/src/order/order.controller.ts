@@ -34,6 +34,18 @@ export class OrderController {
   return this.orderService.getLast7DaysSales();
   }
 
+  @Get('report/cancelled-count')
+  async getCancelledOrdersCount() {
+    const cancelled = await this.orderService.getCancelledOrdersCount();
+    return { cancelledOrders: cancelled };
+  }
+
+  @Get('report/total-count')
+  async getTotalOrdersCount() {
+    const total = await this.orderService.getTotalOrdersCount();
+    return { totalOrders: total };
+  }
+
   //CRUD
 
   @Post()
@@ -65,6 +77,7 @@ export class OrderController {
   remove(@Param('id') id: number) {
     return this.orderService.remove(id);
   }
+  
   
 
 }
