@@ -20,8 +20,8 @@ export const OrderService = {
 
   // NUEVO: Para la tarjeta "Cancelados"
   getCancelledOrderCount: async (): Promise<number> => {
-    const res = await instance.get("/orders/report/cancelled-count-");
-    return res.data.cancelled;
+    const res = await instance.get("/orders/report/cancelled-count");
+    return res.data.cancelledOrders;
   },
 
   getWeeklySales: async () => {
