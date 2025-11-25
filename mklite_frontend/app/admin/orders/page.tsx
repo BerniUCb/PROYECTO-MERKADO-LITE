@@ -11,7 +11,7 @@ import OrderDetailModal from "./orderDetailModal";
 export default function OrderPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "delivered" | "pending" | "cancelled">("all");
+  const [filter, setFilter] = useState<"all" | "delivered" | "processing" | "cancelled">("all");
 
   // estado del modal
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -59,8 +59,8 @@ export default function OrderPage() {
             </button>
 
             <button
-              className={`${styles.tab} ${filter === "pending" ? styles.active : ""}`}
-              onClick={() => setFilter("pending")}
+              className={`${styles.tab} ${filter === "processing" ? styles.active : ""}`}
+              onClick={() => setFilter("processing")}
             >
               Pendientes
             </button>
