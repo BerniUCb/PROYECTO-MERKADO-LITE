@@ -1,84 +1,144 @@
-.layout {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f5f5f5;
-    padding: 20px;
+/* ===== Contenedor principal ===== */
+.wrapper {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
 }
 
-.container {
-    width: 90%;
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
+/* ===== Tabs + Search ===== */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-.table-container {
-    width: 60%;
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 6px;
 }
 
-/* Selectores globales dentro del módulo */
-.table-container :global(table) {
-    width: 100%;
-    border-collapse: collapse;
+.tab {
+  background: #cf5e5e;
+  border: 1px solid #dcdcdc;
+  padding: 7px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+    color: rgb(255, 255, 255);
 }
 
-.table-container :global(th) {
-    background: #222;
-    color: white;
-    padding: 12px;
-    text-align: left;
+.tab:hover {
+  background: #e9e9e9;
 }
 
-.table-container :global(td) {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
+.active {
+  background: #ec1e0f;
+  border-color: #7e1109;
+  color: white;
 }
 
-.selected {
-    background: #c8e6c9;
-    font-weight: bold;
+/* ===== Search Box ===== */
+.searchBox {
+  display: flex;
+  align-items: center;
+  border: 1px solid #a60202;
+  background: rgb(238, 106, 106);
+  padding: 6px 12px;
+  border-radius: 8px;
+  width: 190px;
 }
 
-.table-container :global(tbody tr:hover) {
-    background: #f0f0f0;
-    cursor: pointer;
+.searchBox input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 13.5px;
 }
 
-.card {
-    width: 35%;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.searchIcon {
+  font-size: 16px;
+  opacity: 0.6;
 }
 
-.card h2 {
-    margin-bottom: 15px;
+/* ===== Table ===== */
+.tableWrapper {
+  margin-top: 10px;
 }
 
-.detalle p {
-    margin-bottom: 8px;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
-.btn-verde {
-    width: 100%;
-    margin-top: 15px;
-    padding: 12px;
-    background: #ff0000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
+.table th {
+  background: #fd3b3b;
+  padding: 12px;
+  font-weight: 600;
+  text-align: left;
+  color: #000000;
+  /*border-bottom: 2px solid #f69a9a;*/
 }
 
-.btn-verde:hover {
-    background: #ff0101;
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e7e7e7;
+  color: #515151;
+}
+
+.table tr:hover td {
+  background: #fff6f6;
+}
+
+/* ===== Estados ===== */
+.status {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.delivered {
+  color: #2cbf5a;
+}
+
+.enviado {
+  color: #1b75d1;
+}
+
+.cancelled {
+  color: #d93b3b;
+}
+
+/* ===== Paginación ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 22px 0 8px;
+}
+
+.pagination button {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.pagination button:hover {
+  background: #ffe6e6;
+}
+
+.pageActive {
+  background: #ff1201;
+  border-color: #9c0c01;
+  color: white;
 }

@@ -7,4 +7,5 @@ export class CreateAddressDto {
     state: string;
     references?: string;
     addressAlias?: string;
+    // Ya no necesitamos 'userId' aquí
 }

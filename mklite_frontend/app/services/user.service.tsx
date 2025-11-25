@@ -9,7 +9,7 @@ export const UserService = {
     order?: "asc" | "desc"
   ): Promise<User[]> => {
     const params = { page, limit, sort, order };
-    const res = await instance.get("/user", { params });
+    const res = await instance.get("/users", { params });
     return res.data;
   },
 
@@ -37,4 +37,11 @@ export const UserService = {
     const res = await instance.get("/users/totalUsers"); 
     return res.data.totalUsers;
   },
+
+  // new function in UserService
+getOrdersCount: async (userId: number): Promise<{ totalOrders: number }> => {
+  const res = await instance.get(`/users/${userId}/orders/count`);
+  return res.data;
+},
+
 };
