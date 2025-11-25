@@ -2,37 +2,33 @@ import { instance } from "../utils/axios";
 import type AddressModel from "../models/address.model";
 
 export const AddressService = {
-  // Obtener todas las direcciones (El backend infiere el usuario por token/sesión)
-  // GET /address
-  getAll: async (): Promise<AddressModel[]> => {
-    const res = await instance.get("/address");
+
+  // Obtener todas las direcciones de un usuario
+  getAll: async (userId: number = 1): Promise<AddressModel[]> => {
+    const res = await instance.get(`/users/${userId}/address`);
     return res.data;
   },
 
-  // Obtener una dirección por ID
-  // GET /address/:id
-  getById: async (id: number): Promise<AddressModel> => {
-    const res = await instance.get(`/address/${id}`);
+  // Obtener una dirección específica
+  getById: async (userId: number, addressId: number): Promise<AddressModel> => {
+    const res = await instance.get(`/users/${userId}/address/${addressId}`);
     return res.data;
   },
 
-  // Crear una nueva dirección
-  // POST /address
-  create: async (address: Omit<AddressModel, "id">): Promise<AddressModel> => {
-    const res = await instance.post("/address", address);
+  // Crear una dirección nueva
+  create: async (userId: number, address: Omit<AddressModel, "id">): Promise<AddressModel> => {
+    const res = await instance.post(`/users/${userId}/address`, address);
     return res.data;
   },
 
   // Actualizar una dirección
-  // PATCH /address/:id (Nota: Controlador usa PATCH, no PUT)
-  update: async (id: number, updateData: Partial<AddressModel>): Promise<AddressModel> => {
-    const res = await instance.patch(`/address/${id}`, updateData);
+  update: async (userId: number, addressId: number, data: Partial<AddressModel>): Promise<AddressModel> => {
+    const res = await instance.patch(`/users/${userId}/address/${addressId}`, data);
     return res.data;
   },
 
   // Eliminar una dirección
-  // DELETE /address/:id
-  delete: async (id: number): Promise<void> => {
-    await instance.delete(`/address/${id}`);
+  delete: async (userId: number, addressId: number): Promise<void> => {
+    await instance.delete(`/users/${userId}/address/${addressId}`);
   },
 };

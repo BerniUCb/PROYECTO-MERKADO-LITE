@@ -37,7 +37,6 @@
   color: #000000;
 }
 
-/*  TEXTO NEGRO SIEMPRE */
 .table td,
 .td {
   padding: 10px;
@@ -45,25 +44,26 @@
   color: #000 !important;
 }
 
-/*  Hover corregido */
+/* Hover */
 .rowHover:hover td {
   background: #f2f2f2;
   color: #000 !important;
 }
 
-/* Fila seleccionada corregida */
+/* selected row */
 .selectedRow td {
-  background: #aeadaf;
+  background: #f8dede;
   color: #000 !important;
 }
 
-/* ========= PAGINACIÓN ========= */
+/* pagination */
 .pagination {
   display: flex;
   justify-content: center;
   gap: 6px;
   padding: 15px;
   color: black;
+  align-items: center;
 }
 
 .paginationBtn {
@@ -78,12 +78,21 @@
 
 .paginationBtn:hover {
   background: #e70d0d;
+  color: white;
 }
 
-.activeBtn {
-  background: #ff0606;
-  border-color: #830000;
-  font-weight: bold;
+.pageIndicator {
+  font-weight: 600;
+}
+
+/* small button inside table */
+.smallBtn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 /* ========= CARD DERECHA ========= */
@@ -133,6 +142,7 @@
   border-radius: 8px;
   margin-bottom: 10px;
   font-size: 14px;
+  color: white;
 }
 
 .stats {

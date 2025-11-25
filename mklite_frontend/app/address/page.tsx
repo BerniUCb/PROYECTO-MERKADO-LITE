@@ -32,7 +32,7 @@ export default function Direcciones() {
 
   const fetchAddresses = async () => {
     try {
-      const data = await AddressService.getAll();
+      const data = await AddressService.getAll(1);
       setAddresses(data);
     } catch (err) {
       console.error("Error cargando direcciones:", err);
@@ -44,7 +44,7 @@ export default function Direcciones() {
   // --- Crear dirección ---
   const handleCreate = async () => {
     try {
-      await AddressService.create({
+      await AddressService.create(1, {
         ...form,
         internalNumber: form.internalNumber || null,
         references: form.references || null,
@@ -76,7 +76,7 @@ export default function Direcciones() {
     if (!confirm("¿Eliminar esta dirección?")) return;
 
     try {
-      await AddressService.delete(id);
+      await AddressService.delete(1, addresses.find(addr => addr.id === id)!.id);
       fetchAddresses();
     } catch (error) {
       console.error("Error deleting:", error);

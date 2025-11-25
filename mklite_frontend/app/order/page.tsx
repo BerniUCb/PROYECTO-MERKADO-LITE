@@ -106,7 +106,10 @@ export default function OrderPage() {
                 <tr key={order.id}>
                   <td>#ORD{order.id.toString().padStart(4, "0")}</td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td>{order.orderTotal.toFixed(2)} Bs</td>
+                  <td>
+                    {order.orderTotal ? Number(order.orderTotal).toFixed(2) : "0.00"} Bs
+                  </td>
+
                   <td>
                     <span className={`${styles.status} ${styles[order.status]}`}>
                       {order.status}
