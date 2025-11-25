@@ -75,6 +75,25 @@ export class ProductService {
   return await this.productRepository.save(productToUpdate);
 }
 
+async getPaginatedProducts(page: number, limit: number) {
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await this.productRepository.findAndCount({
+    relations: {
+      category: true,
+    },
+    skip,
+    take: limit,
+    order: { id: 'ASC' },
+  });
+
+  return {
+    products,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  };
+}
 
 async getTopSellingProducts(limit = 10): Promise<any[]> {
     // Usamos una consulta segura que evita errores de GROUP BY strict mode
