@@ -153,7 +153,7 @@ const AdminDashboard: React.FC = () => {
         setTotalSales(extractValue(salesData, 'totalSales'));
         setPendingCount(extractValue(pendingData, 'pending'));
         setTotalOrdersCount(extractValue(totalOrdersData, 'totalOrders'));
-        setCancelledCount(extractValue(cancelledData, 'cancelled'));
+        setCancelledCount(extractValue(cancelledData, 'cancelledOrders'));
         setWeeklySales(extractValue(weeklyData, 'total'));
         setRegisteredClientsCount(extractValue(usersCountData, 'totalUsers'));
         setProductsCount(extractValue(productsCountData, 'totalProducts'));
@@ -208,7 +208,7 @@ const AdminDashboard: React.FC = () => {
       <header className={styles.header}>
         <h1 className={styles.welcomeTitle}>Bienvenido Admin</h1>
       </header> 
-      
+       
 
       {/* Stats Cards Row */}
       <div className={styles.statsGrid}>
