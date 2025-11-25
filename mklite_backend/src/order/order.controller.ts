@@ -63,13 +63,13 @@ export class OrderController {
   async getLast7DaysSales(): Promise<number[]> {
   return this.orderService.getLast7DaysSales();
   }
-  @Get('count/total')
+  @Get('report/total-count')
 async getTotalOrdersCount() {
   const total = await this.orderService.getTotalOrdersCount();
   return { totalOrders: total };
 }
 
-@Get('count/cancelled')
+@Get('report/cancelled-count')
 async getCancelledOrdersCount() {
   const cancelled = await this.orderService.getCancelledOrdersCount();
   return { cancelledOrders: cancelled };
