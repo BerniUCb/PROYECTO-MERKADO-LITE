@@ -46,7 +46,7 @@ export default function HeaderAdmin() {
             type="button"
           >
             <Image
-              src="/header/notification.svg"   // 👈 CORREGIDO
+              src="/header/notification.svg"   
               alt="Notificaciones"
               width={24}
               height={24}
