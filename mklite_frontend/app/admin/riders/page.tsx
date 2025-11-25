@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { UserService } from "@/app/services/user.service";
 import type User from "@/app/models/user.model";
 
@@ -47,8 +47,8 @@ export default function RepartidoresPage() {
     setSelected(u);
     setOrdersCount(null);
     try {
-      const resp = await UserService.getOrdersCount(u.id); // función que agregamos al service
-      setOrdersCount(resp.totalOrders ?? resp);
+      const resp = await UserService.countOrdersByUser(u.id); // función que agregamos al service
+      setOrdersCount(resp);
     } catch (err) {
       console.error("Error al obtener conteo de pedidos:", err);
       setOrdersCount(null);
@@ -57,7 +57,7 @@ export default function RepartidoresPage() {
 
   return (
     <>
-      <Header />
+     {/* <Header />*/}
       <div className={styles.layout}>
         {/* tabla izquierda */}
         <div className={styles.container}>
@@ -196,7 +196,7 @@ export default function RepartidoresPage() {
           )}
         </div>
       </div>
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }
