@@ -26,12 +26,7 @@ export default function HomePage() {
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
 
   // 🔹 Estado para productos reales desde backend (paginados)
-  // 🔹 Estado para productos reales desde backend (paginados)
   const [products, setProducts] = useState<ProductModel[]>([]);
-
-  // 🔹 Estado de paginación
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   // 🔹 Estado de paginación
   const [page, setPage] = useState(1);
@@ -63,13 +58,9 @@ export default function HomePage() {
   //  CARGAR PRODUCTOS DESDE BACKEND (PAGINADOS)
   // ================================================================
   useEffect(() => {
-  // ================================================================
-  //  CARGAR PRODUCTOS DESDE BACKEND (PAGINADOS)
-  // ================================================================
-  useEffect(() => {
     const loadProducts = async () => {
       try {
-        const { products, totalPages } = await ProductService.getPaginated(page, 15);
+        const { products, totalPages } = await ProductService.getPaginated(page, 12);
 
         const mapped = products.map((p: ProductModel) => ({
           ...p,
@@ -78,21 +69,16 @@ export default function HomePage() {
 
         setProducts(mapped);
         setTotalPages(totalPages);
-        setTotalPages(totalPages);
       } catch (error) {
-        console.error("❌ Error cargando productos paginados:", error);
         console.error("❌ Error cargando productos paginados:", error);
       }
     };
 
     loadProducts();
   }, [page]);
-  }, [page]);
 
   // ================================================================
-  // ================================================================
   //  RETURN
-  // ================================================================
   // ================================================================
   return (
     <>
@@ -108,25 +94,6 @@ export default function HomePage() {
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
-          </div>
-
-          {/* 🔹 PAGINACIÓN */}
-          <div className={styles.pagination}>
-            <button 
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              ◀ Anterior
-            </button>
-
-            <span>Página {page} de {totalPages}</span>
-
-            <button 
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Siguiente ▶
-            </button>
           </div>
 
           {/* 🔹 PAGINACIÓN */}
@@ -166,27 +133,12 @@ export default function HomePage() {
             ))}
           </div>
         </section>
-          <div className={styles.categoriesGrid}>
-            {categories.map((cat) => (
-              <CategoryCard
-                key={cat.id}
-                name={cat.name}
-                slug={(cat.name ?? "sin-nombre")
-                  .toLowerCase()
-                  .replace(/ /g, "-")}
-                IconComponent={cat.IconComponent!}
-              />
-            ))}
-          </div>
-        </section>
 
-        {/* Showcase + Benefits */}
         {/* Showcase + Benefits */}
         <ProductShowcase />
         <Benefits />
 
       </main>
-
 
       <Footer />
     </>
