@@ -39,7 +39,7 @@ const mainItems: AdminMenuItem[] = [
   },
   {
     label: "Gestión de usuarios",
-    href: "/admin/users", // ← aquí irá tu pantalla de crear/gestionar usuarios
+    href: "/admin/userDetail", 
     icon: "/admin-menu/gestiondeUsuarios.svg",
   },
   {
