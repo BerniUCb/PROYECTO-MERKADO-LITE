@@ -15,6 +15,7 @@ import { AddressModule } from './address/address.module';
 import { stockMovementModule } from './stock-movement/stock-movement.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { ConfigModule } from '@nestjs/config';
+import { BackupController } from './backup/backup.controller';
 
 
 @Module({
@@ -36,7 +37,7 @@ import { ConfigModule } from '@nestjs/config';
    
 
   ],
-  controllers: [AppController],
+  controllers: [AppController, BackupController],
   providers: [AppService],
 })
 // La clase ya no implementa OnApplicationBootstrap.
