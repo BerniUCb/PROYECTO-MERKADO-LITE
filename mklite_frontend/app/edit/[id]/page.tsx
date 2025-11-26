@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Para volver atrás
+import { useParams, useRouter } from 'next/navigation'; // Para volver atrás
 import styles from './page.module.css';
 import { ArrowLeft, X, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 
-// Importamos el Sidebar (comentado para cumplir tu requisito, pero listo para usar)
+// Importamos el Sidebar 
 import AdminSidebar from '../../components/AdminSidebar';
 
 // Services & Models
@@ -33,6 +33,7 @@ interface PromoFormState {
 
 const EditProductPage: React.FC = () => {
   const router = useRouter();
+  const { id } = useParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   
@@ -46,7 +47,7 @@ const EditProductPage: React.FC = () => {
   // Estados del Modal de Promoción
   const [showPromoModal, setShowPromoModal] = useState<boolean>(false);
   const [promoForm, setPromoForm] = useState<PromoFormState>({
-    type: 'FIXED_PRICE', // Default como en la imagen 2
+    type: 'FIXED_PRICE', // Default 
     percentage: 0,
     fixedPrice: 0,
     buyX: 0,
@@ -59,25 +60,30 @@ const EditProductPage: React.FC = () => {
 
   // --- CARGA DE DATOS ---
   useEffect(() => {
-    const initData = async () => {
-      try {
-        setLoading(true);
-        // 1. Cargar Categorías
-        const cats = await CategoryService.getAll();
-        setCategories(cats);
+  if (!id) return; // <-- evita que corra con undefined
 
-        // 2. Cargar Producto (Simulamos ID 1, en realidad vendría de params)
-        const prod = await ProductService.getById(1); 
-        setProduct(prod);
-        
-      } catch (error) {
-        console.error("Error cargando datos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    initData();
-  }, []);
+  const initData = async () => {
+    try {
+      setLoading(true);
+
+      // 1. categorías
+      const cats = await CategoryService.getAll();
+      setCategories(cats);
+
+      // 2. producto real por id dinámico
+      const prod = await ProductService.getById(Number(id));
+      setProduct(prod);
+
+    } catch (error) {
+      console.error("Error cargando datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  initData();
+}, [id]);   
+
 
   // --- HANDLERS PRODUCTO ---
   const handleProductChange = (field: keyof ProductModel, value: any) => {
@@ -151,8 +157,13 @@ const EditProductPage: React.FC = () => {
       await PromotionService.create(promotionPayload as any);
       // Actualizamos la UI del producto para mostrar la nueva promo
       // (Esto es visual, depende de si tu producto tiene campo 'promotion' anidado)
+      // Actualizar datos del producto desde backend
+      const updated = await ProductService.getById(product.id);
+      setProduct(updated);
+
       alert('Promoción guardada exitosamente');
       setShowPromoModal(false);
+
     } catch (error) {
       console.error(error);
       alert('Error guardando promoción');
@@ -271,7 +282,25 @@ const EditProductPage: React.FC = () => {
                 <label>Promoción</label>
                 <input 
                   type="text" 
-                  value="null" 
+                  value={(() => {
+                    if (!product.promotions || product.promotions.length === 0) return "null";
+                    const activePromo = product.promotions[product.promotions.length - 1];
+                    const basePrice = Number(product.salePrice) || 0;
+                    const discountVal = Number(activePromo.discountValue) || 0;
+                    let nuevoPrecio = basePrice;
+
+                    if (activePromo.discountType === 'PERCENTAGE') {
+                        nuevoPrecio = basePrice * (1 - (discountVal / 100));
+                    } else if (activePromo.discountType === 'FIXED_PRICE') {
+                        nuevoPrecio = discountVal;
+                    }
+                    
+                    if (activePromo.discountType === 'QUANTITY') {
+                        return `${activePromo.description || 'Promoción por cantidad'}`;
+                    }
+                    return `${activePromo.description || 'Oferta'} (Bs. ${nuevoPrecio.toFixed(2)})`;
+                 
+                  })()}
                   disabled 
                   className={`${styles.input} ${styles.disabled}`} 
                 />

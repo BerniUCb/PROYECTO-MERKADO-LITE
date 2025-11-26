@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 import { CategoryService } from "@/app/services/category.service";
 import { categoryIcons, defaultIcon } from "@/app/utils/categoryIcons";
@@ -165,11 +166,14 @@ export default function CategoriesAdminPage() {
                   <td>#{p.id}</td>
 
                   <td>
+                    <Link href={`/edit/${p.id}`}>
                     <div className={styles.product}>
                       <img src={p.img} />
                       <span>{p.name}</span>
                     </div>
+                    </Link>
                   </td>
+                  
 
                   <td>{p.date}</td>
                   <td>{p.stock}</td>

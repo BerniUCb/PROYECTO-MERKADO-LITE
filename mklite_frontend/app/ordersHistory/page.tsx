@@ -3,10 +3,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type Order from '../models/order.model';
 import { OrderStatus } from '../models/order.model';
-import { OrderService } from '../services/order.service'; // 1. Importamos el servicio real
+import { OrderService } from '../services/order.service'; 
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import UserSidebar from '../components/UserSidebar';
 import styles from './page.module.css';
+import { X } from 'lucide-react'; // Icono de cerrar para el modal
 
 // --- UTILS ---
 
@@ -15,17 +16,12 @@ import styles from './page.module.css';
  */
 const getStatusClass = (status: OrderStatus): string => {
   switch (status) {
-    case 'delivered':
-      return styles["estado-entregado"];
-    case 'cancelled':
-      return styles["estado-cancelado"];
-    case 'pending':
-    case 'processing':
-      return styles["estado-pendiente"];
-    case 'shipped':
-      return styles["estado-enviado"];
-    default:
-      return styles["estado-default"];
+    case 'delivered': return styles["estado-entregado"];
+    case 'cancelled': return styles["estado-cancelado"];
+    case 'pending': return styles["estado-pendiente"];
+    case 'processing': return styles["estado-pendiente"];
+    case 'shipped': return styles["estado-enviado"];
+    default: return styles["estado-default"];
   }
 };
 
@@ -56,6 +52,9 @@ const formatDate = (dateString: string): string => {
   const year = date.getFullYear().toString().slice(-2);
   return `${day}/${month}/${year}`;
 };
+const formatCurrency = (amount: number) => {
+  return `Bs. ${Number(amount).toFixed(2)}`;
+};
 
 // --- COMPONENTE PRINCIPAL ---
 
@@ -72,12 +71,16 @@ const MisPedidos: React.FC = () => {
   const [hasMore, setHasMore] = useState<boolean>(false); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  // --- ESTADOS PARA EL MODAL ---
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
+
 
   const loadOrders = useCallback(async (page: number) => {
     setLoading(true);
     setError(null);
     try {
-      // 2. Llamada al servicio real
       // Solicitamos orden descendente por fecha de creación para ver lo más reciente primero
       const data = await OrderService.getAll(page, PAGE_LIMIT, 'createdAt', 'desc');
       
@@ -104,6 +107,28 @@ const MisPedidos: React.FC = () => {
     loadOrders(currentPage);
   }, [loadOrders, currentPage]);
 
+  // --- MANEJO DEL DETALLE (MODAL) ---
+  const handleViewDetails = async (orderId: number) => {
+    setLoadingDetails(true);
+    try {
+      // Hacemos una petición específica por ID para asegurar que tenemos los items completos
+      // (A veces el getAll no trae las relaciones profundas como productos)
+      const fullOrder = await OrderService.getById(orderId);
+      setSelectedOrder(fullOrder);
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error("Error al cargar detalle:", err);
+      alert("No se pudo cargar el detalle del pedido.");
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
+
   const handlePageChange = (page: number) => {
     if (page < 1) return;
     // Evitar ir a siguiente si no hay más datos, a menos que estemos cargando
@@ -113,7 +138,7 @@ const MisPedidos: React.FC = () => {
   };
 
   if (loading && orders.length === 0) return <div className={styles["mis-pedidos-container"]}>Cargando pedidos...</div>;
-  // if (error) return <div className={`${styles["mis-pedidos-container"]} error`}>{error}</div>;
+   if (error) return <div className={`${styles["mis-pedidos-container"]} error`}>{error}</div>;
 
   return (
     <div className={styles["layoutWrapper"]}>
@@ -148,9 +173,12 @@ const MisPedidos: React.FC = () => {
                     <td data-label="Fecha">{formatDate(order.createdAt)}</td>
                     <td data-label="Total">Bs. {Number(order.orderTotal).toFixed(2)}</td>
                     <td data-label="Detalle">
-                      {/* Aquí podrías poner un Link al detalle del pedido */}
-                      <button className={styles["btn-detalle"]} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#007bff'}}>
-                        Ver
+                      <button 
+                        className={styles["btn-detalle"]}
+                        onClick={() => handleViewDetails(order.id)}
+                        disabled={loadingDetails}
+                      >
+                        {loadingDetails ? '...' : 'Ver'}
                       </button>
                     </td>
                   </tr>
@@ -192,6 +220,72 @@ const MisPedidos: React.FC = () => {
           </button>
         </div>
       </div>
+
+      
+      {/* --- MODAL DETALLE PEDIDO --- */}
+      {isModalOpen && selectedOrder && (
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={closeModal}>
+              <X size={24} />
+            </button>
+
+            <div className={styles.modalHeader}>
+              <div>
+                <h2>Detalle del pedido</h2>
+                <div className={styles.orderInfo}>
+                   <p><strong>Codigo pedido:</strong> #{selectedOrder.id}</p>
+                   <p><strong>Fecha:</strong> {formatDate(selectedOrder.createdAt)}</p>
+                   {/* Mostramos la dirección si existe en el usuario o en el pedido */}
+                   {/* Nota: Ajusta la lógica de dirección según tu modelo exacto */}
+                   <p><strong>Enviado a:</strong> {selectedOrder.user?.addresses?.[0] 
+                      ? `${selectedOrder.user.addresses[0].street} #${selectedOrder.user.addresses[0].streetNumber}` 
+                      : 'Dirección registrada'}
+                   </p>
+                </div>
+              </div>
+              {/* Badge de estado en el modal */}
+              <span className={`${styles["estado-tag"]} ${getStatusClass(selectedOrder.status)}`}>
+                {mapStatusToText(selectedOrder.status)}
+              </span>
+            </div>
+
+            <div className={styles.productsTableContainer}>
+              <table className={styles.productsTable}>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th className={styles.textCenter}>Cant</th>
+                    <th className={styles.textRight}>Precio</th>
+                    <th className={styles.textRight}>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedOrder.items?.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                         {/* Ajustar si item.product es objeto o si item tiene nombre directo */}
+                         {item.product?.name || 'Producto desconocido'}
+                      </td>
+                      <td className={styles.textCenter}>{item.quantity}</td>
+                      <td className={styles.textRight}>{formatCurrency(item.unitPrice)}</td>
+                      <td className={styles.textRight}>
+                        {formatCurrency(item.quantity * item.unitPrice)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Total al final del modal */}
+            <div style={{textAlign: 'right', marginTop: '20px', fontSize: '18px', fontWeight: 'bold', color: '#111'}}>
+               Total: {formatCurrency(selectedOrder.orderTotal)}
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };
