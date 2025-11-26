@@ -77,6 +77,13 @@ export class OrderController {
   remove(@Param('id') id: number) {
     return this.orderService.remove(id);
   }
-  
+@Get('by-user/:userId')
+async getByUser(
+  @Param('userId') userId: number,
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 10,
+) {
+  return this.orderService.getByUser(userId, page, limit);
+}
 
 }
