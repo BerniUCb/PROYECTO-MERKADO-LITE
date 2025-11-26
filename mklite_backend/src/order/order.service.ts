@@ -59,7 +59,13 @@ export class OrderService {
   const { page: p, limit: l } = QueryHelpers.normalizePage(page, limit);
 
   const orders = await this.orderRepository.find({
-    relations: ['user', 'items', 'payment'],
+    relations: {
+      user: true,
+      payment: true,
+      items: {
+        product: true,   // 🔥 También aquí
+      },
+    },
     skip: (p - 1) * l,
     take: l,
   });
@@ -68,17 +74,26 @@ export class OrderService {
 }
 
 
-  async findOne(id: number): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { id },
-      relations: ['user', 'items', 'payment'],
-    });
 
-    if (!order) {
-      throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
-    }
-    return order;
+ async findOne(id: number): Promise<Order> {
+  const order = await this.orderRepository.findOne({
+    where: { id },
+    relations: {
+      user: true,
+      payment: true,
+      items: {
+        product: true,  // 🔥 Cargar producto dentro de cada item
+      },
+    },
+  });
+
+  if (!order) {
+    throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
   }
+
+  return order;
+}
+
 
   async update(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
     const order = await this.findOne(id);
@@ -164,14 +179,17 @@ export class OrderService {
   return salesByDay;
 }
 // TOTAL de órdenes
-  async getTotalOrdersCount(): Promise<number> {
-    return await this.orderRepository.count();
-  }
+async getTotalOrdersCount(): Promise<number> {
+  const total = await this.orderRepository.count();
+  return total;
+}
 
-  // TOTAL de órdenes canceladas
-  async getCancelledOrdersCount(): Promise<number> {
-    return await this.orderRepository.count({
-      where: { status: 'cancelled' },
-    });
-  }
+// TOTAL de órdenes canceladas
+async getCancelledOrdersCount(): Promise<number> {
+  const cancelled = await this.orderRepository.count({
+    where: { status: 'cancelled' },
+  });
+  return cancelled;
+}
+
 }

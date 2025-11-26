@@ -12,10 +12,11 @@ import { AuthModule } from './auth/auth.module';
 
 import { NotificationModule } from './notification/notification.module';
 import { TicketModule } from './support-ticket/support-ticket.module';
-
 import { AddressModule } from './address/address.module';
 import { stockMovementModule } from './stock-movement/stock-movement.module';
 import { CheckoutModule } from './checkout/checkout.module';
+import { ConfigModule } from '@nestjs/config';
+import { BackupController } from './backup/backup.controller';
 
 
 @Module({
@@ -32,9 +33,13 @@ import { CheckoutModule } from './checkout/checkout.module';
     stockMovementModule,
     CheckoutModule,
     NotificationModule,
+    ConfigModule.forRoot({ isGlobal: true }), // Carga .env automáticamente
+    UserModule,
+    AuthModule,
+   
 
   ],
-  controllers: [AppController],
+  controllers: [AppController, BackupController],
   providers: [AppService],
 })
 // La clase ya no implementa OnApplicationBootstrap.

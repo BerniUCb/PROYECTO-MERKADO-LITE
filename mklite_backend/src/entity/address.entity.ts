@@ -3,8 +3,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
 
-@Entity('addresses') // <-- Nombre de la tabla en plural
-export class Address { // <-- Nombre de la clase en inglés
+@Entity('addresses') 
+export class Address { 
 
     @PrimaryGeneratedColumn({ name: 'address_id' }) // <-- Columna ID
     id: number;

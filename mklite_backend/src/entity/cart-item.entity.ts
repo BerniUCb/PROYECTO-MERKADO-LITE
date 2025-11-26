@@ -2,13 +2,12 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { User } from "./user.entity";
-import { Product } from "./product.entity"; // <-- Anticipamos que 'Producto' se llamará 'Product'
+import { Product } from "./product.entity"; 
+@Entity('cart_items') 
+@Unique(['user', 'product']) 
+export class CartItem { 
 
-@Entity('cart_items') // <-- 'carrito_item' -> 'cart_items'
-@Unique(['user', 'product']) // <-- Propiedades en inglés
-export class CartItem { // <-- 'CarritoItem' -> 'CartItem'
-
-    @PrimaryGeneratedColumn({ name: 'cart_item_id' }) // <-- 'carrito_item_id'
+    @PrimaryGeneratedColumn({ name: 'cart_item_id' }) 
     id: number;
 
     @Column({ type: 'integer', default: 1 })
@@ -21,11 +20,11 @@ export class CartItem { // <-- 'CarritoItem' -> 'CartItem'
     addedAt: Date; // <-- 'fechaAgregado' -> 'addedAt'
     
     // --- Relationships ---
-    @ManyToOne(() => User, (user) => user.cartItems, { nullable: false }) // <-- Relación con 'user.cartItems'
-    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
-    user: User; // <-- 'cliente' -> 'user'
+    @ManyToOne(() => User, (user) => user.cartItems, { nullable: false }) 
+    @JoinColumn({ name: 'user_id' }) 
+    user: User; 
 
-    @ManyToOne(() => Product, { nullable: false }) // <-- Apunta a la futura clase 'Product'
+    @ManyToOne(() => Product, { nullable: false }) 
     @JoinColumn({ name: 'product_id' })
     product: Product; // <-- 'producto' -> 'product'
 }
