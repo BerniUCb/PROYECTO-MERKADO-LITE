@@ -9,7 +9,9 @@ export default function HeaderAdmin() {
       <div className={styles.topBar}>
         <div className={styles.topBarLeft}>
           <Link href="/about">Quiénes Somos</Link>
-          <Link href="/account">Mi Cuenta</Link>
+
+          {/* 🔥 Corregido */}
+          <Link href="/admin">Mi Cuenta</Link>
         </div>
 
         <div className={styles.topBarCenter}>
@@ -38,7 +40,6 @@ export default function HeaderAdmin() {
 
         {/* ICONOS DERECHA */}
         <div className={styles.rightSection}>
-          
           {/* NOTIFICACIONES */}
           <button
             className={styles.iconButton}
@@ -46,7 +47,7 @@ export default function HeaderAdmin() {
             type="button"
           >
             <Image
-              src="/header/notification.svg"   
+              src="/header/notification.svg"
               alt="Notificaciones"
               width={24}
               height={24}
@@ -54,7 +55,8 @@ export default function HeaderAdmin() {
           </button>
 
           {/* CUENTA */}
-          <Link href="/admin/account" className={styles.account}>
+          {/* 🔥 Corregido */}
+          <Link href="/admin" className={styles.account}>
             <Image
               src="/header/iconoUsuario.png"
               alt="Cuenta"

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { logout } from "@/app/utils/logout";
 import styles from "./UserSidebar.module.css";
 
 type UserMenuItem = {
@@ -20,7 +21,7 @@ const menuItems: UserMenuItem[] = [
   { label: "Notificaciones", href: "/user/notification", icon: "/user-menu/notifications.svg" },
   { label: "Cupones", href: "/user/coupons", icon: "/user-menu/coupons.svg" },
   { label: "Recibos", href: "/user/receipts", icon: "/user-menu/receipts.svg" },
-  { label: "Configuración de la cuenta", href: "/user/settings", icon: "/user-menu/settings.svg" },
+  { label: "Configuración", href: "/user/settings", icon: "/user-menu/settings.svg" },
 ];
 
 export default function UserSidebar() {
@@ -29,7 +30,6 @@ export default function UserSidebar() {
 
   const [userName, setUserName] = useState("Usuario");
 
-  // 🔥 Obtener nombre del usuario almacenado en localStorage
   useEffect(() => {
     try {
       const userString = localStorage.getItem("user");
@@ -43,8 +43,7 @@ export default function UserSidebar() {
   }, []);
 
   const renderItem = (item: UserMenuItem) => {
-    const isActive =
-      pathname === item.href || pathname.startsWith(item.href + "/");
+    const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
     return (
       <li key={item.href} className={isActive ? styles.itemActive : styles.item}>
@@ -59,9 +58,7 @@ export default function UserSidebar() {
   };
 
   const handleLogout = () => {
-    console.log("🔴 Cerrando sesión...");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     router.push("/login");
   };
 
@@ -75,11 +72,7 @@ export default function UserSidebar() {
         <ul className={styles.list}>{menuItems.map(renderItem)}</ul>
       </nav>
 
-      <button
-        type="button"
-        className={styles.logoutButton}
-        onClick={handleLogout}
-      >
+      <button type="button" className={styles.logoutButton} onClick={handleLogout}>
         <span className={styles.iconWrapper}>
           <Image src="/user-menu/logOut.svg" alt="Cerrar sesión" width={18} height={18} />
         </span>

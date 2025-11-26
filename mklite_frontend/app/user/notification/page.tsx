@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import { notificationIcons } from "../utils/notificationIcons";
-import Notification from "../models/notification.model";
-import { instance } from "../utils/axios";
+import { notificationIcons } from "../../utils/notificationIcons";
+import Notification from "@/app/models/notification.model";
+import { instance } from "../../utils/axios";
 
 export default function Notificaciones() {
   const [notifications, setNotifications] = useState<Notification[]>([]);

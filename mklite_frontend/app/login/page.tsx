@@ -14,49 +14,44 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ❗ No redirigimos automáticamente.
-  // Solo eliminamos tokens inválidos o expirados.
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const isExpired = payload.exp * 1000 < Date.now();
-
-      if (isExpired) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
-    } catch {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    }
+    // limpiar tokens viejos
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    document.cookie = "token=; Max-Age=0; path=/;";
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    console.log("🔵 Formulario enviado...");
-    console.log("🔵 Intentando login...");
+  try {
+    const res = await instance.post("/auth/login", { email, password });
 
-    try {
-      const res = await instance.post("/auth/login", { email, password });
+    const token = res.data.access_token;
+    const user = res.data.user;
 
-      console.log("🟢 Login exitoso", res.data);
+    // Guardar primero
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    document.cookie = `token=${token}; path=/;`;
 
-      // 🔥 AQUÍ ESTÁ EL FIX IMPORTANTE:
-      localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      router.push("/home");
-    } catch (err: any) {
-      console.error("🔴 Error login:", err.response?.data);
-      setError(err.response?.data?.message || "Error al iniciar sesión");
+    // 🔥 Redirect basado en rol ANTES de esperar que React recargue estados
+    if (user.role === "Admin") {
+      router.replace("/admin"); // ⬅ replace evita volver atrás
+      return;
     }
-  };
+
+    if (user.role === "Client") {
+      router.replace("/home");
+      return;
+    }
+
+  } catch (err: any) {
+    setError(err.response?.data?.message || "Error al iniciar sesión");
+  }
+};
+
 
   return (
     <>
@@ -67,7 +62,7 @@ export default function LoginPage() {
           <h2 className={styles.formTitle}>Iniciar Sesión</h2>
 
           <div>
-            <label htmlFor="email">Correo electrónico</label>
+            <label>Correo electrónico</label>
             <input
               type="email"
               value={email}
@@ -78,7 +73,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password">Contraseña</label>
+            <label>Contraseña</label>
             <input
               type="password"
               value={password}
