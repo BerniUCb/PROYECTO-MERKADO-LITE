@@ -28,9 +28,19 @@ const mainItems: AdminMenuItem[] = [
     icon: "/admin-menu/customers.svg",
   },
   {
+    label: "Ventas en tienda",
+    href: "/admin/pos", // ← ruta sugerida para el módulo de ventas físicas
+    icon: "/admin-menu/ventaEnTienda.svg",
+  },
+  {
     label: "Repartidores",
     href: "/admin/riders",
     icon: "/admin-menu/repartidores.svg",
+  },
+  {
+    label: "Gestión de usuarios",
+    href: "/admin/users", // ← aquí irá tu pantalla de crear/gestionar usuarios
+    icon: "/admin-menu/gestiondeUsuarios.svg",
   },
   {
     label: "Categorias",
@@ -74,13 +84,13 @@ export default function AdminSidebar() {
 
   // LOGOUT
   const handleLogout = () => {
-    // Por ahora solo redirigimos (luego lo conectamos con auth)
+    // Por ahora solo redirigimos (luego lo conectamos con auth real)
     router.push("/home");
   };
 
   return (
     <aside className={styles.sidebar}>
-      {/* Parte superior */}
+      {/* Parte superior: menús */}
       <div className={styles.menuSection}>
         <ul className={styles.list}>{mainItems.map(renderItem)}</ul>
 
