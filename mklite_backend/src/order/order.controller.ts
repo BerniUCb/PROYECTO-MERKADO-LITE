@@ -28,6 +28,24 @@ export class OrderController {
   getLatestOrders(){
     return this.orderService.getLatestOrders();
   }
+  
+  @Get('stats/last-7-days')
+  async getLast7DaysSales(): Promise<number[]> {
+  return this.orderService.getLast7DaysSales();
+  }
+
+  @Get('report/total-count')
+  async getTotalOrdersCount() {
+  const total = await this.orderService.getTotalOrdersCount();
+  return { totalOrders: total };
+}
+
+  @Get('report/cancelled-count')
+  async getCancelledOrdersCount() {
+  const cancelled = await this.orderService.getCancelledOrdersCount();
+  return { cancelledOrders: cancelled };
+}
+
   //CRUD
 
   @Post()
@@ -59,20 +77,14 @@ export class OrderController {
   remove(@Param('id') id: number) {
     return this.orderService.remove(id);
   }
-  @Get('stats/last-7-days')
-  async getLast7DaysSales(): Promise<number[]> {
-  return this.orderService.getLast7DaysSales();
+  @Get('by-user/:userId')
+  async getByUser(
+    @Param('userId') userId: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+  return this.orderService.getByUser(userId, page, limit);
   }
-  @Get('report/total-count')
-async getTotalOrdersCount() {
-  const total = await this.orderService.getTotalOrdersCount();
-  return { totalOrders: total };
-}
-
-@Get('report/cancelled-count')
-async getCancelledOrdersCount() {
-  const cancelled = await this.orderService.getCancelledOrdersCount();
-  return { cancelledOrders: cancelled };
-}
 
 }
+

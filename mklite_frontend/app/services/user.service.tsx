@@ -18,8 +18,17 @@ export const UserService = {
     return res.data;
   },
 
-  // Omitimos relaciones complejas al crear
-  create: async (user: Omit<User, "id" | "orders" | "cartItems" | "notifications" | "addresses" | "stockMovements" | "ratings" | "assignedShipments">): Promise<User> => {
+  // 👉 YA NO usamos Omit<User...> porque no permite enviar "password"
+  create: async (user: {
+    fullName: string;
+    email: string;
+    phone?: string;
+    password: string;
+    role: string;
+    isActive?: boolean;
+    isTwoFactorEnabled?: boolean;
+    twoFactorSecret?: string;
+  }): Promise<User> => {
     const res = await instance.post("/users", user);
     return res.data;
   },
@@ -34,14 +43,17 @@ export const UserService = {
   },
 
   getRegisteredClientsCount: async (): Promise<number> => {
-    const res = await instance.get("/users/totalUsers"); 
+    const res = await instance.get("/users/totalUsers");
     return res.data.totalUsers;
   },
 
-  // new function in UserService
-getOrdersCount: async (userId: number): Promise<{ totalOrders: number }> => {
-  const res = await instance.get(`/users/${userId}/orders/count`);
-  return res.data;
-},
+  getUsersWithOrders: async (): Promise<User[]> => {
+    const res = await instance.get("/users/with-orders");
+    return res.data;
+  },
 
+  countOrdersByUser: async (userId: number): Promise<number> => {
+    const res = await instance.get(`/users/${userId}/orders/count`);
+    return res.data.totalOrders;
+  }
 };

@@ -6,6 +6,7 @@ import { Product } from '../entity/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product-dto';
 import { MoreThan } from 'typeorm';
+import { Promotion } from 'src/entity/promotion.entity';
 
 
 @Injectable()
@@ -37,7 +38,7 @@ export class ProductService {
   }
 
   async getProductById(id: number): Promise<Product> {
-   const product = await this.productRepository.findOne({where: { id },relations: {category: true, },});
+   const product = await this.productRepository.findOne({where: { id },relations: ['category' , 'promotions' ],});
 
   if (!product) {
     throw new NotFoundException(`Product with ID "${id}" not found`);
@@ -75,22 +76,62 @@ export class ProductService {
   return await this.productRepository.save(productToUpdate);
 }
 
+async getPaginatedProducts(page: number, limit: number) {
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await this.productRepository.findAndCount({
+    relations: {
+      category: true,
+    },
+    skip,
+    take: limit,
+    order: { id: 'ASC' },
+  });
+
+  return {
+    products,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  };
+}
 
 async getTopSellingProducts(limit = 10): Promise<any[]> {
-  const result = await this.productRepository
-    .createQueryBuilder('product')
-    .leftJoin('product.orderItems', 'orderItem')
-    .addSelect('SUM(orderItem.quantity)', 'totalSold')
-    .groupBy('product.id')
-    .orderBy('totalSold', 'DESC')
-    .limit(limit)
-    .getRawAndEntities();
+    // Usamos una consulta segura que evita errores de GROUP BY strict mode
+    const rawData = await this.productRepository
+      .createQueryBuilder('product')
+      // Hacemos join con orderItem. Asegúrate de que la relación exista en tu entity Product.
+      // Si no existe la relación en la entidad, cambia esto por un join manual.
+      .leftJoin('product.orderItems', 'orderItem') 
+      .select([
+        'product.id AS id',
+        'product.name AS name',
+        'product.salePrice AS "salePrice"', // Comillas para mantener camelCase en Postgres
+        'product.physicalStock AS "physicalStock"',
+        'product.imageUrl AS "imageUrl"',
+        'SUM(orderItem.quantity) AS "totalSold"'
+      ])
+      .groupBy('product.id')
+      // Postgres requiere agrupar por las columnas seleccionadas o usar funciones de agregación
+      .addGroupBy('product.name')
+      .addGroupBy('product.salePrice')
+      .addGroupBy('product.physicalStock')
+      .addGroupBy('product.imageUrl')
+      .orderBy('"totalSold"', 'DESC') // Ordenamos por el alias
+      .limit(limit)
+      .getRawMany();
 
-  return result.entities.map((product, index) => ({
-    ...product,
-    totalSold: Number(result.raw[index].totalSold || 0),
-  }));
-}
+    // Mapeamos para asegurar que los números sean numéricos (Postgres devuelve strings en SUM)
+    return rawData.map(item => ({
+      id: item.id,
+      name: item.name,
+      salePrice: Number(item.salePrice),
+      physicalStock: Number(item.physicalStock),
+      imageUrl: item.imageUrl,
+      totalSold: Number(item.totalSold || 0)
+    }));
+  }
+
 
 /////////////////////
 async getTotalProductsCount(): Promise<number> {

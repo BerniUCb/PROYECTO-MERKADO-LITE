@@ -1,6 +1,7 @@
 import CategoryModel from "./categoryCard.model";
 import OrderItem from "./orderItem.model";
 import priceHistory from "./priceHistory.model";
+import  Promotion  from "./promotion.model"
 
 export default interface ProductModel {
   id: number;
@@ -13,10 +14,14 @@ export default interface ProductModel {
   imageUrl?: string | null; // también nullable en la entidad
   isActive: boolean;
 
+  createdAt: string;
+  updatedAt: string;
+
   // Relaciones
   category: CategoryModel;
 
   // Si tu frontend va a usarlo:
   orderItems?: OrderItem[];
   priceHistory?: priceHistory[];
+  promotions?: Promotion[];
 }

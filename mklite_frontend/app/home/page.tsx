@@ -25,8 +25,12 @@ export default function HomePage() {
   // 🔹 Estado para categorías
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
 
-  // 🔹 Estado para productos reales desde backend
+  // 🔹 Estado para productos reales desde backend (paginados)
   const [products, setProducts] = useState<ProductModel[]>([]);
+
+  // 🔹 Estado de paginación
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // ================================================================
   //  CARGAR CATEGORÍAS DESDE BACKEND 
@@ -50,41 +54,39 @@ export default function HomePage() {
     loadCategories();
   }, []);
 
-  
-  //  CARGAR PRODUCTOS DESDE BACKEND 
-  
- useEffect(() => {
+  // ================================================================
+  //  CARGAR PRODUCTOS DESDE BACKEND (PAGINADOS)
+  // ================================================================
+  useEffect(() => {
     const loadProducts = async () => {
       try {
-        const products = await ProductService.getAll();
+        const { products, totalPages } = await ProductService.getPaginated(page, 15);
 
-        // 🔄 Asegurar que haya imagen o colocar placeholder
         const mapped = products.map((p: ProductModel) => ({
           ...p,
           imageUrl: p.imageUrl ?? "/products/no-image.png",
         }));
 
         setProducts(mapped);
+        setTotalPages(totalPages);
       } catch (error) {
-        console.error("❌ Error cargando productos:", error);
+        console.error("❌ Error cargando productos paginados:", error);
       }
     };
 
     loadProducts();
-  }, []);
+  }, [page]);
 
-
+  // ================================================================
   //  RETURN
-  
+  // ================================================================
   return (
     <>
-      
       <Header />
 
       <main className={styles.main}>
 
         {/* 🔹 SECCIÓN: Productos */}
-      
         <section id="productos" className={styles.productsSection}>
           <h2>Productos</h2>
 
@@ -93,50 +95,52 @@ export default function HomePage() {
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
+
+          {/* 🔹 PAGINACIÓN */}
+          <div className={styles.pagination}>
+            <button 
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              ◀ Anterior
+            </button>
+
+            <span>Página {page} de {totalPages}</span>
+
+            <button 
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Siguiente ▶
+            </button>
+          </div>
         </section>
 
         {/* SECCIÓN: Categorías  */}
-       
         <section id="categorias" className={styles.categoriesSection}>
           <h2>Categorías</h2>
 
-        <div className={styles.categoriesGrid}>
-          {categories.map((cat) => (
-            <CategoryCard
-              key={cat.id}
-              name={cat.name}
-              slug={(cat.name ?? "sin-nombre").toLowerCase()}
-              IconComponent={cat.IconComponent!}
-            />
-          ))}
-        </div>
-      </section>
+          <div className={styles.categoriesGrid}>
+            {categories.map((cat) => (
+              <CategoryCard
+                key={cat.id}
+                name={cat.name}
+                slug={(cat.name ?? "sin-nombre")
+                  .toLowerCase()
+                  .replace(/ /g, "-")}
+                IconComponent={cat.IconComponent!}
+              />
+            ))}
+          </div>
+        </section>
 
-      
-
-      
-        {/* Showcase + Benefits  */}
-        
+        {/* Showcase + Benefits */}
         <ProductShowcase />
         <Benefits />
 
       </main>
 
-      
       <Footer />
-
-      
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
