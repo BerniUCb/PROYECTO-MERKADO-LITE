@@ -104,6 +104,13 @@ export class NotificationService {
     }
     return notification;
   }
+  // todas las notis ya sea de solo admins o solo clientes
+  async findAllByRole(role: RecipientRole): Promise<Notification[]> {
+    return this.notificationRepository.find({
+      where: { recipientRole: role }, // Solo filtra por rol
+      order: { createdAt: 'DESC' },
+    });
+  }
 
   async findByType(type: NotificationType): Promise<Notification[]> {
     return this.notificationRepository.find({
