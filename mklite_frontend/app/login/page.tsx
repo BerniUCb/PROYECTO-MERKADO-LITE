@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import styles from "./page.module.css";
@@ -9,38 +9,59 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  // ❗ No redirigimos automáticamente.
+  // Solo eliminamos tokens inválidos o expirados.
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const isExpired = payload.exp * 1000 < Date.now();
+
+      if (isExpired) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
+
+    console.log("🔵 Formulario enviado...");
+    console.log("🔵 Intentando login...");
 
     try {
       const res = await instance.post("/auth/login", { email, password });
-      const data = res.data;
 
-      // Guardar token y usuario
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      console.log("🟢 Login exitoso", res.data);
 
-      setSuccess("¡Inicio de sesión correcto!");
-      setEmail("");
-      setPassword("");
+      // 🔥 AQUÍ ESTÁ EL FIX IMPORTANTE:
+      localStorage.setItem("token", res.data.access_token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Redirigir a dashboard o home
       router.push("/home");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Correo o contraseña incorrectos");
+      console.error("🔴 Error login:", err.response?.data);
+      setError(err.response?.data?.message || "Error al iniciar sesión");
     }
   };
 
   return (
     <>
       <Header />
+
       <div className={styles.loginContainer}>
         <form className={styles.loginForm} onSubmit={handleLogin}>
           <h2 className={styles.formTitle}>Iniciar Sesión</h2>
@@ -49,7 +70,6 @@ export default function LoginPage() {
             <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
-              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ejemplo@correo.com"
@@ -61,7 +81,6 @@ export default function LoginPage() {
             <label htmlFor="password">Contraseña</label>
             <input
               type="password"
-              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -70,15 +89,20 @@ export default function LoginPage() {
           </div>
 
           {error && <p style={{ color: "red" }}>{error}</p>}
-          {success && <p style={{ color: "green" }}>{success}</p>}
 
-          <button type="submit" className={styles.button}>Continuar</button>
+          <button type="submit" className={styles.button}>
+            Continuar
+          </button>
 
           <p className={styles.crearCuenta}>
-            ¿No tienes cuenta? <a href="/signup"><b>Crear cuenta</b></a>
+            ¿No tienes cuenta?{" "}
+            <a href="/signup">
+              <b>Crear cuenta</b>
+            </a>
           </p>
         </form>
       </div>
+
       <Footer />
     </>
   );
