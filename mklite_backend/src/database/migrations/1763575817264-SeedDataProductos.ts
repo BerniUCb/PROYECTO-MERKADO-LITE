@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class SeedDataProductos1763575817264 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // 1. LIMPIEZA (Para evitar duplicados si re-corres migraciones en dev)
+        //  LIMPIEZA (Para evitar duplicados )
         // Usamos CASCADE para borrar productos al borrar categorías, pero reiniciamos IDs
         await queryRunner.query(`TRUNCATE TABLE products, categories RESTART IDENTITY CASCADE;`);
 

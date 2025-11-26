@@ -4,7 +4,8 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { Category } from "./category.entity";
 import { OrderItem } from "./order-item.entity";
 import { PriceHistory } from "./price-history.entity";
-import { SupplierReturn } from "./supplier-return.entity"; // <--- IMPORTAR
+import { SupplierReturn } from "./supplier-return.entity"; 
+import { Promotion } from "./promotion.entity"; 
 
 @Entity('products') // <-- 'producto' -> 'products'
 export class Product { // <-- 'Producto' -> 'Product'
@@ -53,4 +54,6 @@ export class Product { // <-- 'Producto' -> 'Product'
     priceHistory: PriceHistory[];
     @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.product)
     supplierReturns: SupplierReturn[];
+    @OneToMany(() => Promotion, (promotion) => promotion.product)
+    promotions: Promotion[];
 }
