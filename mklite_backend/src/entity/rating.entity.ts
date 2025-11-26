@@ -1,29 +1,29 @@
 // src/entity/rating.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToOne, Check } from "typeorm";
-import { Order } from "./order.entity"; // <-- Actualizado a 'Order'
+import { Order } from "./order.entity"; 
 import { User } from "./user.entity";
 
-@Entity('ratings') // <-- 'calificacion' -> 'ratings'
-@Check(`"score" >= 1 AND "score" <= 5`) // <-- ¡IMPORTANTE! Actualizado de "puntuacion" a "score"
-export class Rating { // <-- 'Calificacion' -> 'Rating'
+@Entity('ratings') // <-- 'calificacion' 
+@Check(`"score" >= 1 AND "score" <= 5`) 
+export class Rating { // <-- 'Calificacion' 
 
     @PrimaryGeneratedColumn({ name: 'rating_id' }) // <-- 'calificacion_id'
     id: number;
     
     @Column({ type: 'integer' })
-    score: number; // <-- 'puntuacion' -> 'score'
+    score: number; 
 
     @Column({ type: 'text', nullable: true })
-    comment: string; // <-- 'comentario' -> 'comment'
+    comment: string; 
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
-    createdAt: Date; // <-- 'fechaCalificacion' -> 'createdAt'
+    createdAt: Date; 
 
     // --- Relationships ---
     @OneToOne(() => Order, { nullable: false })
-    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
-    order: Order; // <-- 'pedido' -> 'order'
+    @JoinColumn({ name: 'order_id' }) 
+    order: Order; 
 
     @ManyToOne(() => User, (user) => user.ratings, { nullable: false }) // <-- Relación inversa será 'user.ratings'
     @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'

@@ -9,17 +9,17 @@ import { StockMovement } from "./stock-movement.entity";
 import { Address } from "./address.entity";
 import { Notification } from "./notification.entity";
 
-// Define the user roles in English
+
 export type UserRole = 'Admin' | 'Seller' | 'Warehouse' | 'DeliveryDriver' | 'Client' | 'Support' | 'Supplier';
 
-@Entity('users') // <-- 'usuario' -> 'users'
+@Entity('users') 
 export class User {
 
-    @PrimaryGeneratedColumn({ name: 'user_id' }) // <-- 'usuario_id'
+    @PrimaryGeneratedColumn({ name: 'user_id' }) 
     id: number;
 
     @Column({ name: 'full_name' })
-    fullName: string; // <-- 'nombreCompleto' -> 'fullName'
+    fullName: string; 
 
     @Column({ unique: true })
     email: string;
@@ -41,7 +41,7 @@ export class User {
             'Supplier'
         ]
     })
-    role: UserRole; // <-- 'rol' -> 'role'
+    role: UserRole; 
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;

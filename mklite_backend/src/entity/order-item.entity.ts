@@ -1,8 +1,8 @@
 // src/entity/order-item.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Order } from "./order.entity"; // Anticipamos 'Order'
-import { Product } from "./product.entity"; // Anticipamos 'Product'
+import { Order } from "./order.entity"; 
+import { Product } from "./product.entity"; 
 
 
 @Entity('order_items') // <-- 'detalle_pedido' -> 'order_items'

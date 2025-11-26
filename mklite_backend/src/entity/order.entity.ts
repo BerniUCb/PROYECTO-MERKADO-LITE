@@ -2,9 +2,9 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany, OneToOne } from "typeorm";
 import { User } from "./user.entity";
-import { OrderItem } from "./order-item.entity"; // <-- Actualizado de 'DetallePedido' a 'OrderItem'
-import { Payment } from "./payment.entity"; // <--- IMPORTAR
-// Define el enum para los estados del pedido en inglés
+import { OrderItem } from "./order-item.entity"; 
+import { Payment } from "./payment.entity"; 
+// Define el enum para loos estados 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
 @Entity('orders') // <-- 'pedido' -> 'orders'

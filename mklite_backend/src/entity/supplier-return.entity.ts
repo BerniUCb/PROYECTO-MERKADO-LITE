@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Supplier } from "./supplier.entity"; // Asegúrate que el nombre del archivo coincida (provider o supplier)
+import { Supplier } from "./supplier.entity";
 import { Product } from "./product.entity";
 import { Lot } from "./lot.entity";
 
@@ -38,7 +38,7 @@ export class SupplierReturn {
     @JoinColumn({ name: 'supplier_id' })
     supplier: Supplier;
 
-    @ManyToOne(() => Lot, { nullable: true }) // Opcional, para saber de qué lote específico vino
+    @ManyToOne(() => Lot, { nullable: true }) 
     @JoinColumn({ name: 'lot_id' })
     lot: Lot;
 }

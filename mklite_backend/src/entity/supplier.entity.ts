@@ -1,29 +1,29 @@
 // src/entity/provider.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm";
-import { Lot } from "./lot.entity"; // <-- Actualizado de 'Lote' a 'Lot'
-import { SupplierReturn } from "./supplier-return.entity"; // <--- IMPORTAR
+import { Lot } from "./lot.entity"; 
+import { SupplierReturn } from "./supplier-return.entity"; 
 
-@Entity('suppliers') // <-- 'proveedor' -> 'suppliers'
-export class Supplier { // <-- 'Proveedor' -> 'Supplier'
+@Entity('suppliers') 
+export class Supplier { 
 
-    @PrimaryGeneratedColumn({ name: 'supplier_id' }) // <-- 'proveedor_id'
+    @PrimaryGeneratedColumn({ name: 'supplier_id' })
     id: number;
 
     @Column({ name: 'company_name' })
-    companyName: string; // <-- 'nombreEmpresa' -> 'companyName'
+    companyName: string; 
 
     @Column({ name: 'contact_name', nullable: true })
-    contactName: string; // <-- 'contactoNombre' -> 'contactName'
+    contactName: string; 
 
     @Column({ nullable: true })
     email: string;
 
     @Column({ nullable: true })
-    phone: string; // <-- 'telefono' -> 'phone'
+    phone: string; 
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
-    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
+    createdAt: Date; 
 
     // --- Relationships ---
     @OneToMany(() => Lot, (lot) => lot.supplier) // <-- 'Lote' -> 'Lot', '(lote) => lote.proveedor' -> '(lot) => lot.supplier'

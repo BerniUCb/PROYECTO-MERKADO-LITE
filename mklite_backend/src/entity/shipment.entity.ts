@@ -1,14 +1,14 @@
 // src/entity/shipment.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
-import { Order } from "./order.entity"; // <-- Actualizado
+import { Order } from "./order.entity"; 
 import { User } from "./user.entity";
-import { Address } from "./address.entity"; // <-- Actualizado
+import { Address } from "./address.entity"; 
 
 export type ShipmentStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
-@Entity('shipments') // <-- 'envio' -> 'shipments'
-export class Shipment { // <-- 'Envio' -> 'Shipment'
+@Entity('shipments') // <-- 'envio'
+export class Shipment { // <-- 'Envio'
 
     @PrimaryGeneratedColumn({ name: 'shipment_id' }) // <-- 'envio_id'
     id: number;
@@ -25,27 +25,27 @@ export class Shipment { // <-- 'Envio' -> 'Shipment'
         ],
         default: 'pending'
     })
-    status: ShipmentStatus; // <-- 'estado' -> 'status'
+    status: ShipmentStatus; // <-- 'estado' 
 
     @Column({ name: 'assigned_at', type: 'timestamp with time zone', nullable: true })
-    assignedAt: Date; // <-- 'fechaAsignacion' -> 'assignedAt'
+    assignedAt: Date; // <-- 'fechaAsignacion' 
 
     @Column({ name: 'estimated_delivery_at', type: 'timestamp with time zone', nullable: true })
-    estimatedDeliveryAt: Date; // <-- 'fechaEntregaEstimada' -> 'estimatedDeliveryAt'
+    estimatedDeliveryAt: Date; // <-- 'fechaEntregaEstimada'
 
     @Column({ name: 'delivered_at', type: 'timestamp with time zone', nullable: true })
-    deliveredAt: Date; // <-- 'fechaEntregado' -> 'deliveredAt'
+    deliveredAt: Date; // <-- 'fechaEntregado'
 
     // --- Relationships ---
     @OneToOne(() => Order, { nullable: false })
     @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
     order: Order; // <-- 'pedido' -> 'order'
 
-    @ManyToOne(() => User, (user) => user.assignedShipments, { nullable: true }) // <-- Relación inversa será 'user.assignedShipments'
-    @JoinColumn({ name: 'delivery_driver_id' }) // <-- 'repartidor_id' -> 'delivery_driver_id'
-    deliveryDriver: User; // <-- 'repartidor' -> 'deliveryDriver'
+    @ManyToOne(() => User, (user) => user.assignedShipments, { nullable: true }) 
+    @JoinColumn({ name: 'delivery_driver_id' }) 
+    deliveryDriver: User; 
     
     @ManyToOne(() => Address, { nullable: false })
-    @JoinColumn({ name: 'delivery_address_id' }) // <-- 'direccion_entrega_id' -> 'delivery_address_id'
-    deliveryAddress: Address; // <-- 'direccionEntrega' -> 'deliveryAddress'
+    @JoinColumn({ name: 'delivery_address_id' }) 
+    deliveryAddress: Address; 
 }

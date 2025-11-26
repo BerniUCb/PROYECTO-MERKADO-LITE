@@ -7,32 +7,32 @@ import { PriceHistory } from "./price-history.entity";
 import { SupplierReturn } from "./supplier-return.entity"; 
 import { Promotion } from "./promotion.entity"; 
 
-@Entity('products') // <-- 'producto' -> 'products'
-export class Product { // <-- 'Producto' -> 'Product'
+@Entity('products') // <-- 'producto' 
+export class Product { // <-- 'Producto'
 
     @PrimaryGeneratedColumn({ name: 'product_id' }) // <-- 'producto_id'
     id: number;
 
     @Column()
-    name: string; // <-- 'nombre' -> 'name'
+    name: string; // <-- 'nombre'
 
     @Column({ type: 'text', nullable: true })
-    description: string; // <-- 'descripcion' -> 'description'
+    description: string; // <-- 'descripcion' 
 
     @Column({ type: 'numeric', name: 'sale_price' })
-    salePrice: number; // <-- 'precioVenta' -> 'salePrice'
+    salePrice: number; // <-- 'precioVenta' 
 
-    @Column({ name: 'unit_of_measure', default: 'Unit' }) // <-- 'unidad_medida' -> 'unit_of_measure'
+    @Column({ name: 'unit_of_measure', default: 'Unit' }) // <-- 'unidad_medida' 
     unitOfMeasure: string;
 
     @Column({ type: 'integer', name: 'physical_stock' })
-    physicalStock: number; // <-- 'stockFisico' -> 'physicalStock'
+    physicalStock: number; // <-- 'stockFisico' 
 
     @Column({ type: 'integer', name: 'reserved_stock', default: 0 })
-    reservedStock: number; // <-- 'stockReservado' -> 'reservedStock'
+    reservedStock: number; // <-- 'stockReservado' 
 
     @Column({ name: 'image_url', type: 'varchar', length: 512, nullable: true })
-    imageUrl: string; // <-- 'urlImagen' -> 'imageUrl'
+    imageUrl: string; 
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
@@ -43,7 +43,7 @@ export class Product { // <-- 'Producto' -> 'Product'
     updatedAt: Date;
 
     // --- Relationships ---
-    @ManyToOne(() => Category, (category) => category.products) // <-- 'Categoria' -> 'Category'
+    @ManyToOne(() => Category, (category) => category.products) // <-- 'Categori
     @JoinColumn({ name: 'category_id' }) // <-- 'categoria_id'
     category: Category; // <-- 'categoria' -> 'category'
 

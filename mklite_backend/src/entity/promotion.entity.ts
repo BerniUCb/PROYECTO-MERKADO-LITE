@@ -1,7 +1,7 @@
 // src/entity/promotion.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Product } from "./product.entity"; // <-- Actualizado a 'Product'
+import { Product } from "./product.entity"; // 
 
 @Entity('promotions') // <-- 'promocion' -> 'promotions'
 export class Promotion { // <-- 'Promocion' -> 'Promotion'
@@ -10,19 +10,19 @@ export class Promotion { // <-- 'Promocion' -> 'Promotion'
     id: number;
 
     @Column()
-    description: string; // <-- 'descripcion' -> 'description'
+    description: string; // <-- 'descripcion' 
 
     @Column({ name: 'discount_type', nullable: true })
-    discountType: string; // <-- 'tipoDescuento' -> 'discountType'
+    discountType: string; // <-- 'tipoDescuento' 
 
     @Column({ type: 'numeric', precision: 10, scale: 2, name: 'discount_value', nullable: true })
-    discountValue: number; // <-- 'valorDescuento' -> 'discountValue'
+    discountValue: number; // <-- 'valorDescuento' 
 
     @Column({ name: 'starts_at', type: 'timestamp with time zone', nullable: true })
-    startsAt: Date; // <-- 'fechaInicio' -> 'startsAt'
+    startsAt: Date; // <-- 'fechaInicio' 
 
     @Column({ name: 'ends_at', type: 'timestamp with time zone', nullable: true })
-    endsAt: Date; // <-- 'fechaFin' -> 'endsAt'
+    endsAt: Date; // <-- 'fechaFin'
 
     // --- Relationships ---
     @ManyToOne(() => Product, { nullable: true })

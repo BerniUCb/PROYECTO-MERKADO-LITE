@@ -27,14 +27,14 @@ export class BackupController {
     // 2. EJECUTAR EL SCRIPT
     exec(`"${scriptPath}"`, (error, stdout, stderr) => {
         if (error) {
-            console.error(`❌ Error ejecutando backup: ${error.message}`);
+            console.error(` Error ejecutando backup: ${error.message}`);
             console.error(stderr);
             return res.status(500).json({ message: 'Error interno generando el backup.' });
         }
 
         console.log('✅ Backup generado. Buscando archivo...');
 
-        // 3. BUSCAR EL ARCHIVO MÁS RECIENTE
+        // 3. BUSCAR EL ARCHIVO MS RECIENTE
         try {
             if (!fs.existsSync(backupDir)) {
                 throw new Error('La carpeta de backups no existe.');
@@ -50,7 +50,7 @@ export class BackupController {
                 const latestFile = files[0].name;
                 const fullPath = path.join(backupDir, latestFile);
 
-                console.log(`📂 Enviando archivo: ${latestFile}`);
+                console.log(` Enviando archivo: ${latestFile}`);
 
                 // 4. DESCARGAR
                 res.download(fullPath, latestFile, (err) => {
@@ -59,7 +59,7 @@ export class BackupController {
                     }
                 });
             } else {
-                res.status(404).json({ message: 'El script corrió, pero no se encontró el archivo .gz generado.' });
+                res.status(404).json({ message: 'El script corrio, pero no se encontró el archivo .gz generado.' });
             }
         } catch (err) {
             console.error(err);
