@@ -14,8 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ❗ No redirigimos automáticamente.
-  // Solo eliminamos tokens inválidos o expirados.
+  // Mantén tu validación original
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -36,27 +35,48 @@ export default function LoginPage() {
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    console.log("🔵 Formulario enviado...");
-    console.log("🔵 Intentando login...");
+  console.log("🔵 ENVIANDO LOGIN...");
 
-    try {
-      const res = await instance.post("/auth/login", { email, password });
+  try {
+    const res = await instance.post("/auth/login", { email, password });
 
-      console.log("🟢 Login exitoso", res.data);
+    console.log("🟢 LOGIN OK:", res.data);
 
-      // 🔥 AQUÍ ESTÁ EL FIX IMPORTANTE:
-      localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    const token = res.data.access_token;
+    const user = res.data.user;
 
-      router.push("/home");
-    } catch (err: any) {
-      console.error("🔴 Error login:", err.response?.data);
-      setError(err.response?.data?.message || "Error al iniciar sesión");
+    const role = user.role?.toLowerCase();
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    document.cookie = `token=${token}; path=/;`;
+
+    console.log("🟢 ROLE DETECTADO:", role);
+
+    if (role === "admin") {
+      console.log("➡ REDIRIGIENDO A /admin");
+      router.push("/admin");
+      return;
     }
-  };
+
+    if (role === "client") {
+      console.log("➡ REDIRIGIENDO A /home");
+      router.push("/home");
+      return;
+    }
+
+    console.log("⚠ Rol no reconocido, enviando a /home");
+    router.push("/home");
+
+  } catch (err: any) {
+    console.log("🔴 ERROR LOGIN:", err);
+    console.log("🔴 RESPONSE DATA:", err.response?.data);
+    setError(err.response?.data?.message || "Error al iniciar sesión");
+  }
+};
+
 
   return (
     <>

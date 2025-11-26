@@ -20,6 +20,7 @@ import { ProductService } from "../services/product.service";
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import UserSidebar from "../components/UserSidebar";
 
 export default function HomePage() {
   // 🔹 Estado para categorías
@@ -83,6 +84,8 @@ export default function HomePage() {
   return (
     <>
       <Header />
+
+      
 
       <main className={styles.main}>
 

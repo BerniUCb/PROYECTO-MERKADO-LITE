@@ -20,7 +20,7 @@ export default function AccountDetailsPage() {
   return (
     <main className={styles.wrapper}>
       {/* Sidebar */}
-      <UserSidebar />
+      {/*<UserSidebar />*/}
 
       {/* Contenido derecha */}
       <div className={styles.container}>

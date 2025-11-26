@@ -1,0 +1,122 @@
+.pageBackground {
+  background: #ffffff;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.wrapper {
+  width: 900px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.container {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 10px;
+  border-radius: 12px;
+  transition: background 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #fafafa;
+  transform: translateY(-1px);
+}
+
+.unread {
+  background: #f3f8ff;
+  border-left: 4px solid #3b82f6;
+}
+
+.left {
+  display: flex;
+  gap: 12px;
+}
+
+.iconCircle {
+  width: 45px;
+  height: 45px;
+  background: #f2f2f2;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: #c62828;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainText {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+}
+
+.subText {
+  font-size: 13px;
+  color: #666;
+  margin-top: 3px;
+}
+
+.right {
+  text-align: right;
+  min-width: 160px;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.deleteBtn {
+  font-size: 13px;
+  color: #d9534f;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.deleteBtn:hover {
+  text-decoration: underline;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+.loading {
+  padding: 30px;
+  text-align: center;
+  font-size: 16px;
+}
