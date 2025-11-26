@@ -9,11 +9,10 @@ import { Payment } from "../../entity/payment.entity";
 import { Shipment } from "../../entity/shipment.entity";
 import { Address } from "../../entity/address.entity";
 
-// RECUERDA: Cambia el nombre de la clase para que coincida con los números de tu archivo
 export class SeedSalesHistory1764016284184 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // 1. Obtener tus 2 clientes específicos
+        // 1. Obtengo tus 2 clientes 
         const client1 = await queryRunner.manager.findOne(User, { where: { email: 'client1@merkadolite.com' } });
         const client2 = await queryRunner.manager.findOne(User, { where: { email: 'client2@merkadolite.com' } });
         
@@ -22,7 +21,7 @@ export class SeedSalesHistory1764016284184 implements MigrationInterface {
         const products = await queryRunner.manager.findByIds(Product, [1, 2, 3, 4, 5]);
 
         if (!client1 || !client2 || products.length === 0) {
-            console.log("⚠️ Skipping SeedHistory: Clients or Products missing. Run previous seeds first.");
+            console.log(" Skipping SeedHistory: Clients or Products missing. Run previous seeds first.");
             return;
         }
 
@@ -105,15 +104,12 @@ export class SeedSalesHistory1764016284184 implements MigrationInterface {
             { product: products[1], qty: 2 }
         ], 'processing');
 
-        console.log("✅ Sales History Seeded: 4 orders created across different dates for Client 1 and Client 2.");
+        console.log(" Sales History Seeded: 4 orders created across different dates for Client 1 and Client 2.");
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Borrar datos creados por este seed
-        // (Simplificado: borra los pagos y envíos de estos 2 usuarios)
+
         const emails = ['client1@merkadolite.com', 'client2@merkadolite.com'];
-        // En un entorno real de dev, generalmente se borra la BD completa, 
-        // así que el down no tiene que ser perfecto, pero aquí está la lógica.
-        // ... lógica de borrado compleja ...
+
     }
 }

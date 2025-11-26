@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 import { Product } from "../../entity/product.entity";
-
-// ¡IMPORTANTE! Asegúrate de que el número del timestamp aquí coincida con el de tu nombre de archivo.
 export class UpdateProductImageUrls1764001454590 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
@@ -26,13 +24,12 @@ export class UpdateProductImageUrls1764001454590 implements MigrationInterface {
         // Guardamos todos los productos actualizados en una sola operación
         await queryRunner.manager.save(products);
 
-        console.log(`✅ Updated image URLs for ${products.length} products.`);
+        console.log(` Updated image URLs for ${products.length} products.`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         // El método down es nuestro "deshacer". 
-        // Simplemente ponemos todas las URLs de imagen a NULL de nuevo.
         await queryRunner.query(`UPDATE "products" SET "image_url" = NULL`);
-        console.log('🔥 Reverted product image URLs to NULL.');
+        console.log(' Reverted product image URLs to NULL.');
     }
 }
