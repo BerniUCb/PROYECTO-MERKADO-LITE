@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const [isLogged, setIsLogged] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
@@ -14,24 +15,36 @@ export default function Header() {
     const userStr = localStorage.getItem("user");
 
     if (token && userStr) {
-      const user = JSON.parse(userStr);
-      setRole(user.role);
-      setIsLogged(true);
+      try {
+        const user = JSON.parse(userStr);
+        setRole(user.role?.toLowerCase());
+        setIsLogged(true);
+      } catch {
+        setIsLogged(false);
+        setRole(null);
+      }
     } else {
       setIsLogged(false);
+      setRole(null);
     }
+
+    setLoading(false);
   }, []);
 
-  if (isLogged === null) {
+  // Mientras carga el estado → NO mostramos redirecciones erróneas
+  if (loading) {
     return <header className={styles.header}></header>;
   }
 
-  // 🔥 Ruta dinámica del botón de cuenta
+  // 🔥 Ruta del botón de cuenta según estado REAL
   let goToAccount = "/signup";
 
   if (isLogged) {
-    if (role === "Admin") goToAccount = "/admin";
-    else goToAccount = "/user/account_details";
+    if (role === "admin") {
+      goToAccount = "/admin";
+    } else {
+      goToAccount = "/user/account_details";
+    }
   }
 
   const goToCar = isLogged ? "/car" : "/signup";
@@ -64,7 +77,13 @@ export default function Header() {
       <div className={styles.mainHeader}>
         <div className={styles.logo}>
           <Link href="/">
-            <Image src="/header/logoMKLite.png" alt="Logo" width={300} height={100} priority />
+            <Image
+              src="/header/logoMKLite.png"
+              alt="Logo"
+              width={300}
+              height={100}
+              priority
+            />
           </Link>
         </div>
 
@@ -75,18 +94,34 @@ export default function Header() {
 
         <div className={styles.mainHeaderIcons}>
           <Link href={goToWishlist}>
-            <Image src="/header/corazonListaDeDeseos.png" alt="" width={24} height={24} />
+            <Image
+              src="/header/corazonListaDeDeseos.png"
+              alt=""
+              width={24}
+              height={24}
+            />
             <span>Lista de Deseos</span>
           </Link>
 
           <Link href={goToCar}>
-            <Image src="/header/carrito.png" alt="" width={24} height={24} />
+            <Image
+              src="/header/carrito.png"
+              alt=""
+              width={24}
+              height={24}
+            />
             <span className={styles.cartCount}>0</span>
             <span>Carrito</span>
           </Link>
 
+          {/* 🔥 ESTE YA FUNCIONA PERFECTO */}
           <Link href={goToAccount}>
-            <Image src="/header/iconoUsuario.png" alt="" width={24} height={24} />
+            <Image
+              src="/header/iconoUsuario.png"
+              alt=""
+              width={24}
+              height={24}
+            />
             <span>Cuenta</span>
           </Link>
         </div>
@@ -96,15 +131,30 @@ export default function Header() {
       <nav className={styles.bottomNav}>
         <div className={styles.categoriesDropdown}>
           <button>
-            <Image src="/header/iconoCuadrosCategoriasHeader.png" alt="" width={20} height={20} />
+            <Image
+              src="/header/iconoCuadrosCategoriasHeader.png"
+              alt=""
+              width={20}
+              height={20}
+            />
             <span>Todas las Categorías</span>
-            <Image src="/header/flechaSenalAbajo.png" alt="" width={16} height={16} />
+            <Image
+              src="/header/flechaSenalAbajo.png"
+              alt=""
+              width={16}
+              height={16}
+            />
           </button>
         </div>
 
         <div className={styles.bottomNavLinks}>
           <Link href="/offers">
-            <Image src="/header/llamaDeFuego.png" alt="Ofertas" width={20} height={20} />
+            <Image
+              src="/header/llamaDeFuego.png"
+              alt="Ofertas"
+              width={20}
+              height={20}
+            />
             Ofertas Destacadas
           </Link>
           <Link href="/">Inicio</Link>
@@ -115,7 +165,12 @@ export default function Header() {
         </div>
 
         <div className={styles.contactInfo}>
-          <Image src="/header/headphonesIcono.png" alt="Atención" width={32} height={32} />
+          <Image
+            src="/header/headphonesIcono.png"
+            alt="Atención"
+            width={32}
+            height={32}
+          />
           <div>
             <span>+591 69520024</span>
             <small>Atención al Cliente 24/7</small>

@@ -14,40 +14,65 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Mantén tu validación original
   useEffect(() => {
-    // limpiar tokens viejos
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    document.cookie = "token=; Max-Age=0; path=/;";
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const isExpired = payload.exp * 1000 < Date.now();
+
+      if (isExpired) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
   setError("");
 
+  console.log("🔵 ENVIANDO LOGIN...");
+
   try {
     const res = await instance.post("/auth/login", { email, password });
+
+    console.log("🟢 LOGIN OK:", res.data);
 
     const token = res.data.access_token;
     const user = res.data.user;
 
-    // Guardar primero
+    const role = user.role?.toLowerCase();
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
     document.cookie = `token=${token}; path=/;`;
 
-    // 🔥 Redirect basado en rol ANTES de esperar que React recargue estados
-    if (user.role === "Admin") {
-      router.replace("/admin"); // ⬅ replace evita volver atrás
+    console.log("🟢 ROLE DETECTADO:", role);
+
+    if (role === "admin") {
+      console.log("➡ REDIRIGIENDO A /admin");
+      router.push("/admin");
       return;
     }
 
-    if (user.role === "Client") {
-      router.replace("/home");
+    if (role === "client") {
+      console.log("➡ REDIRIGIENDO A /home");
+      router.push("/home");
       return;
     }
+
+    console.log("⚠ Rol no reconocido, enviando a /home");
+    router.push("/home");
 
   } catch (err: any) {
+    console.log("🔴 ERROR LOGIN:", err);
+    console.log("🔴 RESPONSE DATA:", err.response?.data);
     setError(err.response?.data?.message || "Error al iniciar sesión");
   }
 };
@@ -62,7 +87,7 @@ export default function LoginPage() {
           <h2 className={styles.formTitle}>Iniciar Sesión</h2>
 
           <div>
-            <label>Correo electrónico</label>
+            <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
               value={email}
@@ -73,7 +98,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label>Contraseña</label>
+            <label htmlFor="password">Contraseña</label>
             <input
               type="password"
               value={password}
