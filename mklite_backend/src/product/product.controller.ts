@@ -54,6 +54,11 @@ export class ProductController {
     return this.productService.getPaginatedProducts(Number(page), Number(limit));
   }
 
+  @Get()
+  getAll() {
+    return this.productService.getAllProducts();
+  }
+
   // ─────────────────────────────────────────────
   // CRUD (van abajo, con /:id al final)
   // ─────────────────────────────────────────────

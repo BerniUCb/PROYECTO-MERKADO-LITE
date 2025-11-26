@@ -13,7 +13,7 @@
 
 .mis-pedidos-container {
   flex: 1;
-  max-width: 1000px; /* Un poco mas ancho */
+  max-width: 999px; /* Un poco mas ancho */
   margin: 40px auto;
   padding: 30px;
   background-color: #fff;

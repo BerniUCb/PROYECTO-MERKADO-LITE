@@ -29,7 +29,7 @@ const mainItems: AdminMenuItem[] = [
   },
   {
     label: "Ventas en tienda",
-    href: "/admin/pos", // ← ruta sugerida para el módulo de ventas físicas
+    href: "/sellings", // ← ruta sugerida para el módulo de ventas físicas
     icon: "/admin-menu/ventaEnTienda.svg",
   },
   {

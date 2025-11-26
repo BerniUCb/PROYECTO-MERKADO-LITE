@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 import type ProductModel from "@/app/models/productCard.model";
 import { ProductService } from "@/app/services/product.service";
@@ -138,9 +139,11 @@ export default function ProductPage() {
 
           {related.map((p) => (
             <div key={p.id} className={styles["related-card"]}>
+              <Link href={`/product/${p.id}`}>
               <img src={p.imageUrl ?? "/placeholder.png"} alt={p.name} />
               <h4>{p.name}</h4>
               <p>Bs. {Number(p.salePrice).toFixed(2)}</p>
+              </Link>
             </div>
           ))}
         </div>

@@ -1,33 +1,32 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import type Order from '../../models/order.model';
-import { OrderStatus } from '../../models/order.model';
-import { OrderService } from '../../services/order.service'; 
+import React, { useState, useEffect, useCallback } from 'react';
+// Librería para decodificar el token manualmente
+import { jwtDecode } from "jwt-decode";
+
+// Iconos y Componentes
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { X } from 'lucide-react'; 
 import UserSidebar from '../../components/UserSidebar';
 import styles from './page.module.css';
-import { X } from 'lucide-react'; // Icono de cerrar para el modal
-{/*import { useAuth } from '../context/AuthContext';*/}
 
+// Services & Models
+import { OrderService } from '../../services/order.service';
+import type Order from '../../models/order.model';
+import { OrderStatus } from '../../models/order.model';
 
-/**
- * Determina la clase CSS para el estado del pedido.
- */
+// --- UTILS ---
 const getStatusClass = (status: OrderStatus): string => {
   switch (status) {
     case 'delivered': return styles["estado-entregado"];
     case 'cancelled': return styles["estado-cancelado"];
     case 'pending': return styles["estado-pendiente"];
-    case 'processing': return styles["estado-pendiente"];
+    case 'processing': return styles["estado-processing"];
     case 'shipped': return styles["estado-enviado"];
     default: return styles["estado-default"];
   }
 };
 
-/**
- * Mapea el estado del modelo a texto legible.
- */
 const mapStatusToText = (status: OrderStatus): string => {
   switch (status) {
     case 'delivered': return 'Entregado';
@@ -36,14 +35,10 @@ const mapStatusToText = (status: OrderStatus): string => {
     case 'processing': return 'Procesando';
     case 'shipped': return 'Enviado';
     case 'returned': return 'Devuelto';
-    case 'cancelled': return 'Cancelado';
-    default: return 'Desconocido';
+    default: return status;
   }
 };
 
-/**
- * Formatea fecha ISO.
- */
 const formatDate = (dateString: string): string => {
   if (!dateString) return '-';
   const date = new Date(dateString);
@@ -52,72 +47,86 @@ const formatDate = (dateString: string): string => {
   const year = date.getFullYear().toString().slice(-2);
   return `${day}/${month}/${year}`;
 };
-const formatCurrency = (amount: number) => {
-  return `Bs. ${Number(amount).toFixed(2)}`;
-};
+
+const formatCurrency = (amount: number) => `Bs. ${Number(amount).toFixed(2)}`;
 
 // --- COMPONENTE PRINCIPAL ---
-
 const PAGE_LIMIT = 5;
 
 const MisPedidos: React.FC = () => {
-  // NOTA: El userId generalmente se maneja via Token en el interceptor de Axios,
-  // por lo que el servicio getAll() debería traer las órdenes del usuario logueado
-  // si el backend está configurado así.
-
-  {/*const { user, loading: authLoading } = useAuth(); // <--- USAR EL HOOK*/}
+  // 1. ESTADO PARA EL USUARIO (Leído manualmente)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  // Como el backend no devuelve "totalCount", manejamos la paginación por detección de longitud
-  const [hasMore, setHasMore] = useState<boolean>(false); 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // Inicialmente false hasta tener usuario
   const [error, setError] = useState<string | null>(null);
-  // --- ESTADOS PARA EL MODAL ---
+
+  // Estados para Modal
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
 
+  // 2. EFECTO PARA LEER EL TOKEN DEL LOCALSTORAGE
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // Asegúrate que la clave sea 'token' o la que uses
+    if (token) {
+      try {
+        // Decodificamos el token
+        const decoded: any = jwtDecode(token);
+        // Normalmente el ID viene en 'sub' o 'id'
+        const userId = decoded.sub || decoded.id;
+        setCurrentUserId(userId);
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        // Si el token es inválido, podrías redirigir al login aquí
+      }
+    }
+    setIsCheckingAuth(false);
+  }, []);
 
- const loadOrders = useCallback(async (page: number, userId: number) => {
+  // --- CARGA DE PEDIDOS ---
+  const loadOrders = useCallback(async (page: number, userId: number) => {
     setLoading(true);
     setError(null);
     try {
-      // Solicitamos orden descendente por fecha de creación para ver lo más reciente primero
+      // Usamos el endpoint específico para el usuario
       const data = await OrderService.getByUser(userId, page, PAGE_LIMIT);
       
       setOrders(data);
-
-      // Lógica simple de paginación: Si recibimos la cantidad completa del limite, 
-      // asumimos que podría haber más páginas.
-      if (data.length === PAGE_LIMIT) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      
+      setHasMore(data.length === PAGE_LIMIT);
       setCurrentPage(page);
     } catch (err) {
       console.error('Error al cargar los pedidos:', err);
-      setError('No se pudieron cargar los pedidos. Verifica tu conexión.');
+      setError('No se pudieron cargar tus pedidos.');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  {/*useEffect(() => {
-    // Solo ejecutamos si terminó la carga de auth y tenemos un usuario válido
-    if (!authLoading && user?.sub) {
-       loadOrders(currentPage, user.sub);
+  // --- EFECTO PRINCIPAL: Cargar datos cuando ya tengamos el ID ---
+  useEffect(() => {
+    if (currentUserId) {
+       loadOrders(currentPage, currentUserId);
     }
-  }, [loadOrders, currentPage, user, authLoading]);*/}
+  }, [loadOrders, currentPage, currentUserId]);
+
+  // --- MANEJO DE PAGINACIÓN ---
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1) return;
+    if (newPage > currentPage && !hasMore) return; 
+    
+    if (currentUserId) {
+      loadOrders(newPage, currentUserId);
+    }
+  };
 
   // --- MANEJO DEL DETALLE (MODAL) ---
   const handleViewDetails = async (orderId: number) => {
     setLoadingDetails(true);
     try {
-      // Hacemos una petición específica por ID para asegurar que tenemos los items completos
-      // (A veces el getAll no trae las relaciones profundas como productos)
       const fullOrder = await OrderService.getById(orderId);
       setSelectedOrder(fullOrder);
       setIsModalOpen(true);
@@ -134,114 +143,107 @@ const MisPedidos: React.FC = () => {
     setSelectedOrder(null);
   };
 
-  const handlePageChange = (page: number) => {
-    if (page < 1) return;
-    // Evitar ir a siguiente si no hay más datos, a menos que estemos cargando
-    if (page > currentPage && !hasMore) return; 
-    // Importante: Pasamos el ID del usuario actual al cambiar de página
-    {/*if (user?.sub) {
-      loadOrders(page, user.sub);
-    }*/}
-  };
-
-  
   // --- RENDERIZADO CONDICIONAL ---
- {/*} if (authLoading) return <div className={styles["mis-pedidos-container"]}>Verificando sesión...</div>;
+  if (isCheckingAuth) return <div className={styles["mis-pedidos-container"]}>Verificando sesión...</div>;
   
-  if (!user) return (
+  if (!currentUserId) return (
     <div className={styles["layoutWrapper"]}>
-        <UserSidebar />
+        {/*<UserSidebar />*/}
         <div className={styles["mis-pedidos-container"]}>
             <div style={{textAlign: 'center', padding: '40px'}}>
-                Debes iniciar sesión para ver tu historial de pedidos.
+                No se encontró un usuario activo. Por favor inicia sesión nuevamente.
             </div>
         </div>
     </div>
-  );*/}
+  );
 
   return (
     <div className={styles["layoutWrapper"]}>
-      {/*<UserSidebar />*/}
+     {/* <UserSidebar />*/}
       
       <div className={styles["mis-pedidos-container"]}>
         <h1>Mis Pedidos</h1>
         
         {error && <div className="alert alert-danger" style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
 
-        <div className={styles["pedidos-table-wrapper"]}>
-          <table className={styles["pedidos-table"]}>
-            <thead>
-              <tr>
-                <th>Código Pedido</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Detalle</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.length > 0 ? (
-                orders.map((order) => (
-                  <tr key={order.id}>
-                    <td data-label="Código Pedido">#{order.id}</td>
-                    <td data-label="Estado">
-                      <span className={`${styles["estado-tag"]} ${getStatusClass(order.status)}`}>
-                        {mapStatusToText(order.status)}
-                      </span>
-                    </td>
-                    <td data-label="Fecha">{formatDate(order.createdAt)}</td>
-                    <td data-label="Total">Bs. {Number(order.orderTotal).toFixed(2)}</td>
-                    <td data-label="Detalle">
-                      <button 
-                        className={styles["btn-detalle"]}
-                        onClick={() => handleViewDetails(order.id)}
-                        disabled={loadingDetails}
-                      >
-                        {loadingDetails ? '...' : 'Ver'}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
-                    No tienes pedidos registrados.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {loading && orders.length === 0 ? (
+            <div style={{textAlign: 'center', padding: '20px'}}>Cargando historial...</div>
+        ) : (
+            <>
+                <div className={styles["pedidos-table-wrapper"]}>
+                <table className={styles["pedidos-table"]}>
+                    <thead>
+                    <tr>
+                        <th>Código Pedido</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Detalle</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {orders.length > 0 ? (
+                        orders.map((order) => (
+                        <tr key={order.id}>
+                            <td data-label="Código Pedido">#{order.id}</td>
+                            <td data-label="Estado">
+                            <span className={`${styles["estado-tag"]} ${getStatusClass(order.status)}`}>
+                                {mapStatusToText(order.status)}
+                            </span>
+                            </td>
+                            <td data-label="Fecha">{formatDate(order.createdAt)}</td>
+                            <td data-label="Total">{formatCurrency(order.orderTotal)}</td>
+                            <td data-label="Detalle">
+                            <button 
+                                className={styles["btn-detalle"]}
+                                onClick={() => handleViewDetails(order.id)}
+                                disabled={loadingDetails}
+                            >
+                                Ver
+                            </button>
+                            </td>
+                        </tr>
+                        ))
+                    ) : (
+                        <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                            No tienes pedidos registrados aún.
+                        </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+                </div>
 
-        {/* Paginación Simplificada (Prev / Next) debido a falta de TotalCount en API */}
-        <div className={styles["pagination"]}>
-          {/* Flecha izquierda */}
-          <button
-            className={`${styles["page-arrow"]} ${currentPage === 1 ? styles["disabled"] : ''}`}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1 || loading}
-          >
-            <IoIosArrowBack />
-          </button>
+                {/* Paginación */}
+                {orders.length > 0 && (
+                    <div className={styles["pagination"]}>
+                    <button
+                        className={`${styles["page-arrow"]} ${currentPage === 1 ? styles["disabled"] : ''}`}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1 || loading}
+                    >
+                        <IoIosArrowBack />
+                    </button>
 
-          {/* Indicador de página actual */}
-          <span className={styles["page-number"] + " " + styles["active"]}>
-            {currentPage}
-          </span>
-          
-          {/* Flecha derecha */}
-          <button
-            className={`${styles["page-arrow"]} ${!hasMore ? styles["disabled"] : ''}`}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={!hasMore || loading}
-          >
-            <IoIosArrowForward />
-          </button>
-        </div>
+                    <span className={styles["page-number"] + " " + styles["active"]}>
+                        {currentPage}
+                    </span>
+                    
+                    <button
+                        className={`${styles["page-arrow"]} ${!hasMore ? styles["disabled"] : ''}`}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={!hasMore || loading}
+                    >
+                        <IoIosArrowForward />
+                    </button>
+                    </div>
+                )}
+            </>
+        )}
       </div>
 
-      
-      {/* --- MODAL DETALLE PEDIDO --- */}
+      {/* --- MODAL DETALLE --- */}
       {isModalOpen && selectedOrder && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -255,15 +257,12 @@ const MisPedidos: React.FC = () => {
                 <div className={styles.orderInfo}>
                    <p><strong>Codigo pedido:</strong> #{selectedOrder.id}</p>
                    <p><strong>Fecha:</strong> {formatDate(selectedOrder.createdAt)}</p>
-                   {/* Mostramos la dirección si existe en el usuario o en el pedido */}
-                   {/* Nota: Ajusta la lógica de dirección según tu modelo exacto */}
                    <p><strong>Enviado a:</strong> {selectedOrder.user?.addresses?.[0] 
                       ? `${selectedOrder.user.addresses[0].street} #${selectedOrder.user.addresses[0].streetNumber}` 
-                      : 'Dirección registrada'}
+                      : 'Dirección de registro'}
                    </p>
                 </div>
               </div>
-              {/* Badge de estado en el modal */}
               <span className={`${styles["estado-tag"]} ${getStatusClass(selectedOrder.status)}`}>
                 {mapStatusToText(selectedOrder.status)}
               </span>
@@ -282,10 +281,7 @@ const MisPedidos: React.FC = () => {
                 <tbody>
                   {selectedOrder.items?.map((item, index) => (
                     <tr key={index}>
-                      <td>
-                         {/* Ajustar si item.product es objeto o si item tiene nombre directo */}
-                         {item.product?.name || 'Producto desconocido'}
-                      </td>
+                      <td>{item.product?.name || 'Producto'}</td>
                       <td className={styles.textCenter}>{item.quantity}</td>
                       <td className={styles.textRight}>{formatCurrency(item.unitPrice)}</td>
                       <td className={styles.textRight}>
@@ -297,7 +293,6 @@ const MisPedidos: React.FC = () => {
               </table>
             </div>
             
-            {/* Total al final del modal */}
             <div style={{textAlign: 'right', marginTop: '20px', fontSize: '18px', fontWeight: 'bold', color: '#111'}}>
                Total: {formatCurrency(selectedOrder.orderTotal)}
             </div>
@@ -305,6 +300,7 @@ const MisPedidos: React.FC = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
