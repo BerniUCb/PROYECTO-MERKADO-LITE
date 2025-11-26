@@ -177,4 +177,29 @@ async getCancelledOrdersCount(): Promise<number> {
   return cancelled;
 }
 
+async getByUser(
+  userId: number,
+  page: number = 1,
+  limit: number = 10,
+) {
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await this.orderRepository.findAndCount({
+    where: { user: { id: userId } },     // Relación con User
+    relations: ['productos', 'envio'],   // Ajusta según tus relaciones
+    take: limit,
+    skip,
+    order: { createdAt: 'DESC' },
+  });
+
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    data: orders,
+  };
+}
+
+
 }

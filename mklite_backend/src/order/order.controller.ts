@@ -74,5 +74,13 @@ async getCancelledOrdersCount() {
   const cancelled = await this.orderService.getCancelledOrdersCount();
   return { cancelledOrders: cancelled };
 }
+@Get('by-user/:userId')
+async getByUser(
+  @Param('userId') userId: number,
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 10,
+) {
+  return this.orderService.getByUser(userId, page, limit);
+}
 
 }
