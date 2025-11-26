@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import type Order from '../models/order.model';
-import { OrderStatus } from '../models/order.model';
-import { OrderService } from '../services/order.service'; 
+import type Order from '../../models/order.model';
+import { OrderStatus } from '../../models/order.model';
+import { OrderService } from '../../services/order.service'; 
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import UserSidebar from '../components/UserSidebar';
+import UserSidebar from '../../components/UserSidebar';
 import styles from './page.module.css';
 import { X } from 'lucide-react'; // Icono de cerrar para el modal
 {/*import { useAuth } from '../context/AuthContext';*/}
@@ -161,7 +161,7 @@ const MisPedidos: React.FC = () => {
 
   return (
     <div className={styles["layoutWrapper"]}>
-      <UserSidebar />
+      {/*<UserSidebar />*/}
       
       <div className={styles["mis-pedidos-container"]}>
         <h1>Mis Pedidos</h1>
