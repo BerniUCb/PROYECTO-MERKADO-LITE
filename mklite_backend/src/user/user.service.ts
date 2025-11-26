@@ -5,6 +5,7 @@ import { User } from 'src/entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryHelpers } from 'src/utils/query-helpers';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -67,13 +68,18 @@ export class UserService {
 
   async create(dto: CreateUserDto): Promise<User> {
     // Validación de email duplicado
-    const exists = await this.userRepository.findOne({ where: { email: dto.email }});
+    const exists = await this.userRepository.findOne(
+      { where: { email: dto.email }});
     if (exists) throw new BadRequestException('El email ya está registrado');
+    
+    
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = this.userRepository.create({
       fullName: dto.fullName,
       email: dto.email,
-      passwordHash: dto.password, // Aquí luego aplicas bcrypt
+      passwordHash: hashedPassword,
       role: dto.role,
     });
 
@@ -88,7 +94,7 @@ export class UserService {
       ...dto,
       passwordHash:
         dto.password && dto.password.trim() !== ''
-          ? dto.password // Aquí luego aplicas bcrypt
+          ? await bcrypt.hash(dto.password, 10)
           : user.passwordHash,
     });
 
@@ -107,11 +113,11 @@ export class UserService {
     return this.userRepository.count();
   }
   async findByEmail(email: string) {
-  return this.userRepository.findOne({
-    where: { email },
-    select: ['id', 'email', 'fullName', 'role', 'isActive', 'passwordHash']
-  });
-}
+    return this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'fullName', 'role', 'isActive', 'passwordHash'],
+    });
+  }
 
 
   async countOrdersByUser(userId: number): Promise<number> 

@@ -1,26 +1,28 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
-import { LoginUserDto } from '../user/dto/login-user.dto';
+import { identity } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ){}
 
-  async login(dto: LoginUserDto) {
-    const user = await this.userService.findByEmail(dto.email);
+  async validateUser(email: string, password: string): Promise<any>{
+    const user = await this.userService.findByEmail(email);
+    if(!user) throw new UnauthorizedException('Usuario no encontrado');
+    
 
-    if (!user) {
-      throw new UnauthorizedException('El email no está registrado');
-    }
+    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+    if(!passwordMatch) throw new UnauthorizedException('Contraseña incorrecta');
 
-    if (user.passwordHash !== dto.password) {
-      throw new UnauthorizedException('Contraseña incorrecta');
-    }
+    return user;
+  }
 
-    return {
-      message: 'Login correcto',
-      user,
-      token: 'fake-token-123'
-    };
+  async login(user: User){
+    const payload = { sub}
   }
 }
