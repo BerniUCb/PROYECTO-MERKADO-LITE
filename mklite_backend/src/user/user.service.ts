@@ -118,8 +118,6 @@ export class UserService {
       select: ['id', 'email', 'fullName', 'role', 'isActive', 'passwordHash'],
     });
   }
-
-
   async countOrdersByUser(userId: number): Promise<number> 
   {
     const user = await this.userRepository.findOne({
