@@ -8,8 +8,8 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import UserSidebar from '../components/UserSidebar';
 import styles from './page.module.css';
 import { X } from 'lucide-react'; // Icono de cerrar para el modal
+{/*import { useAuth } from '../context/AuthContext';*/}
 
-// --- UTILS ---
 
 /**
  * Determina la clase CSS para el estado del pedido.
@@ -65,6 +65,8 @@ const MisPedidos: React.FC = () => {
   // por lo que el servicio getAll() debería traer las órdenes del usuario logueado
   // si el backend está configurado así.
 
+  {/*const { user, loading: authLoading } = useAuth(); // <--- USAR EL HOOK*/}
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   // Como el backend no devuelve "totalCount", manejamos la paginación por detección de longitud
@@ -77,12 +79,12 @@ const MisPedidos: React.FC = () => {
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
 
 
-  const loadOrders = useCallback(async (page: number) => {
+ const loadOrders = useCallback(async (page: number, userId: number) => {
     setLoading(true);
     setError(null);
     try {
       // Solicitamos orden descendente por fecha de creación para ver lo más reciente primero
-      const data = await OrderService.getAll(page, PAGE_LIMIT, 'createdAt', 'desc');
+      const data = await OrderService.getByUser(userId, page, PAGE_LIMIT);
       
       setOrders(data);
 
@@ -103,9 +105,12 @@ const MisPedidos: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    loadOrders(currentPage);
-  }, [loadOrders, currentPage]);
+  {/*useEffect(() => {
+    // Solo ejecutamos si terminó la carga de auth y tenemos un usuario válido
+    if (!authLoading && user?.sub) {
+       loadOrders(currentPage, user.sub);
+    }
+  }, [loadOrders, currentPage, user, authLoading]);*/}
 
   // --- MANEJO DEL DETALLE (MODAL) ---
   const handleViewDetails = async (orderId: number) => {
@@ -133,12 +138,26 @@ const MisPedidos: React.FC = () => {
     if (page < 1) return;
     // Evitar ir a siguiente si no hay más datos, a menos que estemos cargando
     if (page > currentPage && !hasMore) return; 
-    
-    loadOrders(page);
+    // Importante: Pasamos el ID del usuario actual al cambiar de página
+    {/*if (user?.sub) {
+      loadOrders(page, user.sub);
+    }*/}
   };
 
-  if (loading && orders.length === 0) return <div className={styles["mis-pedidos-container"]}>Cargando pedidos...</div>;
-   if (error) return <div className={`${styles["mis-pedidos-container"]} error`}>{error}</div>;
+  
+  // --- RENDERIZADO CONDICIONAL ---
+ {/*} if (authLoading) return <div className={styles["mis-pedidos-container"]}>Verificando sesión...</div>;
+  
+  if (!user) return (
+    <div className={styles["layoutWrapper"]}>
+        <UserSidebar />
+        <div className={styles["mis-pedidos-container"]}>
+            <div style={{textAlign: 'center', padding: '40px'}}>
+                Debes iniciar sesión para ver tu historial de pedidos.
+            </div>
+        </div>
+    </div>
+  );*/}
 
   return (
     <div className={styles["layoutWrapper"]}>

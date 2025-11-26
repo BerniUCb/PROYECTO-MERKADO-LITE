@@ -1,0 +1,227 @@
+.wrapper {
+  width: 1120px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+  background: #ffffff;
+  padding: 8px;
+}
+
+.title {
+  font-size: 35px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6d6d6d;
+  margin-bottom: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.card,
+.cardFinal {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ececec;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  margin-top: 14px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cardSub {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.searchBox {
+  display: flex;
+  gap: 6px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+
+.searchBtn {
+  padding: 5px 6px;
+  background: #eee;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.productItem {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.productName {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.productCode {
+  font-size: 10px;
+  color: #777;
+  margin-top: 1px;
+}
+
+.stock {
+  font-size: 10px;
+  margin-top: 3px;
+  padding: 2px 5px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.stockLowGreen {
+  background: #e6ffea;
+  color: #149f2f;
+}
+
+.stockMedium {
+  background: #fff4d4;
+  color: #c39500;
+}
+
+.stockZero {
+  background: #ffe0df;
+  color: #cc1f1f;
+}
+
+.productRight {
+  text-align: right;
+}
+
+.price {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 3px;
+  font-size: 13px;
+}
+
+.addBtn,
+.addBtnDisabled {
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.addBtn {
+  background: red;
+  color: white;
+}
+
+.addBtnDisabled {
+  background: #ffb3b3;
+  color: white;
+  cursor: not-allowed;
+}
+
+.scrollWrapper {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding-bottom: 4px;
+  font-size: 11px;
+  color: #555;
+}
+
+.table td {
+  padding: 6px 0;
+  border-top: 1px solid #ececec;
+  font-size: 12px;
+}
+
+.qtyInput {
+  width: 38px;
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 11px;
+}
+
+.removeBtn {
+  color: red;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tableFooter {
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.payRow {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+  align-items: flex-end;
+}
+
+.select,
+.input {
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 130px;
+  font-size: 11px;
+}
+
+.changeRow {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.submitBtn {
+  margin-top: 12px;
+  width: 130px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
