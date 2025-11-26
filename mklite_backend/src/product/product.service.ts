@@ -6,6 +6,7 @@ import { Product } from '../entity/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product-dto';
 import { MoreThan } from 'typeorm';
+import { Promotion } from 'src/entity/promotion.entity';
 
 
 @Injectable()
@@ -37,7 +38,7 @@ export class ProductService {
   }
 
   async getProductById(id: number): Promise<Product> {
-   const product = await this.productRepository.findOne({where: { id },relations: {category: true, },});
+   const product = await this.productRepository.findOne({where: { id },relations: ['category' , 'promotions' ],});
 
   if (!product) {
     throw new NotFoundException(`Product with ID "${id}" not found`);

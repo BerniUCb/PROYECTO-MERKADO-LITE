@@ -9,10 +9,10 @@ import { CategoryService } from "@/app/services/category.service";
 import { CartItemService } from "@/app/services/cartItem.service";
 import { ProductService } from "@/app/services/product.service";
 
-
+import ProductCard from "@/app/home/components/productCard";
 // Componentes
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+//import Header from "@/app/components/Header";
+//import Footer from "@/app/components/Footer";
 
 // Modelo UI para productos
 type UIProduct = {
@@ -64,10 +64,13 @@ export default function CategoriaDinamica() {
 
         setSidebarCats(mappedSidebar);
 
-        // 2. Determinar categoría actual por URL
-        const found = mappedSidebar.find(
-          (c) => c.url === category.toLowerCase()
+       // 2. Determinar categoría actual por URL (manejar acentos)
+        const cleanCategory = decodeURIComponent(category.toLowerCase());
+
+       const found = mappedSidebar.find(
+      (c) => c.url === cleanCategory
         );
+
 
         if (!found) {
           setCategoryBD(null);
@@ -85,7 +88,7 @@ export default function CategoriaDinamica() {
         //
        const productos = await ProductService.getByCategory(found.id);
 
-// 🔵 MAPEO DEL BACKEND → UIProduct
+//  MAPEO DEL BACKEND → UIProduct
 const productosUI = productos.map((p: any) => ({
   id: p.id,
   name: p.name,
@@ -113,13 +116,13 @@ setProductsBD(productosUI);
   if (!categoryBD && !loading) {
     return (
       <main className={styles.page}>
-        <Header />
+        //commented out Header
         <div className={styles.inner}>
           <h1 style={{ padding: 50 }}>
             La categoría "{category}" no existe aún.
           </h1>
         </div>
-        <Footer />
+       //commented out Footer 
       </main>
     );
   }
@@ -175,7 +178,7 @@ setProductsBD(productosUI);
   // RENDER
   return (
     <main className={styles.page}>
-      <Header />
+      //commented out Header 
 
       <div className={styles.inner}>
 
@@ -206,7 +209,7 @@ setProductsBD(productosUI);
                   }
                 >
                   <div className={styles.itemLeft}>{cat.nombre}</div>
-                  <span className={styles.itemCount}>—</span>
+                  <span className={styles.topTextNumber}>{totalItems}</span>
                 </li>
               ))}
             </ul>
@@ -279,17 +282,19 @@ setProductsBD(productosUI);
                     </p>
 
                   <button
-                    className={styles.btn}
-                    onClick={async () => {
-                      try {
-                        await CartItemService.addToCart(1, p.id, 1);
-                        alert("Añadido al carrito!");
-                      } catch {
-                        alert("Error al añadir.");
-                      }
-                    }}
-                  >
-                    🛒 Add
+                       className={styles.btn}
+                        onClick={async () => {
+                           try {
+                             await CartItemService.addToCart(1, p.id, 1);
+                             window.location.href=`/product/${p.id}`;
+                             ///alert("Producto añadido al carrito 🛒✨");
+                           } catch (err) {
+                             console.error("Error al añadir al carrito:", err);
+                           }
+                            }}
+                    >
+                     🛒 Add
+
                   </button>
                 </article>
               ))}
@@ -333,7 +338,7 @@ setProductsBD(productosUI);
         </section>
       </div>
 
-      <Footer />
+//commented out Footer for now
     </main>
   );
 }

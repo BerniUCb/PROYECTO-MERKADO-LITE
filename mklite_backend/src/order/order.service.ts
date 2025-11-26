@@ -79,7 +79,9 @@ export class OrderService {
   const order = await this.orderRepository.findOne({
     where: { id },
     relations: {
-      user: true,
+      user:{
+        addresses: true,
+      },
       payment: true,
       items: {
         product: true,  // 🔥 Cargar producto dentro de cada item

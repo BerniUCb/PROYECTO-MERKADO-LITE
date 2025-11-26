@@ -16,7 +16,7 @@ export const AddressService = {
   },
 
   // Crear una dirección nueva
-  create: async (userId: number, address: Omit<AddressModel, "id">): Promise<AddressModel> => {
+  create: async (userId: number, address: Omit<AddressModel, "id"|"userId">): Promise<AddressModel> => {
     const res = await instance.post(`/users/${userId}/address`, address);
     return res.data;
   },
