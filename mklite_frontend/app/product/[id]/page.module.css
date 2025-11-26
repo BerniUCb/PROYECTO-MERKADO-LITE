@@ -124,7 +124,7 @@
   font-weight: 600;
 }
 
-.add-btn {
+.add-btn:hover {
   background: #f40009;
   color: white;
   border: none;
@@ -135,15 +135,11 @@
   transition: background 0.3s;
 }
 
-.add-btn:hover {
-  background: #c7171a;
-}
-
 /* DETALLES DEL PRODUCTO */
 .details {
   margin-top: 10px;
   color: #555;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .details p {
@@ -196,6 +192,8 @@
 .related-products h3 {
   font-size: 1.3rem;
   margin-bottom: 25px;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #333;
 }
 
