@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { AddressService } from "@/app/services/address.service";
 import type AddressModel from "@/app/models/address.model";
-import UserSidebar from "../components/UserSidebar";
+import UserSidebar from "../../components/UserSidebar";
 
 export default function Direcciones() {
   const [addresses, setAddresses] = useState<AddressModel[]>([]);
@@ -87,7 +87,7 @@ export default function Direcciones() {
 
   return (
     <>
-      <Header />
+     {/* <Header />*/}
 
       
 
@@ -226,7 +226,7 @@ export default function Direcciones() {
         </div>
       )}
 
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }
