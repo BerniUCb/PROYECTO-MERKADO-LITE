@@ -1,31 +1,30 @@
 // src/entity/lot.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Product } from "./product.entity"; // Anticipamos 'Product'
-import { Supplier } from "./supplier.entity"; // Anticipamos 'Supplier'
-import { StockMovement } from "./stock-movement.entity"; // Anticipamos 'StockMovement'
-import { SupplierReturn } from "./supplier-return.entity"; // <--- IMPORTAR
+import { Product } from "./product.entity"; 
+import { Supplier } from "./supplier.entity"; 
+import { StockMovement } from "./stock-movement.entity"; 
+import { SupplierReturn } from "./supplier-return.entity"; 
 
-@Entity('lots') // <-- 'lote' -> 'lots'
-export class Lot { // <-- 'Lote' -> 'Lot'
+@Entity('lots') 
+export class Lot { 
 
-    @PrimaryGeneratedColumn({ name: 'lot_id' }) // <-- 'lote_id'
+    @PrimaryGeneratedColumn({ name: 'lot_id' }) 
     id: number;
 
     @Column({ type: 'integer', name: 'received_quantity' })
-    receivedQuantity: number; // <-- 'cantidadRecibida' -> 'receivedQuantity'
+    receivedQuantity: number; 
 
     @Column({ type: 'integer', name: 'current_quantity' })
-    currentQuantity: number; // <-- 'cantidadActual' -> 'currentQuantity'
+    currentQuantity: number; 
 
     @Column({ type: 'numeric', precision: 10, scale: 2, name: 'supplier_cost', nullable: true })
-    supplierCost: number; // <-- 'costoDistribuidor' -> 'supplierCost'
-
+    supplierCost: number; 
     @Column({ type: 'date', name: 'received_at' })
-    receivedAt: Date; // <-- 'fechaRecibida' -> 'receivedAt'
+    receivedAt: Date; 
 
     @Column({ type: 'date', name: 'expires_at', nullable: true })
-    expiresAt: Date; // <-- 'fechaVencimiento' -> 'expiresAt'
+    expiresAt: Date; 
 
     // --- Relationships ---
     @ManyToOne(() => Product, { nullable: false })
