@@ -7,6 +7,8 @@ import { Shipment, ShipmentStatus } from '../entity/shipment.entity';
 import { CreateShipmentDto } from './dto/create-shipment.dto'; 
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
 import { User } from '../entity/user.entity'; // Necesario para buscar al repartidor
+import { Order } from 'src/entity/order.entity';
+import { Address } from 'src/entity/address.entity';
 
 @Injectable()
 export class ShipmentService {
@@ -14,12 +16,33 @@ export class ShipmentService {
     @InjectRepository(Shipment)
     private shipmentRepository: Repository<Shipment>,
     @InjectRepository(User)
-    private userRepository: Repository<User>, // Para verificar que el repartidor exista
+    private userRepository: Repository<User>, 
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+    @InjectRepository(User)
+    private addressRepository: Repository<Address>,
   ) {}
 
-  // ---------------- CRUD BÁSICO ----------------
 
-  private async findAndValidateRelations(dto: CreateShipmentDto | UpdateShipmentDto) {
+  private async validateShipmentRelations(dto: CreateShipmentDto | UpdateShipmentDto) {
+    
+    // 1. Validar OrderId (obligatorio para la creación)
+    if (dto.orderId) {
+        const order = await this.orderRepository.findOneBy({ id: dto.orderId });
+        if (!order) {
+            throw new NotFoundException(`Order with ID ${dto.orderId} not found.`);
+        }
+    }
+    
+    // 2. Validar AddressId
+    if (dto.deliveryAddressId) {
+        const address = await this.addressRepository.findOneBy({ id: dto.deliveryAddressId });
+        if (!address) {
+            throw new NotFoundException(`Delivery Address with ID ${dto.deliveryAddressId} not found.`);
+        }
+    }
+
+    // 3. Validar Repartidor (opcional)
     if (dto.deliveryDriverId) {
       const driver = await this.userRepository.findOneBy({ id: dto.deliveryDriverId });
       if (!driver) {
@@ -27,16 +50,30 @@ export class ShipmentService {
       }
     }
   }
+  // ---------------- CRUD BÁSICO ----------------
 
   async create(createShipmentDto: CreateShipmentDto): Promise<Shipment> {
-    await this.findAndValidateRelations(createShipmentDto);
+    // 1. Validar que las entidades existan antes de la creación
+    await this.validateShipmentRelations(createShipmentDto);
     
+    // 2. Crear el objeto con las relaciones
     const shipment = this.shipmentRepository.create({
-      ...createShipmentDto,
-      order: { id: createShipmentDto.orderId } as any,
-      deliveryDriver: createShipmentDto.deliveryDriverId ? { id: createShipmentDto.deliveryDriverId } as any : null,
-      deliveryAddress: { id: createShipmentDto.deliveryAddressId } as any,
+      // Copiar propiedades de fecha/estado (si existen en el DTO)
+      ...createShipmentDto, 
+      
+      // Asignar IDs de relaciones
+      order: { id: createShipmentDto.orderId },
+      deliveryAddress: { id: createShipmentDto.deliveryAddressId },
+      deliveryDriver: createShipmentDto.deliveryDriverId ? { id: createShipmentDto.deliveryDriverId } : null,
+      
+      // Asegurar que las propiedades de fecha sean Date objects
+      estimatedDeliveryAt: createShipmentDto.estimatedDeliveryAt 
+          ? new Date(createShipmentDto.estimatedDeliveryAt) 
+          : null
     });
+    
+    // 3. Guardar el nuevo envío.
+    // Si la validación anterior pasó, la base de datos no debería dar un error 500 por FK.
     return this.shipmentRepository.save(shipment);
   }
 
@@ -59,7 +96,7 @@ export class ShipmentService {
   
   async update(id: number, updateShipmentDto: UpdateShipmentDto): Promise<Shipment> {
     await this.findOne(id);
-    await this.findAndValidateRelations(updateShipmentDto);
+    await this.validateShipmentRelations(updateShipmentDto);
     
     // Mapeo manual de IDs a entidades para TypeORM
     const updateData: any = {
@@ -107,4 +144,19 @@ export class ShipmentService {
 
     return this.shipmentRepository.save(shipment);
   }
+
+  async updateStatus(id: number, newStatus: ShipmentStatus): Promise<Shipment> {
+    const shipment = await this.findOne(id);
+    
+    shipment.status = newStatus;
+
+    // Lógica clave: registrar la fecha de entrega solo si el estado es 'delivered'
+    if (newStatus === 'delivered' && !shipment.deliveredAt) {
+      shipment.deliveredAt = new Date();
+    }
+    
+    // Si el estado cambia de nuevo (ej. de delivered a returned), la fecha se mantiene
+    
+    return this.shipmentRepository.save(shipment);
+}
 }

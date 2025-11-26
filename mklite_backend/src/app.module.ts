@@ -36,7 +36,6 @@ import { ShipmentModule } from './shipment/shipment.module';
     NotificationModule,
     ConfigModule.forRoot({ isGlobal: true }), // Carga .env automáticamente
     UserModule,
-    AuthModule,
    
 
   ],

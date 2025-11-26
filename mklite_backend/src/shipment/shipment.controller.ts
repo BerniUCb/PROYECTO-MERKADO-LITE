@@ -5,6 +5,7 @@ import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
 import { AssignShipmentDto } from './dto/assign-shipment.dto'; 
+import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto'; 
 
 @Controller('shipments') // Plural por convención REST
 export class ShipmentController {
@@ -23,24 +24,7 @@ export class ShipmentController {
     return this.shipmentService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.shipmentService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateShipmentDto: UpdateShipmentDto,
-  ) {
-    return this.shipmentService.update(id, updateShipmentDto);
-  }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.shipmentService.remove(id);
-  }
+  
   
   // ---------------- MÉTODO ADICIONAL ----------------
 
@@ -55,5 +39,33 @@ export class ShipmentController {
         assignDto.driverId, 
         assignDto.status
     );
+  }
+
+  //FUNADOS
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.shipmentService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateShipmentDto: UpdateShipmentDto,
+  ) {
+    return this.shipmentService.update(id, updateShipmentDto);
+  }
+
+  @Patch(':id/status') // Ruta limpia y descriptiva
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStatusDto: UpdateShipmentStatusDto, // <-- Solo esperamos el estado
+  ) {
+    return this.shipmentService.updateStatus(id, updateStatusDto.status);
+  }
+  
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.shipmentService.remove(id);
   }
 }
