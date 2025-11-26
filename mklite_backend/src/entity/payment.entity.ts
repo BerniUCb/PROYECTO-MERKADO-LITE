@@ -24,12 +24,10 @@ export class Payment {
     receiptNumber: string; // Ej: REC-000123
 
     @Column({ name: 'receipt_url', nullable: true })
-    receiptUrl: string; // URL del PDF si lo subes a la nube (S3/Cloudinary) o ruta local
+    receiptUrl: string; 
 
     @CreateDateColumn({ name: 'paid_at' })
     paidAt: Date;
-
-    // Relación 1 a 1: Un pedido tiene un pago (en este modelo Lite)
     @OneToOne(() => Order, { nullable: false })
     @JoinColumn({ name: 'order_id' })
     order: Order;

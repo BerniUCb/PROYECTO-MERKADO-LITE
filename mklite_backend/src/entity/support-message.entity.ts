@@ -1,20 +1,20 @@
 // src/entity/support-message.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { SupportTicket } from "./support-ticket.entity"; // Anticipamos 'SupportTicket'
+import { SupportTicket } from "./support-ticket.entity"; 
 import { User } from "./user.entity";
 
-@Entity('support_messages') // <-- 'mensaje_soporte' -> 'support_messages'
-export class SupportMessage { // <-- 'MensajeSoporte' -> 'SupportMessage'
+@Entity('support_messages') 
+export class SupportMessage { 
 
-    @PrimaryGeneratedColumn({ name: 'support_message_id' }) // <-- 'mensaje_soporte_id'
+    @PrimaryGeneratedColumn({ name: 'support_message_id' }) 
     id: number;
 
     @Column({ type: 'text' })
-    content: string; // <-- 'contenido' -> 'content'
+    content: string; 
 
     @CreateDateColumn({ name: 'sent_at' })
-    sentAt: Date; // <-- 'fechaEnvio' -> 'sentAt'
+    sentAt: Date; 
     
     // --- Relationships ---
     @ManyToOne(() => SupportTicket, (ticket) => ticket.messages, { nullable: false }) // <-- Relación inversa será 'ticket.messages'

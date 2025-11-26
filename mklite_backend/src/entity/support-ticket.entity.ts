@@ -1,33 +1,33 @@
 // src/entity/support-ticket.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Order } from "./order.entity"; // <-- Actualizado
+import { Order } from "./order.entity"; 
 import { User } from "./user.entity";
-import { SupportMessage } from "./support-message.entity"; // <-- Actualizado
+import { SupportMessage } from "./support-message.entity"; 
 
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 
-@Entity('support_tickets') // <-- 'ticket_soporte' -> 'support_tickets'
-export class SupportTicket { // <-- 'TicketSoporte' -> 'SupportTicket'
+@Entity('support_tickets') 
+export class SupportTicket { 
 
-    @PrimaryGeneratedColumn({ name: 'support_ticket_id' }) // <-- 'ticket_soporte_id'
+    @PrimaryGeneratedColumn({ name: 'support_ticket_id' }) 
     id: number;
 
     @Column()
-    subject: string; // <-- 'asunto' -> 'subject'
+    subject: string; 
 
     @Column({
         type: 'enum',
         enum: ['open', 'in_progress', 'resolved', 'closed'],
         default: 'open'
     })
-    status: TicketStatus; // <-- 'estado' -> 'status'
+    status: TicketStatus; 
 
     @CreateDateColumn({ name: 'created_at' })
-    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
+    createdAt: Date; 
 
     @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date; // <-- 'fechaActualizacion' -> 'updatedAt'
+    updatedAt: Date; 
 
     // --- Relationships ---
     @ManyToOne(() => Order, { nullable: false })
