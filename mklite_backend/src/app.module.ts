@@ -17,7 +17,7 @@ import { stockMovementModule } from './stock-movement/stock-movement.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { ConfigModule } from '@nestjs/config';
 import { BackupController } from './backup/backup.controller';
-
+import { ShipmentModule } from './shipment/shipment.module';
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import { BackupController } from './backup/backup.controller';
     PromotionModule,
     OrderModule,
     TicketModule,
+    ShipmentModule,
     AddressModule,
     stockMovementModule,
     CheckoutModule,
