@@ -11,7 +11,7 @@ export class AddressController {
 
   // CREATE -> POST /users/1/address
   @Post()
-  create(
+create(
     @Param('userId', ParseIntPipe) userId: number, // <-- Obtenemos el userId de la URL
     @Body() createAddressDto: CreateAddressDto,
   ) {

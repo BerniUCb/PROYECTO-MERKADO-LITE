@@ -1,19 +1,19 @@
 // src/entity/category.entity.ts
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Product } from "./product.entity"; // <-- Anticipamos que 'Producto' se llamará 'Product'
+import { Product } from "./product.entity"; 
 
-@Entity('categories') // <-- 'categoria' -> 'categories'
-export class Category { // <-- 'Categoria' -> 'Category'
+@Entity('categories') 
+export class Category { 
 
-    @PrimaryGeneratedColumn({ name: 'category_id' }) // <-- 'categoria_id'
+    @PrimaryGeneratedColumn({ name: 'category_id' }) 
     id: number;
 
     @Column({ unique: true })
-    name: string; // <-- 'nombre' -> 'name'
+    name: string; 
 
     @Column({ nullable: true })
-    description: string; // <-- 'descripcion' -> 'description'
+    description: string; 
 
     // --- Relationships ---
     // A Category has many Products
