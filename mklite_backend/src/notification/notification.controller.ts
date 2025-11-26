@@ -58,7 +58,7 @@ export class NotificationController {
     return this.notificationService.markAsRead(id);
   }
 
-  @Get('by-type') // <-- Nueva ruta
+  @Get('by-type')
   findByType(@Query('type') type: NotificationType) {
     if (!type) {
         throw new BadRequestException('El parámetro de consulta "type" (NotificationType) es requerido.');
@@ -66,6 +66,13 @@ export class NotificationController {
     return this.notificationService.findByType(type);
   }
 
+  @Get('all-by-role')
+  findAllByRole(@Query('role') role: RecipientRole) {
+    if (!role) {
+      throw new BadRequestException('El parámetro de consulta "role" es requerido.');
+    }
+    return this.notificationService.findAllByRole(role);
+  }
 
   //FUNADAS PQ PRIORIDAD DE OTROS ENDPOINTS
    @Get(':id')

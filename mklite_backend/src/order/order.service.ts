@@ -1,12 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Order } from 'src/entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
 import { QueryHelpers } from 'src/utils/query-helpers';
 import { Product } from 'src/entity/product.entity';
+
 
 @Injectable()
 export class OrderService {
@@ -16,16 +17,28 @@ export class OrderService {
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(Product)
-  private readonly productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto): Promise<Order> {
-      const items = await Promise.all(
+ async create(createOrderDto: CreateOrderDto): Promise<Order> {
+    const items = await Promise.all(
       createOrderDto.items.map(async (item) => {
         const product = await this.productRepository.findOne({ where: { id: item.productId } });
+        
         if (!product) {
           throw new NotFoundException(`Producto con ID ${item.productId} no encontrado`);
         }
+
+        // --- VALIDACIÓN DE STOCK ---
+        if (product.physicalStock < item.quantity) {
+             throw new BadRequestException(`No hay suficiente stock para ${product.name}. Disponible: ${product.physicalStock}`);
+        }
+
+        // --- ACTUALIZACIÓN DE STOCK (ESTO FALTABA) ---
+        product.physicalStock -= item.quantity; // 1. Restamos la cantidad
+        await this.productRepository.save(product); // 2. Guardamos el cambio en la BD <--- CRUCIAL
 
         const orderItem = new OrderItem();
         orderItem.product = product;
@@ -193,5 +206,30 @@ async getCancelledOrdersCount(): Promise<number> {
   });
   return cancelled;
 }
+
+async getByUser(
+  userId: number,
+  page: number = 1,
+  limit: number = 10,
+) {
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await this.orderRepository.findAndCount({
+    where: { user: { id: userId } },     // Relación con User
+    relations: ['productos', 'envio'],   // Ajusta según tus relaciones
+    take: limit,
+    skip,
+    order: { createdAt: 'DESC' },
+  });
+
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    data: orders,
+  };
+}
+
 
 }

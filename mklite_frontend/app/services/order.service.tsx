@@ -39,18 +39,6 @@ export const OrderService = {
     return res.data;
   },
 
-   getByUser: async (
-    userId: number,
-    page: number = 1,
-    limit: number = 5,
-    sort: string = 'createdAt',
-    order: 'asc' | 'desc' = 'desc'
-  ): Promise<Order[]> => {
-    const params = { page, limit, sort, order };
-    // Llama al endpoint del backend: GET /orders/user/:userId
-    const res = await instance.get(`/orders/user/${userId}`, { params });
-    return res.data;
-  },
 
   // --- CRUD ---
   create: async (data: Omit<Order, "id" |"items">): Promise<Order> => {
@@ -71,6 +59,21 @@ export const OrderService = {
 
   getById: async (id: number): Promise<Order> => {
     const res = await instance.get(`/orders/${id}`);
+    return res.data;
+  },
+
+   getByUser: async (
+    userId: number,
+    page: number = 1,
+    limit: number = 5,
+    sort: string = 'createdAt',
+    order: 'asc' | 'desc' = 'desc'
+  ): Promise<Order[]> => {
+    // Enviamos sort/order aunque el backend actual los ignore (buena práctica por si lo actualizas luego)
+    const params = { page, limit, sort, order };
+    
+    // Ruta correcta según tu backend: /orders/by-user/:userId
+    const res = await instance.get(`/orders/by-user/${userId}`, { params });
     return res.data;
   },
 
