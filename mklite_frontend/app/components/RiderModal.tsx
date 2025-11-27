@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
+import Image from "next/image";
 import styles from "./RiderModal.module.css";
 
 interface RiderModalProps {
   onClose: () => void;
 }
 
-type Step = "intro" | "form";
+type Step = "intro" | "form" | "confirm" | "success";
 
 interface RiderFormState {
   mobility: string;
@@ -30,6 +31,14 @@ export default function RiderModal({ onClose }: RiderModalProps) {
     email: "",
   });
 
+  // Para mostrar la fecha en la pantalla de éxito
+  const [requestDate] = useState<Date>(() => new Date());
+  const formattedDate = requestDate.toLocaleDateString("es-BO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -41,15 +50,32 @@ export default function RiderModal({ onClose }: RiderModalProps) {
     setStep("form");
   };
 
+  // Paso 2 -> Paso 3 (confirmación)
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    // Aquí luego puedes hacer fetch() a tu backend
-    console.log("Datos rider:", form);
-
-    // Por ahora solo cerramos el modal
-    onClose();
+    setStep("confirm");
   };
+
+  // Paso 3 -> Paso 4 (éxito)
+  const handleConfirmAndSend = () => {
+    // Aquí harías el fetch/axios a tu backend
+    console.log("Datos rider enviados:", form);
+
+    setStep("success");
+  };
+
+  const handleEdit = () => {
+    setStep("form");
+  };
+
+  const mobilityLabel: Record<string, string> = {
+    moto: "Moto",
+    bicicleta: "Bicicleta",
+    auto: "Auto",
+  };
+
+  // Código de solicitud fake por ahora
+  const requestCode = "#R-2025-0012";
 
   return (
     <div className={styles.overlay}>
@@ -172,6 +198,138 @@ export default function RiderModal({ onClose }: RiderModalProps) {
             </form>
           </>
         )}
+
+        {/* PASO 3: CONFIRMACIÓN */}
+        {step === "confirm" && (
+          <>
+            <h2 className={styles.title}>Confirma tu información</h2>
+            <p className={styles.textForm}>
+              Verifica que todo esté correcto antes de enviar tu solicitud.
+            </p>
+
+            <div className={styles.summary}>
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Tipo de movilidad:</span>
+                <span className={styles.summaryValue}>
+                  {mobilityLabel[form.mobility] ?? form.mobility}
+                </span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Cédula:</span>
+                <span className={styles.summaryValue}>{form.ci}</span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Nombre:</span>
+                <span className={styles.summaryValue}>
+                  {form.firstName} {form.lastName}
+                </span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Teléfono:</span>
+                <span className={styles.summaryValue}>{form.phone}</span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Email:</span>
+                <span className={styles.summaryValue}>{form.email}</span>
+              </div>
+            </div>
+
+            <p className={styles.confirmText}>
+              Al confirmar, tu solicitud será enviada a nuestro equipo para
+              revisión. Te notificaremos en un plazo de 24 a 48 horas.
+            </p>
+
+            <div className={styles.actionsRow}>
+              <button
+                type="button"
+                className={styles.editButton}
+                onClick={handleEdit}
+              >
+                Editar Datos
+              </button>
+
+              <button
+                type="button"
+                className={styles.confirmButton}
+                onClick={handleConfirmAndSend}
+              >
+                Confirmar y Enviar
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* PASO 4: SOLICITUD ENVIADA */}
+        {step === "success" && (
+  <>
+    <h2 className={`${styles.title} ${styles.successTitle}`}>
+      Solicitud enviada
+    </h2>
+
+    {/* Icono + texto corto */}
+    <div className={styles.successHeaderRow}>
+      <div className={styles.successIconWrapper}>
+        <Image
+          src="/footer/check.svg"
+          alt="Solicitud enviada"
+          width={40}
+          height={40}
+        />
+      </div>
+      <p className={styles.successLead}>
+        Tu solicitud para convertirte en repartidor fue enviada con éxito.
+      </p>
+    </div>
+
+    {/* Grid: código / estado / movilidad / fecha */}
+    <div className={styles.successGrid}>
+      <div className={styles.successRow}>
+        <span className={styles.successLabel}>Código de solicitud:</span>
+        <span className={styles.successValue}>#R-2025-0012</span>
+      </div>
+
+      <div className={styles.successRow}>
+        <span className={styles.successLabel}>Estado:</span>
+        <span className={styles.statusBadge}>En revisión</span>
+      </div>
+
+      <div className={styles.successRow}>
+        <span className={styles.successLabel}>Tipo de movilidad:</span>
+        <span className={styles.successValue}>
+          {mobilityLabel[form.mobility] ?? form.mobility}
+        </span>
+      </div>
+
+      <div className={styles.successRow}>
+        <span className={styles.successLabel}>Fecha:</span>
+        <span className={styles.successValue}>{formattedDate}</span>
+      </div>
+    </div>
+
+    {/* Texto largo */}
+    <p className={styles.successText}>
+      Nuestro equipo revisará tus datos y te contactará por WhatsApp o correo
+      electrónico en un plazo aproximado de <strong>24 a 48 horas</strong>.
+      Mientras tanto, puedes seguir comprando normalmente en Merkado Lite.
+    </p>
+
+    {/* Botón rojo abajo a la derecha */}
+    <div className={styles.successActions}>
+      <button
+        type="button"
+        className={styles.backHomeButton}
+        onClick={onClose}
+      >
+        Volver al inicio
+      </button>
+    </div>
+  </>
+)}
+
       </div>
     </div>
   );
