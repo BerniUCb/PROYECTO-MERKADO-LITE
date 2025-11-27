@@ -11,20 +11,20 @@ export class CartItem {
     id: number;
 
     @Column({ type: 'integer', default: 1 })
-    quantity: number; // <-- 'cantidad' -> 'quantity'
+    quantity: number;
 
     @Column({ type: 'numeric', name: 'unit_price', nullable: false })
-    unitPrice: number; // <-- 'precioUnitario' -> 'unitPrice'
+    unitPrice: number;
 
     @CreateDateColumn({ name: 'added_at', type: 'timestamp with time zone' })
-    addedAt: Date; // <-- 'fechaAgregado' -> 'addedAt'
+    addedAt: Date; 
     
-    // --- Relationships ---
+
     @ManyToOne(() => User, (user) => user.cartItems, { nullable: false }) 
     @JoinColumn({ name: 'user_id' }) 
     user: User; 
 
     @ManyToOne(() => Product, { nullable: false }) 
     @JoinColumn({ name: 'product_id' })
-    product: Product; // <-- 'producto' -> 'product'
+    product: Product; 
 }

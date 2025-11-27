@@ -15,8 +15,6 @@ export class Category {
     @Column({ nullable: true })
     description: string; 
 
-    // --- Relationships ---
-    // A Category has many Products
-    @OneToMany(() => Product, (product) => product.category) // <-- La relación inversa será 'product.category'
-    products: Product[]; // <-- 'productos' -> 'products'
+    @OneToMany(() => Product, (product) => product.category) 
+    products: Product[];
 }
