@@ -11,9 +11,12 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Client");
   const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Role fijo → siempre "Client"
+  const role = "Client";
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -23,12 +26,11 @@ export default function SignupPage() {
     setSuccess("");
 
     try {
-      // ← CAMBIO IMPORTANTE: nombres correctos para el backend
       const res = await instance.post("/users", {
         fullName,
         email,
         password,
-        role,
+        role,   // ← SIEMPRE "Client"
         city,
         phone,
       });
@@ -40,7 +42,6 @@ export default function SignupPage() {
       setPassword("");
       setCity("");
       setPhone("");
-      setRole("Client");
 
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al crear cuenta");
@@ -117,23 +118,8 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Rol */}
-          <div>
-            <label htmlFor="role">Tipo de usuario</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value="Client">Cliente</option>
-              <option value="Seller">Vendedor</option>
-              <option value="Warehouse">Almacén</option>
-              <option value="DeliveryDriver">Repartidor</option>
-              <option value="Admin">Administrador</option>
-              <option value="Support">Soporte</option>
-              <option value="Supplier">Proveedor</option>
-            </select>
-          </div>
+          {/* ROLE FIJO – Cliente */}
+          <input type="hidden" value={role} readOnly />
 
           {error && <p style={{ color: "red" }}>{error}</p>}
           {success && <p style={{ color: "green" }}>{success}</p>}
