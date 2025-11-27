@@ -15,7 +15,7 @@ export class Address {
     @Column({ name: 'street_number' }) 
     streetNumber: string;
 
-    @Column({ name: 'internal_number', nullable: true }) r
+    @Column({ name: 'internal_number', nullable: true })
     internalNumber: string;
 
     @Column({ name: 'postal_code' }) 

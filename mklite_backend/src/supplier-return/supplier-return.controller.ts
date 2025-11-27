@@ -38,4 +38,9 @@ export class SupplierReturnController {
         }
         return this.supplierReturnService.getReturnsByDateRange(start, end);
     }
+
+    @Get('/filter-by-date')
+    getByDate(){
+        return this.supplierReturnService.getByDate();
+    }
 }
