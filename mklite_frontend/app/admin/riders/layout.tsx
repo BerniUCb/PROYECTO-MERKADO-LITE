@@ -1,5 +1,5 @@
 import RiderSidebar from "@/app/components/RiderSidebar";
-import styles from "./AdminLayout.module.css"; // usa el mismo layout del admin si quieres
+import styles from "../AdminLayout.module.css"; // usa el mismo layout del admin si quieres
 
 export default function RiderLayout({
   children,
@@ -8,7 +8,7 @@ export default function RiderLayout({
 }) {
   return (
     <div className={styles.adminLayout}>
-      <RiderSidebar />
+     {/* <RiderSidebar />*/}
 
       <main className={styles.pageContent}>
         {children}
