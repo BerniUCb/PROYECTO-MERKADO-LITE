@@ -16,22 +16,18 @@ export class StockMovementController {
   ) {
     return this.stockMovementService.findAll(page, limit, sort, order);
   }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.stockMovementService.findOne(+id);
   }
-
   @Post()
   create(@Body() dto: CreateStockMovementDto) {
     return this.stockMovementService.create(dto);
   }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateStockMovementDto) {
     return this.stockMovementService.update(+id, dto);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.stockMovementService.remove(+id);

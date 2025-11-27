@@ -9,37 +9,30 @@ import { UpdateProductDto } from "./dto/update-product-dto";
 export class ProductController {
 
     constructor(private readonly productService: ProductService) {}
-
     @Post()
     createProduct(@Body() dto: CreateProductDto) {
         return this.productService.createProduct(dto);
     }
-
     @Get()
     getAllProducts() {
         return this.productService.getAllProducts();
     }
-
     @Get('/:id') 
     getProductById(@Param('id') id: number) {
         return this.productService.getProductById(id);
     }
-
     @Delete('/:id')
     deleteProduct(@Param('id') id: number) {
         return this.productService.deleteProduct(id);
     }
-
     @Put('/:id')
     updateProduct(@Param('id') id: number, @Body() dto: UpdateProductDto) {
         return this.productService.updateProduct(id, dto);
     }   
-
     @Get('/top-selling')
     getTopSellingProducts() {
         return this.productService.getTopSellingProducts();
     }
-
     //se maneja acon async y await para que las promesas funcionen bien en estos casos
     @Get('count')
     async getTotalProductsCount() {

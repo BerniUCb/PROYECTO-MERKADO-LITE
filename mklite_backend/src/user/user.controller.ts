@@ -8,7 +8,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(
@@ -29,7 +28,6 @@ export class UserController {
   async getOne(@Param('id') id: number): Promise<User> {
     return this.userService.findOne(id);
   }
-
  @UseGuards(JwtAuthGuard)
   @Get('totalUsers')
   async getRegisteredClientsCount(): Promise<{totalUsers: number}>{
@@ -42,7 +40,6 @@ export class UserController {
     const count = await this.userService.countOrdersByUser(id);
     return { totalOrders: count };
   }
-
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);

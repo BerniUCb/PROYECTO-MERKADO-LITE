@@ -8,27 +8,22 @@ import { Order } from 'src/entity/order.entity';
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
-
   @Get('report/total-sales')
   getTotalSales(){
     return this.orderService.getTotalSales();
   }
-
   @Get('report/pending-count')
   getPendingOrderCount(){
     return this.orderService.getPendingOrderCount();
   }
-
   @Get('report/weekly-sales')
   getWeeklySales(){
     return this.orderService.getWeeklySales();
   }
-
   @Get('report/latest')
   getLatestOrders(){
     return this.orderService.getLatestOrders();
   }
-  
   @Get('report/cancelled-count')
   async getCancelledOrdersCount() {
   const cancelled = await this.orderService.getCancelledOrdersCount();
