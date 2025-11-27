@@ -183,7 +183,7 @@ export default function VentasEnTienda() {
   // --- RENDER ---
   return (
     <div className={styles.adminLayout}>
-      <AdminSidebar />
+     {/* <AdminSidebar />*/}
 
       <main className={styles.mainContent}>
         <div className={styles.wrapper}>
