@@ -15,17 +15,15 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
   const isAdminRoute = pathname.startsWith("/admin");
 
   // Rutas sin Header/Footer/Modal
-  const noChromeRoutes = ["/"]; // 👈 la página raíz
+  const noChromeRoutes = ["/", "/signup"]; // 👈 aquí añadimos login
   const isNoChromeRoute = noChromeRoutes.includes(pathname);
 
   const [showRiderModal, setShowRiderModal] = useState(false);
 
-  // 👉 En estas rutas NO renderizamos layout (ni header, ni footer)
   if (isNoChromeRoute) {
     return <>{children}</>;
   }
 
-  // 👉 Resto de rutas normales
   return (
     <>
       <div className={showRiderModal ? styles.blurred : ""}>
