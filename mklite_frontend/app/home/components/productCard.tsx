@@ -1,17 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./productCard.module.css";
 import ProductCardModel from "../../models/productCard.model";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Props {
   product: ProductCardModel;
 }
 
 const ProductCard: React.FC<Props> = ({ product }) => {
+  const router = useRouter();
+
   const { name, description, imageUrl } = product;
   const price = Number(product.salePrice) || 0;
+
+  // Estado para verificar si está logueado
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
+  const handleAddClick = () => {
+    if (!isLogged) {
+      router.push("/login");
+      return;
+    }
+
+    // Si está logueado, ir al detalle del producto
+    router.push(`/product/${product.id}`);
+  };
 
   return (
     <div className={styles.card}>
@@ -31,19 +51,12 @@ const ProductCard: React.FC<Props> = ({ product }) => {
           </span>
         </div>
 
-        <Link href={`/product/${product.id}`}>
-          <button className={styles.addButton}>🛒 Add</button>
-        </Link>
+        <button className={styles.addButton} onClick={handleAddClick}>
+          🛒 Add
+        </button>
       </div>
     </div>
   );
 };
 
 export default ProductCard;
-
-
-
-
-
-
-
