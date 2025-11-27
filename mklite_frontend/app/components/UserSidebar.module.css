@@ -1,116 +1,122 @@
 /* ========================================================= */
-/*                     PANTALLA DE ÉXITO                     */
+/*                CONTENEDOR GENERAL DEL SIDEBAR             */
 /* ========================================================= */
 
-.successContent {
-  margin-top: 12px;
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px 20px;
+
+  /* SOMBRA BONITA */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* ESPACIADO RESPECTO AL BORDE IZQUIERDO */
+  margin-left: 32px;
+  margin-top: 20px;
+
+  display: flex;
+  flex-direction: column;
 }
 
-.successIconText {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ========================================================= */
+/*                        HEADER USER                         */
+/* ========================================================= */
+
+.header {
   margin-bottom: 20px;
 }
 
-.successIconWrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  background: #e8f7ec;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.userName {
+  font-size: 17px;
+  font-weight: 700;
+  color: #222222;
 }
 
-.successLead {
+/* ========================================================= */
+/*                      LISTA DE ITEMS                        */
+/* ========================================================= */
+
+.menu {
+  margin-bottom: 20px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item,
+.itemActive {
+  margin-bottom: 14px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
   font-size: 15px;
-  color: #222222;
+  color: #9c9c9c;
+  transition: color 0.2s ease;
 }
 
-/* Grid de código/estado/movilidad/fecha */
-.successGrid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  row-gap: 8px;
-  column-gap: 24px;
-  margin-bottom: 18px;
+.link:hover {
+  color: #e30613;
 }
 
-.successRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
+.iconWrapper img {
+  width: 20px;
+  height: 20px;
 }
 
-.successLabel {
-  color: #b1b1b1;
-}
-
-.successValue {
-  color: #222222;
+/* ACTIVO → rojo y negrita */
+.itemActive .link {
+  color: #e30613;
   font-weight: 600;
 }
 
-/* Badge "En revisión" */
-.statusBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #fff4cf;
-  color: #e0a100;
-  font-size: 12px;
-  font-weight: 600;
-}
+/* ========================================================= */
+/*                     BOTÓN CERRAR SESIÓN                   */
+/* ========================================================= */
 
-/* Texto descriptivo */
-.successText {
-  font-size: 14px;
-  color: #333333;
-  line-height: 1.5;
-  margin-bottom: 22px;
-}
+.logoutButton {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px;
 
-/* Botón final */
-.actionsEnd {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.backHomeButton {
-  min-width: 180px;
-  height: 44px;
-  border-radius: 6px;
   border: none;
-  background: #e53935;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: 12px;
+
+  background: #f7f6f6;
+  color: #333;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
+  transition: background 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.backHomeButton:hover {
-  background: #d32f2f;
+.logoutButton:hover {
+  background: #ecebeb;
 }
 
-.backHomeButton:active {
-  transform: translateY(1px);
+.logoutLabel {
+  color: #333;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .successGrid {
-    grid-template-columns: 1fr;
-  }
+/* ========================================================= */
+/*                  RESPONSIVE OPCIONAL                       */
+/* ========================================================= */
 
-  .actionsEnd {
-    justify-content: center;
-  }
-
-  .backHomeButton {
+@media (max-width: 900px) {
+  .sidebar {
+    margin-left: 0;
     width: 100%;
   }
 }
