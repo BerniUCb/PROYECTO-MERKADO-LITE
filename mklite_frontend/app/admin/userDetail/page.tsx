@@ -47,6 +47,7 @@ export default function UserDetailPage() {
       alert("Usuario eliminado correctamente.");
     } catch (error) {
       alert("Error al eliminar usuario.");
+
     }
   };
 
