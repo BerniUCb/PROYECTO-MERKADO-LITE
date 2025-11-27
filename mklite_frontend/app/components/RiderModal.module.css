@@ -1,45 +1,49 @@
-/* --- FONDO OSCURECIDO --- */
+/* ===================== OVERLAY ===================== */
+
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45); /* NO usar opacity aquí */
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50;
 }
 
-/* --- CONTENEDOR DEL MODAL --- */
+/* ===================== MODAL BASE ===================== */
+
 .modal {
   background: #ffffff;
-  border-radius: 8px;
-  padding: 24px 32px;
-  max-width: 540px;
+  border-radius: 20px;
+  padding: 32px 40px;
+  max-width: 720px;
   width: 100%;
   position: relative;
-
-  /* Fuerza el texto negro */
-  color: #000000 !important;
+  color: #000000;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
-/* --- BOTÓN CERRAR (X) --- */
+/* Botón cerrar (X) */
 .closeButton {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 18px;
+  right: 20px;
   border: none;
   background: transparent;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
   color: #000000;
 }
 
-/* --- TITULOS Y TEXTOS --- */
+/* ===================== TEXTOS GENERALES ===================== */
+
 .title {
   font-size: 22px;
   font-weight: 700;
   text-align: left;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #000000;
 }
 
@@ -47,10 +51,11 @@
 .textForm {
   font-size: 14px;
   margin-bottom: 16px;
-  color: #000000;
+  color: #555555;
 }
 
-/* --- FORMULARIO --- */
+/* ===================== FORMULARIO (INTRO / FORM) ===================== */
+
 .form {
   margin-top: 8px;
 }
@@ -58,7 +63,7 @@
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px 16px;
+  gap: 12px 18px;
   margin-bottom: 12px;
 }
 
@@ -71,30 +76,35 @@
 .field label {
   font-size: 13px;
   font-weight: 500;
-  color: #000000; /* Label negra */
+  color: #333333;
 }
 
-/* Inputs y selects */
 .field input,
 .field select {
   border: 1px solid #d1d1d1;
   border-radius: 4px;
-  padding: 6px 8px;
+  padding: 7px 9px;
   font-size: 14px;
-  color: #000000; /* Texto de input negro */
+  color: #000000;
   background: #ffffff;
+  outline: none;
 }
 
-/* Placeholder */
+.field input:focus,
+.field select:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 1px rgba(229, 57, 53, 0.18);
+}
+
 .field input::placeholder {
-  color: #8a8a8a; /* Gris neutro */
+  color: #9a9a9a;
 }
 
-/* --- BOTÓN CONTINUAR --- */
+/* Botón rojo principal (intro y form) */
 .continueButton {
-  margin-top: 12px;
+  margin-top: 20px;
   width: 100%;
-  padding: 10px 0;
+  height: 44px;
   border: none;
   border-radius: 4px;
   background: #e53935;
@@ -102,4 +112,230 @@
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.continueButton:hover {
+  background: #d32f2f;
+}
+
+.continueButton:active {
+  transform: translateY(1px);
+}
+
+/* ===================== PANTALLA DE CONFIRMACIÓN ===================== */
+
+.summary {
+  margin: 20px 0 16px;
+  border-top: 1px solid #eeeeee;
+  padding-top: 16px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.summaryLabel {
+  color: #888888;
+}
+
+.summaryValue {
+  color: #333333;
+  font-weight: 500;
+}
+
+.confirmText {
+  font-size: 13px;
+  color: #555555;
+  margin-top: 10px;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+
+/* Botones inferiores (Editar / Confirmar) */
+.actionsRow {
+  display: flex;
+  gap: 12px;
+}
+
+.editButton {
+  flex: 1;
+  height: 44px;
+  border-radius: 4px;
+  border: 1px solid #dddddd;
+  background: #f8f8f8;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.editButton:hover {
+  background: #f0f0f0;
+  border-color: #cccccc;
+}
+
+.confirmButton {
+  flex: 1;
+  height: 44px;
+  border-radius: 4px;
+  border: none;
+  background: #e53935;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.confirmButton:hover {
+  background: #d32f2f;
+}
+
+.confirmButton:active {
+  transform: translateY(1px);
+}
+
+/* ===================== PANTALLA DE ÉXITO ===================== */
+
+.successTitle {
+  font-size: 26px;
+  margin-bottom: 24px;
+}
+
+/* Icono + texto */
+.successHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.successIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #e8f7ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successLead {
+  font-size: 16px;
+  color: #222222;
+}
+
+/* Grid: código/estado/movilidad/fecha */
+.successGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  column-gap: 40px;
+  row-gap: 10px;
+  margin-bottom: 28px;
+}
+
+.successRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.successLabel {
+  font-size: 18px;
+  color: #c0c0c0;
+}
+
+.successValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+}
+
+/* Badge "En revisión" */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #fff4cf;
+  color: #e0a100;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Texto descriptivo */
+.successText {
+  font-size: 15px;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Botón final */
+.successActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.backHomeButton {
+  min-width: 210px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: none;
+  background: #e53935;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.backHomeButton:hover {
+  background: #d32f2f;
+}
+
+.backHomeButton:active {
+  transform: translateY(1px);
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 24px 18px;
+    max-width: 92%;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+  }
+
+  .editButton,
+  .confirmButton {
+    width: 100%;
+  }
+
+  .successGrid {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  .successActions {
+    justify-content: center;
+  }
+
+  .backHomeButton {
+    width: 100%;
+  }
 }

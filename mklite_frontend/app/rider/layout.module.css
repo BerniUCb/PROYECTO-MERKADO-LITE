@@ -1,0 +1,12 @@
+.riderLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Contenido a la derecha del sidebar */
+.pageContent {
+  flex: 1;
+  padding: 40px 48px;
+  background: #f9f9f9;
+}
