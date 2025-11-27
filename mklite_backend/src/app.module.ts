@@ -20,7 +20,7 @@ import {OrderItemModule} from './order-item/order-item.module';
 import { ConfigModule } from '@nestjs/config';
 import { BackupController } from './backup/backup.controller';
 import { PaymentModule } from './payment/payment.module';
-// ⭐⭐ IMPORTAMOS EL MÓDULO DEL CARRITO ⭐⭐
+
 import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItem } from './entity/order-item.entity';
 import { PriceHistoryModule } from './price-history/price-history.module';
@@ -47,7 +47,7 @@ import { Or } from 'typeorm';
 
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // ⭐⭐⭐ AÑADIDO PARA ACTIVAR RUTAS DE CARRITO ⭐⭐⭐
+    
     CartItemModule,
   ],
   controllers: [AppController, BackupController],
