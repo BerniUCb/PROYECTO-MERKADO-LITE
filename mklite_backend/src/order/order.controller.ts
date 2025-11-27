@@ -28,14 +28,22 @@ export class OrderController {
   getLatestOrders(){
     return this.orderService.getLatestOrders();
   }
-  //CRUD
+  
+  @Get('report/cancelled-count')
+async getCancelledOrdersCount() {
+  const cancelled = await this.orderService.getCancelledOrdersCount();
+  return { cancelledOrders: cancelled };
+}
+@Get('by-user/:userId')
+async getByUser(
+  @Param('userId') userId: number,
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 10,
+) {
+  return this.orderService.getByUser(userId, page, limit);
+}
 
-  @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
-  }
-
-  @Get()
+@Get()
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -50,15 +58,6 @@ export class OrderController {
     return this.orderService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto){
-    return this.orderService.update(id, updateOrderDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.orderService.remove(id);
-  }
   @Get('stats/last-7-days')
   async getLast7DaysSales(): Promise<number[]> {
   return this.orderService.getLast7DaysSales();
@@ -69,18 +68,19 @@ async getTotalOrdersCount() {
   return { totalOrders: total };
 }
 
-@Get('report/cancelled-count')
-async getCancelledOrdersCount() {
-  const cancelled = await this.orderService.getCancelledOrdersCount();
-  return { cancelledOrders: cancelled };
-}
-@Get('by-user/:userId')
-async getByUser(
-  @Param('userId') userId: number,
-  @Query('page') page: number = 1,
-  @Query('limit') limit: number = 10,
-) {
-  return this.orderService.getByUser(userId, page, limit);
-}
 
+  @Post()
+  create(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(createOrderDto);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto){
+    return this.orderService.update(id, updateOrderDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.orderService.remove(id);
+  }
 }

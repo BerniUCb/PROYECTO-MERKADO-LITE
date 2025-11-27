@@ -30,6 +30,19 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+ @UseGuards(JwtAuthGuard)
+  @Get('totalUsers')
+  async getRegisteredClientsCount(): Promise<{totalUsers: number}>{
+    const count = await this.userService.countUsers();
+    return {totalUsers: count};
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/orders/count')
+  async getOrdersCount(@Param('id') id: number): Promise<{ totalOrders: number }> {
+    const count = await this.userService.countOrdersByUser(id);
+    return { totalOrders: count };
+  }
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
@@ -44,19 +57,5 @@ export class UserController {
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
   }
-  @UseGuards(JwtAuthGuard)
-  @Get('totalUsers')
-  async getRegisteredClientsCount(): Promise<{totalUsers: number}>{
-    const count = await this.userService.countUsers();
-    return {totalUsers: count};
-  }
-  @UseGuards(JwtAuthGuard)
-  @Get(':id/orders/count')
-  async getOrdersCount(@Param('id') id: number): Promise<{ totalOrders: number }> {
-    const count = await this.userService.countOrdersByUser(id);
-    return { totalOrders: count };
-  }
-  
-
 
 }

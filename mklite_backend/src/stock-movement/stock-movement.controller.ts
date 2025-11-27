@@ -7,12 +7,7 @@ import { UpdateStockMovementDto } from './dto/update-stock.dto';
 export class StockMovementController {
   constructor(private readonly stockMovementService: StockMovementService) {}
 
-  @Post()
-  create(@Body() dto: CreateStockMovementDto) {
-    return this.stockMovementService.create(dto);
-  }
-
-  @Get()
+@Get()
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -25,6 +20,11 @@ export class StockMovementController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.stockMovementService.findOne(+id);
+  }
+
+  @Post()
+  create(@Body() dto: CreateStockMovementDto) {
+    return this.stockMovementService.create(dto);
   }
 
   @Patch(':id')
