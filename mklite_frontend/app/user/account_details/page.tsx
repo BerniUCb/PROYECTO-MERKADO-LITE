@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { Pencil } from "lucide-react";
 import { UserService } from "@/app/services/user.service";
 import UserSidebar from "@/app/components/UserSidebar";
 
@@ -20,7 +19,7 @@ export default function AccountDetailsPage() {
   return (
     <main className={styles.wrapper}>
       {/* Sidebar */}
-      {/*<UserSidebar />*/}
+      {/* <UserSidebar /> */}
 
       {/* Contenido derecha */}
       <div className={styles.container}>
@@ -32,9 +31,6 @@ export default function AccountDetailsPage() {
             <p className={styles.label}>Nombre Completo</p>
             <p className={styles.value}>{user.fullName}</p>
           </div>
-          <button className={styles.editBtn}>
-            <Pencil size={16} /> Editar
-          </button>
         </div>
 
         {/* Teléfono */}
@@ -43,9 +39,6 @@ export default function AccountDetailsPage() {
             <p className={styles.label}>Número de Teléfono</p>
             <p className={styles.value}>{user.phone || "No registrado"}</p>
           </div>
-          <button className={styles.editBtn}>
-            <Pencil size={16} /> Editar
-          </button>
         </div>
 
         {/* Correo */}
@@ -54,11 +47,7 @@ export default function AccountDetailsPage() {
             <p className={styles.label}>Correo Electrónico</p>
             <p className={styles.value}>{user.email}</p>
           </div>
-          <button className={styles.editBtn}>
-            <Pencil size={16} /> Editar
-          </button>
         </div>
-
       </div>
     </main>
   );
