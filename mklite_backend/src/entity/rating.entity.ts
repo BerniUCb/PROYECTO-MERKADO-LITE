@@ -4,11 +4,11 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, Jo
 import { Order } from "./order.entity"; 
 import { User } from "./user.entity";
 
-@Entity('ratings') // <-- 'calificacion' 
+@Entity('ratings') 
 @Check(`"score" >= 1 AND "score" <= 5`) 
-export class Rating { // <-- 'Calificacion' 
+export class Rating { 
 
-    @PrimaryGeneratedColumn({ name: 'rating_id' }) // <-- 'calificacion_id'
+    @PrimaryGeneratedColumn({ name: 'rating_id' }) 
     id: number;
     
     @Column({ type: 'integer' })
@@ -19,13 +19,11 @@ export class Rating { // <-- 'Calificacion'
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt: Date; 
-
-    // --- Relationships ---
     @OneToOne(() => Order, { nullable: false })
     @JoinColumn({ name: 'order_id' }) 
     order: Order; 
 
-    @ManyToOne(() => User, (user) => user.ratings, { nullable: false }) // <-- Relación inversa será 'user.ratings'
-    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
-    user: User; // <-- 'cliente' -> 'user'
+    @ManyToOne(() => User, (user) => user.ratings, { nullable: false })
+    @JoinColumn({ name: 'user_id' })
+    user: User; 
 }

@@ -1,0 +1,64 @@
+.container {
+  width: 100%;
+}
+
+/* Título "Bienvenido Pepe" */
+.title {
+  font-size: 40px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: #111111;
+}
+
+/* Contenedor principal de la tarjeta/listado */
+.content {
+  display: flex;
+  gap: 24px;
+}
+
+/* Card de pedidos disponibles */
+.card {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.cardHeader {
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.cardBody {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: #777777;
+  text-align: center;
+}
+
+/* Responsive básico */
+@media (max-width: 768px) {
+  .title {
+    font-size: 32px;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+  }
+}

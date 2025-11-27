@@ -6,38 +6,37 @@ import { User } from "./user.entity";
 @Entity('addresses') 
 export class Address { 
 
-    @PrimaryGeneratedColumn({ name: 'address_id' }) // <-- Columna ID
+    @PrimaryGeneratedColumn({ name: 'address_id' }) 
     id: number;
 
     @Column()
-    street: string; // <-- calle
+    street: string; 
 
-    @Column({ name: 'street_number' }) // <-- numero_exterior
+    @Column({ name: 'street_number' }) 
     streetNumber: string;
 
-    @Column({ name: 'internal_number', nullable: true }) // <-- numero_interior
+    @Column({ name: 'internal_number', nullable: true }) 
     internalNumber: string;
 
-    @Column({ name: 'postal_code' }) // <-- codigo_postal
+    @Column({ name: 'postal_code' }) 
     postalCode: string;
 
     @Column()
-    city: string; // <-- ciudad
+    city: string; 
 
     @Column()
-    state: string; // <-- estado
+    state: string;
 
     @Column({ nullable: true })
-    references: string; // <-- referencias
+    references: string; 
 
-    @Column({ name: 'address_alias', default: 'Home' }) // <-- alias_direccion
+    @Column({ name: 'address_alias', default: 'Home' }) 
     addressAlias: string;
 
     @Column({ name: 'is_default', default: false })
     isDefault: boolean;
 
-    // --- Relationships ---
-    @ManyToOne(() => User, (user) => user.addresses, { nullable: false }) // <-- 'user.addresses'
-    @JoinColumn({ name: 'user_id' }) // <-- 'user_id'
-    user: User; // <-- 'usuario'
+    @ManyToOne(() => User, (user) => user.addresses, { nullable: false }) 
+    @JoinColumn({ name: 'user_id' }) 
+    user: User; 
 }

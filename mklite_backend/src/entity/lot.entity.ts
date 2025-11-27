@@ -26,17 +26,15 @@ export class Lot {
     @Column({ type: 'date', name: 'expires_at', nullable: true })
     expiresAt: Date; 
 
-    // --- Relationships ---
     @ManyToOne(() => Product, { nullable: false })
     @JoinColumn({ name: 'product_id' })
-    product: Product; // <-- 'producto'
+    product: Product; 
 
-    @ManyToOne(() => Supplier, (supplier) => supplier.lots, { nullable: true }) // <-- Relación inversa será 'supplier.lots'
-    @JoinColumn({ name: 'supplier_id' }) // <-- 'proveedor_id'
-    supplier: Supplier; // <-- 'proveedor' -> 'supplier'
-    
-    @OneToMany(() => StockMovement, (movement) => movement.lot) // <-- Relación inversa será 'movement.lot'
-    stockMovements: StockMovement[]; // <-- 'movimientos' -> 'stockMovements'
+    @ManyToOne(() => Supplier, (supplier) => supplier.lots, { nullable: true }) 
+    @JoinColumn({ name: 'supplier_id' })
+    supplier: Supplier; 
+    @OneToMany(() => StockMovement, (movement) => movement.lot)
+    stockMovements: StockMovement[]; 
     @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.lot)
     returns: SupplierReturn[];
 }

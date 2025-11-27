@@ -215,8 +215,14 @@ async getByUser(
   const skip = (page - 1) * limit;
 
   const [orders, total] = await this.orderRepository.findAndCount({
-    where: { user: { id: userId } },     // Relación con User
-    relations: ['productos', 'envio'],   // Ajusta según tus relaciones
+    where: { user: { id: userId } },
+    relations: {
+      user: true,
+      payment: true,
+      items: {
+        product: true,
+      },
+    },
     take: limit,
     skip,
     order: { createdAt: 'DESC' },
@@ -231,5 +237,7 @@ async getByUser(
   };
 }
 
-
 }
+
+
+

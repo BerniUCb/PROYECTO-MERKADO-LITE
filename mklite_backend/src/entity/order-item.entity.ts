@@ -5,25 +5,22 @@ import { Order } from "./order.entity";
 import { Product } from "./product.entity"; 
 
 
-@Entity('order_items') // <-- 'detalle_pedido' -> 'order_items'
-export class OrderItem { // <-- 'DetallePedido' -> 'OrderItem'
+@Entity('order_items') 
+export class OrderItem { 
 
-    @PrimaryGeneratedColumn({ name: 'order_item_id' }) // <-- 'detalle_pedido_id'
+    @PrimaryGeneratedColumn({ name: 'order_item_id' }) 
     id: number;
 
     @Column({ type: 'integer' })
-    quantity: number; // <-- 'cantidad' -> 'quantity'
-
+    quantity: number;
     @Column({ type: 'numeric', name: 'unit_price' })
-    unitPrice: number; // <-- 'precioUnitario' -> 'unitPrice'
+    unitPrice: number; 
+    @ManyToOne(() => Order, (order) => order.items, { nullable: false })
+    @JoinColumn({ name: 'order_id' })
+    order: Order; 
 
-    // --- Relationships ---
-    @ManyToOne(() => Order, (order) => order.items, { nullable: false }) // <-- Relación inversa será 'order.items'
-    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
-    order: Order; // <-- 'pedido' -> 'order'
-
-    @ManyToOne(() => Product, (product) => product.orderItems, { nullable: false }) // <-- Relación inversa será 'product.orderItems'
+    @ManyToOne(() => Product, (product) => product.orderItems, { nullable: false })
     @JoinColumn({ name: 'product_id' })
-    product: Product; // <-- 'producto' -> 'product'
+    product: Product; 
     
 }

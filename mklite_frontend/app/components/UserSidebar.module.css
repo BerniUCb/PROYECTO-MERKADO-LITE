@@ -1,94 +1,122 @@
+/* ========================================================= */
+/*                CONTENEDOR GENERAL DEL SIDEBAR             */
+/* ========================================================= */
+
 .sidebar {
+  width: 260px;
   background: #ffffff;
-  border-radius: 15px;
-  padding: 16px 18px;
-  width: 270px;
+  border-radius: 16px;
+  padding: 22px 20px;
+
+  /* SOMBRA BONITA */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* ESPACIADO RESPECTO AL BORDE IZQUIERDO */
+  margin-left: 32px;
+  margin-top: 20px;
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
+/* ========================================================= */
+/*                        HEADER USER                         */
+/* ========================================================= */
+
 .header {
-  margin-bottom: 8px;
+  margin-bottom: 20px;
 }
 
 .userName {
-  font-weight: 600;
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 700;
   color: #222222;
 }
 
+/* ========================================================= */
+/*                      LISTA DE ITEMS                        */
+/* ========================================================= */
+
 .menu {
-  margin-top: 4px;
+  margin-bottom: 20px;
 }
 
 .list {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .item,
 .itemActive {
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 
 .link {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
-  font-size: 14px;
-  color: #b0a6a6; /* gris por defecto */
+  font-size: 15px;
+  color: #9c9c9c;
+  transition: color 0.2s ease;
 }
 
-.iconWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
+.link:hover {
+  color: #e30613;
 }
 
 .iconWrapper img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
+  width: 20px;
+  height: 20px;
 }
 
-/* item seleccionado en rojo (texto + icono) */
+/* ACTIVO → rojo y negrita */
 .itemActive .link {
   color: #e30613;
   font-weight: 600;
 }
 
-/* si tus SVG usan currentColor, esto hará el icono rojo también */
-.itemActive .iconWrapper img {
-  filter: none;
-}
-
-/* --- Cerrar sesión --- */
+/* ========================================================= */
+/*                     BOTÓN CERRAR SESIÓN                   */
+/* ========================================================= */
 
 .logoutButton {
-  margin-top: auto; /* lo manda al fondo del sidebar */
+  margin-top: auto;
   width: 100%;
+  padding: 12px;
+
   border: none;
-  border-radius: 16px;
-  padding: 10px 14px;
-  background: #fdfbfb;
+  border-radius: 12px;
+
+  background: #f7f6f6;
+  color: #333;
+
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+
   cursor: pointer;
+  transition: background 0.2s ease;
   font-size: 14px;
-  color: #111111;
+  font-weight: 600;
 }
 
 .logoutButton:hover {
-  background: #f3efef;
+  background: #ecebeb;
 }
 
 .logoutLabel {
-  font-weight: 500;
+  color: #333;
+}
+
+/* ========================================================= */
+/*                  RESPONSIVE OPCIONAL                       */
+/* ========================================================= */
+
+@media (max-width: 900px) {
+  .sidebar {
+    margin-left: 0;
+    width: 100%;
+  }
 }
