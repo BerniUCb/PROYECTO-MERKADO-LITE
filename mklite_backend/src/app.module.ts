@@ -16,13 +16,15 @@ import { AddressModule } from './address/address.module';
 import { stockMovementModule } from './stock-movement/stock-movement.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { ShipmentModule } from './shipment/shipment.module';
-
+import {OrderItemModule} from './order-item/order-item.module';
 import { ConfigModule } from '@nestjs/config';
 import { BackupController } from './backup/backup.controller';
-
+import { PaymentModule } from './payment/payment.module';
 // ⭐⭐ IMPORTAMOS EL MÓDULO DEL CARRITO ⭐⭐
 import { CartItemModule } from './cart-item/cart-item.module';
-
+import { OrderItem } from './entity/order-item.entity';
+import { PriceHistoryModule } from './price-history/price-history.module';
+import { Or } from 'typeorm';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
@@ -39,6 +41,9 @@ import { CartItemModule } from './cart-item/cart-item.module';
     stockMovementModule,
     CheckoutModule,
     NotificationModule,
+    OrderItemModule,
+    PaymentModule,
+    PriceHistoryModule,
 
     ConfigModule.forRoot({ isGlobal: true }),
 
