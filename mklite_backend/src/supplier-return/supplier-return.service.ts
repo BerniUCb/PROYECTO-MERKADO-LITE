@@ -55,4 +55,16 @@ export class SupplierReturnService {
       }
     });
   }
+  async getByDate(): Promise<SupplierReturn[]> {
+    
+    const rawData = await this.supplierReturnRepository
+      .createQueryBuilder('supplier_return')
+      .select("DATE_TRUNC('day', supplier_return.created_at)", 'date')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy("DATE_TRUNC('day', supplier_return.created_at)")
+      .orderBy("DATE_TRUNC('day', supplier_return.created_at)", 'ASC')
+      .getRawMany();
+      
+    return rawData;
+  }
 }
