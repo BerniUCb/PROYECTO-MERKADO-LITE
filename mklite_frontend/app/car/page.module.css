@@ -233,3 +233,25 @@
 .container {
   padding-bottom: 135px; /* espacio extra seguro */
 }
+
+/* Layout general con sidebar + contenido */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.page {
+  flex: 1;
+}
+
+.layoutWrapper {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.mainWrapper {
+  flex: 1;
+}
+

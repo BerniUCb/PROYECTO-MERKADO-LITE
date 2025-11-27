@@ -3,21 +3,33 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
 import type ProductModel from "@/app/models/productCard.model";
 import { ProductService } from "@/app/services/product.service";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
 import { CartItemService } from "@/app/services/cartItem.service";
-import { useParams } from "next/navigation";
 
 export default function ProductPage() {
   const params = useParams();
   const productId = Number(params.id);
+  const router = useRouter();
 
   const [product, setProduct] = useState<ProductModel | null>(null);
   const [related, setRelated] = useState<ProductModel[]>([]);
   const [quantity, setQuantity] = useState(1);
+
+  // =========================================================
+  // 🔥 USER ID REAL DEL LOCALSTORAGE
+  // =========================================================
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (!stored) return;
+
+    const parsed = JSON.parse(stored);
+    setUserId(parsed.id);
+  }, []);
 
   // =========================================================
   // 1) Cargar producto principal
@@ -26,8 +38,12 @@ export default function ProductPage() {
     if (!productId) return;
 
     const loadProduct = async () => {
-      const data = await ProductService.getById(productId);
-      setProduct(data);
+      try {
+        const data = await ProductService.getById(productId);
+        setProduct(data);
+      } catch (error) {
+        console.error("❌ Error cargando producto:", error);
+      }
     };
 
     loadProduct();
@@ -52,27 +68,34 @@ export default function ProductPage() {
   }, [product]);
 
   // =========================================================
-  // 3) Agregar al carrito
+  // 3) Agregar al carrito (con validación de login)
   // =========================================================
   const handleAddToCart = async () => {
-    const userId = 1; // ← reemplazar luego
-
     if (!product) return;
 
-    await CartItemService.addToCart(userId, product.id, quantity);
-    alert("Producto agregado al carrito");
+    if (!userId) {
+      alert("Debes iniciar sesión para agregar al carrito.");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      await CartItemService.addToCart(userId, product.id, quantity);
+      alert("Producto agregado al carrito");
+    } catch (error) {
+      console.error("❌ Error al agregar al carrito:", error);
+      alert("No se pudo agregar al carrito.");
+    }
   };
 
   // =========================================================
   // Render
   // =========================================================
-  if (!product) 
-     return <p style={{ padding: 30 }}>Cargando producto...</p>;
+  if (!product)
+    return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
-    
     <div className={styles["product-page"]}>
-      {/*<Header/>*/}
       <main className={styles["main-content"]}>
         {/* Imagen */}
         <div className={styles["product-image"]}>
@@ -104,7 +127,10 @@ export default function ProductPage() {
 
             <button onClick={() => setQuantity((q) => q + 1)}>+</button>
 
-            <button className={styles["add-btn"]} onClick={handleAddToCart}>
+            <button
+              className={styles["add-btn"]}
+              onClick={handleAddToCart}
+            >
               🛒 Agregar al carrito
             </button>
           </div>
@@ -140,17 +166,17 @@ export default function ProductPage() {
           {related.map((p) => (
             <div key={p.id} className={styles["related-card"]}>
               <Link href={`/product/${p.id}`}>
-              <img src={p.imageUrl ?? "/placeholder.png"} alt={p.name} />
-              <h4>{p.name}</h4>
-              <p>Bs. {Number(p.salePrice).toFixed(2)}</p>
+                <img
+                  src={p.imageUrl ?? "/placeholder.png"}
+                  alt={p.name}
+                />
+                <h4>{p.name}</h4>
+                <p>Bs. {Number(p.salePrice).toFixed(2)}</p>
               </Link>
             </div>
           ))}
         </div>
       </section>
-
-    {/*<Footer/> */}
     </div>
-     
   );
 }
