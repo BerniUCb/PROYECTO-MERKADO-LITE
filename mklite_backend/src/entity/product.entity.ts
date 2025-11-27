@@ -31,7 +31,7 @@ export class Product { // <-- 'Producto'
     @Column({ type: 'integer', name: 'reserved_stock', default: 0 })
     reservedStock: number; // <-- 'stockReservado' 
 
-    @Column({ name: 'image_url', type: 'varchar', length: 512, nullable: true })
+    @Column({ name: 'image_url', type: 'text', nullable: true })
     imageUrl: string; 
 
     @Column({ name: 'is_active', default: true })
