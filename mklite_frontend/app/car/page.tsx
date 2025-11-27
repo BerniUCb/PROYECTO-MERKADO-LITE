@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { CartItemService } from "@/app/services/cartItem.service";
 
-// MODALES DE DIRECCIONES
+// MODALES
 import AddressEmpty from "./components/AddressEmpty";
 import AddressForm from "./components/AddressForm";
 import AddressList from "./components/AddressList";
 import AddressConfirm from "./components/AddressConfirm";
 
 import type AddressModel from "@/app/models/address.model";
+import UserSidebar from "../components/UserSidebar";
 
 type ProductRow = {
   id: number;
@@ -22,22 +23,39 @@ type ProductRow = {
 };
 
 export default function CarPage() {
-  const userId = 1; // TEMPORAL hasta login
-  const [products, setProducts] = useState<ProductRow[]>([]);
-  const [shipping, setShipping] = useState<number>(0);
+  // userId REAL
+  const [userId, setUserId] = useState<number>(0);
 
-  // Estados de modales
+  const [products, setProducts] = useState<ProductRow[]>([]);
+  const [shipping, setShipping] = useState(0);
+
+  // Modales
   const [showEmpty, setShowEmpty] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // SOLO CAMBIO NECESARIO: ahora son objetos reales
   const [addressList, setAddressList] = useState<AddressModel[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<AddressModel | null>(null);
 
-  // Cargar carrito desde backend
+  // ============================================================
+  // 1) OBTENER USER DESDE LOCALSTORAGE
+  // ============================================================
   useEffect(() => {
+    const stored = localStorage.getItem("user");
+
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setUserId(parsed.id); // SIEMPRE será número → NO null
+    }
+  }, []);
+
+  // ============================================================
+  // 2) CARGAR CARRITO CUANDO userId YA ESTÁ LISTO
+  // ============================================================
+  useEffect(() => {
+    if (!userId) return; // si userId == 0, aún no está listo.
+
     async function load() {
       const cart = await CartItemService.getCartByUser(userId);
 
@@ -45,17 +63,20 @@ export default function CarPage() {
         id: item.id,
         productId: item.product.id,
         name: item.product.name,
-        price: item.product.salePrice,
+        price: Number(item.product.salePrice),
         qty: item.quantity,
         img: item.product.imageUrl || "/img/default.png",
       }));
 
       setProducts(mapped);
     }
-    load();
-  }, []);
 
-  // Cambiar cantidad
+    load();
+  }, [userId]);
+
+  // ============================================================
+  // CAMBIAR CANTIDAD
+  // ============================================================
   const changeQty = async (id: number, delta: number) => {
     const item = products.find((p) => p.id === id);
     if (!item) return;
@@ -69,25 +90,40 @@ export default function CarPage() {
     );
   };
 
-  // Eliminar producto
+  // ============================================================
+  // ELIMINAR PRODUCTO
+  // ============================================================
   const removeProduct = async (id: number) => {
     await CartItemService.deleteById(id);
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
+  // TOTAL
   const subtotal = products.reduce((sum, p) => sum + p.price * p.qty, 0);
   const total = subtotal + shipping;
 
-  return (
-    <>
+  // ============================================================
+  // MOSTRAR ANTES DE CARGAR USER
+  // ============================================================
+  if (userId === 0) return <p>Cargando carrito...</p>;
+
+return (
+  <div className={styles.layoutWrapper}>
+    
+    {/* SIDEBAR */}
+    <UserSidebar />
+
+    {/* CONTENIDO PRINCIPAL */}
+    <div className={styles.mainWrapper}>
       <main className={styles.page}>
         <div className={styles.container}>
           
-          {/* Carrito */}
+          {/* CARRITO */}
           <section className={styles.cartBox}>
             <div className={styles.header}>
               <h1>Tu Carrito</h1>
               <p>Hay {products.length} productos en tu carrito!</p>
+
               <button
                 className={styles.clear}
                 onClick={() => setProducts([])}
@@ -125,7 +161,10 @@ export default function CarPage() {
                       <button onClick={() => changeQty(p.id, 1)}>+</button>
                     </td>
 
-                    <td className={styles.price}>Bs. {p.price.toFixed(2)}</td>
+                    <td className={styles.price}>
+                      Bs. {p.price.toFixed(2)}
+                    </td>
+
                     <td className={styles.subtotal}>
                       Bs. {(p.price * p.qty).toFixed(2)}
                     </td>
@@ -225,8 +264,12 @@ export default function CarPage() {
             onClose={() => setShowConfirm(false)}
           />
         )}
-
       </main>
-    </>
-  );
+    </div>
+  </div>
+);
+
+
+
+
 }

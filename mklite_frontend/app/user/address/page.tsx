@@ -2,20 +2,24 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+
 import { AddressService } from "@/app/services/address.service";
 import type AddressModel from "@/app/models/address.model";
+
 import UserSidebar from "../../components/UserSidebar";
 
 export default function Direcciones() {
+  // User real
+  const [userId, setUserId] = useState<number | null>(null);
+
+  // Data
   const [addresses, setAddresses] = useState<AddressModel[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- Modal state ---
+  // Modal state
   const [showModal, setShowModal] = useState(false);
 
-  // --- Form state ---
+  // Form state
   const [form, setForm] = useState({
     street: "",
     streetNumber: "",
@@ -27,33 +31,55 @@ export default function Direcciones() {
     addressAlias: "",
   });
 
+  // ============================================================
+  // 1) Obtener USER ID desde localStorage
+  // ============================================================
   useEffect(() => {
-    fetchAddresses();
+    const stored = localStorage.getItem("user");
+
+    if (stored) {
+      const user = JSON.parse(stored);
+      setUserId(user.id); // ← ahora se usa el usuario real
+    }
   }, []);
 
+  // ============================================================
+  // 2) Cargar direcciones cuando userId ya está listo
+  // ============================================================
+  useEffect(() => {
+    if (!userId) return;
+    fetchAddresses();
+  }, [userId]);
+
   const fetchAddresses = async () => {
+    if (!userId) return;
+
     try {
-      const data = await AddressService.getAll(1);
+      const data = await AddressService.getAll(userId);
       setAddresses(data);
     } catch (err) {
-      console.error("Error cargando direcciones:", err);
+      console.error("❌ Error cargando direcciones:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // --- Crear dirección ---
+  // ============================================================
+  // CREAR DIRECCIÓN
+  // ============================================================
   const handleCreate = async () => {
+    if (!userId) return;
+
     try {
-      await AddressService.create(1, {
+      await AddressService.create(userId, {
         ...form,
         internalNumber: form.internalNumber || null,
         references: form.references || null,
         isDefault: false,
-        userId: 1, // Temporal, cambiar cuando tengas auth
       });
 
       setShowModal(false);
+
       setForm({
         street: "",
         streetNumber: "",
@@ -65,37 +91,43 @@ export default function Direcciones() {
         addressAlias: "",
       });
 
-      fetchAddresses(); // refrescar lista
+      fetchAddresses();
     } catch (error) {
-      console.error("Error creating address:", error);
+      console.error("❌ Error creating address:", error);
       alert("Hubo un problema al crear la dirección.");
     }
   };
 
-  // --- Eliminar dirección ---
-  const handleDelete = async (id: number) => {
+  // ============================================================
+  // ELIMINAR DIRECCIÓN
+  // ============================================================
+  const handleDelete = async (addressId: number) => {
+    if (!userId) return;
+
     if (!confirm("¿Eliminar esta dirección?")) return;
 
     try {
-      await AddressService.delete(1, addresses.find(addr => addr.id === id)!.id);
+      await AddressService.delete(userId, addressId);
       fetchAddresses();
     } catch (error) {
-      console.error("Error deleting:", error);
+      console.error("❌ Error deleting:", error);
       alert("No se pudo eliminar.");
     }
   };
 
-  return (
-    <>
-     {/* <Header />*/}
+  // ============================================================
+  // LOADING SI userId aún no está cargado
+  // ============================================================
+  if (userId === null) return <p>Cargando...</p>;
 
+  return (
+    <div style={{ display: "flex", width: "100%" }}>
       
 
       <div className={styles.wrapper}>
         <div className={styles.container}>
           <div className={styles.header}>
             <h2>Mis Direcciones</h2>
-
             <button
               className={styles["add-btn"]}
               onClick={() => setShowModal(true)}
@@ -134,7 +166,7 @@ export default function Direcciones() {
         </div>
       </div>
 
-      {/* ------------ MODAL ------------ */}
+      {/* ================= MODAL ================= */}
       {showModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -215,9 +247,13 @@ export default function Direcciones() {
             </div>
 
             <div className={styles.modalButtons}>
-              <button className={styles.cancel} onClick={() => setShowModal(false)}>
+              <button
+                className={styles.cancel}
+                onClick={() => setShowModal(false)}
+              >
                 Cancelar
               </button>
+
               <button className={styles.save} onClick={handleCreate}>
                 Guardar
               </button>
@@ -225,8 +261,6 @@ export default function Direcciones() {
           </div>
         </div>
       )}
-
-      {/*<Footer />*/}
-    </>
+    </div>
   );
 }
