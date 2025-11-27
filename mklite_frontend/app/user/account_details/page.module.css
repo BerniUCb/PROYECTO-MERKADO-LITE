@@ -17,6 +17,7 @@
   font-size: 1.4rem;
   margin-bottom: 20px;
   font-weight: 600;
+  color: #111;
 }
 
 .row {
@@ -46,4 +47,7 @@
   background: none;
   color: #f40009;
   cursor: pointer;
+}
+.h2 {
+  color: #111;
 }
