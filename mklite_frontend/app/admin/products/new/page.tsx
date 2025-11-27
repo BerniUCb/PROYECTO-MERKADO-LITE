@@ -1,19 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FaHome, FaShoppingBasket, FaUsers, FaTags, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import styles from "./page.module.css";
-import AdminSidebar from "../../../components/AdminSidebar";
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 
 // Modelos y servicios
 import type CategoryModel from "../../../models/categoryCard.model";
 import type ProductModel from "../../../models/productCard.model";
 import { ProductService } from "../../../services/product.service";
 import { CategoryService } from "../../../services/category.service";
-
-import { useParams, useRouter } from 'next/navigation';
 
 // =============================================================
 // COMPONENTES INTERNOS
@@ -38,28 +33,6 @@ const ImageListItem: React.FC<ImageListItemProps> = ({ name, url, isUploaded, on
   </div>
 );
 
-// interface SidebarProps {
-//   adminName: string;
-// }
-// const Sidebar: React.FC<SidebarProps> = ({adminName}) => (
-//   <div className={styles.sidebar}>
-//     <div className={styles['sidebar-header']}>Bienvenido {adminName}</div>
-//     <nav className={styles['sidebar-nav']}>
-//       <ul>
-//         <li className={styles['nav-item']}><FaHome /> Panel de Control</li>
-//         <li className={styles['nav-item']}><FaShoppingBasket /> Manejo de Pedidos</li>
-//         <li className={styles['nav-item']}><FaUsers /> Clientes</li>
-//         <li className={styles['nav-item']}><FaTags /> Categorías</li>
-//       </ul>
-//       <div className={styles['product-section']}>
-//         <p className={styles['product-title']}>Producto</p>
-//         <button className={`${styles['add-product-btn']} ${styles.active}`}>Añadir producto</button>
-//         <button className={styles['list-products-btn']}>Lista de productos</button>
-//       </div>
-//     </nav>
-//   </div>
-// );
-
 // =============================================================
 // FORMULARIO PRINCIPAL
 // =============================================================
@@ -74,7 +47,6 @@ const ProductFormContent: React.FC = () => {
     physicalStock: 0,
     reservedStock: 0,
     isActive: true,
-  //  discount: 0,
     category: undefined,
   };
 
@@ -101,6 +73,7 @@ const ProductFormContent: React.FC = () => {
     const { name, value } = e.target;
 
     if (name === "categoryId") {
+      // Buscamos el objeto completo de la categoría para mostrarlo en la UI, pero NO lo enviaremos así al backend
       const selectedCat = categories.find(c => c.id === Number(value));
       setFormData(prev => ({ ...prev, category: selectedCat }));
     } else {
@@ -115,7 +88,6 @@ const ProductFormContent: React.FC = () => {
 
   const handleImageUrl = (url: string) => {
     if (!url) return;
-
     setPreviewImage(url);
     setUploadedFiles([
       { name: "Imagen desde URL", url, isUploaded: true }
@@ -130,29 +102,44 @@ const ProductFormContent: React.FC = () => {
     setMensaje("Formulario reseteado.");
   };
 
-
+  // --- VERSIÓN CORREGIDA DE HANDLESUBMIT ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 1. Validación de Categoría
+    if (!formData.category?.id) {
+      alert("Por favor selecciona una categoría.");
+      return;
+    }
 
-    const dataToSend: Partial<ProductModel> = {
-      ...formData,
-      id: undefined,
+    // 2. Construcción Limpia del Payload (Sanitización de datos)
+    const payload: any = {
+      name: formData.name,
+      // Enviamos undefined si está vacío para que el backend use su valor por defecto (null)
+      description: formData.description ? formData.description : undefined, 
       salePrice: Number(formData.salePrice),
+      unitOfMeasure: formData.unitOfMeasure || "Unidad",
       physicalStock: Number(formData.physicalStock),
-      //discount: Number(formData.discount),
-      imageUrl: uploadedFiles[0]?.url || undefined,
-      category: formData.category,
+      reservedStock: 0,
+      isActive: true,
+      // Enviamos undefined si no hay imagen
+      imageUrl: uploadedFiles[0]?.url ? uploadedFiles[0].url : undefined, 
+      
+      // ENVIAMOS EL ID DE LA CATEGORÍA CON EL NOMBRE EXACTO DEL DTO
+      category_id: Number(formData.category.id)
     };
 
     try {
-        const created = await ProductService.create(dataToSend);
-        setMensaje(`✅ Producto "${created.name}" agregado (ID: ${created.id}).`);
+        const created = await ProductService.create(payload);
+        
+        setMensaje(`✅ Producto "${created.name}" agregado correctamente.`);
         resetForm();
 
-    } catch (error) {
-      console.error(error);
-      setMensaje("❌ Error al guardar el producto.");
+    } catch (error: any) {
+      console.error("Error en creación:", error);
+      // Intentamos mostrar el mensaje específico que devuelve el backend
+      const errorMsg = error.response?.data?.message || error.message || "Error desconocido";
+      setMensaje(`❌ Error al guardar: ${errorMsg}`);
     }
   };
 
@@ -176,9 +163,10 @@ const ProductFormContent: React.FC = () => {
           <div className={styles['input-group']}>
             <label>Categoría</label>
             <select
-              name="categoryId"
+              name="categoryId" // Este name coincide con la lógica del handleChange
               value={formData.category?.id || ""}
               onChange={handleChange}
+              required // Obligatorio HTML
             >
               <option value="">Selecciona una categoría</option>
               {categories.map(c => (
@@ -190,7 +178,9 @@ const ProductFormContent: React.FC = () => {
           <div className={styles['split-group']}>
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
             <label>Codigo Producto</label>
-              <p style={{ color: "#777" }}>Se generará automáticamente</p>
+              <p style={{ color: "#777", fontSize: '0.9rem', marginTop: '8px', background: '#f5f5f5', padding: '8px', borderRadius: '4px' }}>
+                Automático
+              </p>
             </div>
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
               <label>Stock Quantity</label>
@@ -200,6 +190,7 @@ const ProductFormContent: React.FC = () => {
                 value={formData.physicalStock || 0}
                 onChange={handleChange}
                 required
+                min="0"
               />
             </div>
           </div>
@@ -215,43 +206,53 @@ const ProductFormContent: React.FC = () => {
                 value={formData.salePrice || 0}
                 onChange={handleChange}
                 required
+                min="0"
               />
             </div>
 
             <div className={`${styles['input-group']} ${styles['half-width']}`}>
               <label>Precio Oferta</label>
               <input 
-              value = "null"
-              disabled 
-                //type="number"
-                //step="0.01"
-                //name="discount"
-                //value={formData.discount || ''}
-                //onChange={handleChange}
+                value=""
+                disabled 
+                placeholder="N/A"
+                style={{background: '#eee', cursor: 'not-allowed'}}
               />
             </div>
           </div>
 
-          {mensaje && <p className={styles.message}>{mensaje}</p>}
+          {mensaje && (
+            <div style={{
+              marginTop: 15, 
+              padding: 10, 
+              borderRadius: 6, 
+              backgroundColor: mensaje.includes("❌") ? "#ffe6e6" : "#e6ffea",
+              color: mensaje.includes("❌") ? "#cc0000" : "#008000",
+              fontWeight: "bold",
+              textAlign: "center"
+            }}>
+              {mensaje}
+            </div>
+          )}
         </div>
 
         {/* COLUMNA DERECHA */}
         <div className={styles['form-right']}>
-          <h3 className={styles['section-title']}>Producto</h3>
+          <h3 className={styles['section-title']}>Imagen del Producto</h3>
 
           <div className={styles['image-preview-box']}>
             {previewImage ? (
               <img src={previewImage} alt="Preview" className={styles['image-preview-large']} />
             ) : (
               <div className={styles['image-empty']}>
-                <span className={styles['image-empty-text']}>Imagen</span>
+                <span className={styles['image-empty-text']}>Sin Imagen</span>
               </div>
             )}
           </div>
 
           <div className={styles['image-uploader-container']}>
             <div className={styles.dropzone}>
-              <span className={styles['dropzone-text-label']}>Ingresa el link de la imagen</span>
+              <span className={styles['dropzone-text-label']}>URL de la imagen</span>
               <input
                 type="text"
                 placeholder="https://ejemplo.com/imagen.jpg"
@@ -275,11 +276,11 @@ const ProductFormContent: React.FC = () => {
 
           <div className={styles['form-actions']}>
             <button type="submit" className={`${styles.btn} ${styles['btn-primary']}`}>
-              AGREGAR
+              GUARDAR PRODUCTO
             </button>
                     
             <button type="button" onClick={resetForm} className={`${styles.btn} ${styles['btn-secondary']}`}>
-              CANCELAR
+              LIMPIAR
             </button>
           </div>
         </div>
@@ -294,19 +295,14 @@ const ProductFormContent: React.FC = () => {
 // =============================================================
 
 const AdminProductPage: React.FC = () => {
-  const [currentAdminName, setCurrentAdminName] = useState("Admin de Pruebas");
-
   return (
     <div className={styles['full-page-container']}>
       <div className={styles['main-content-wrapper']}>
         <div className={styles['app-layout']}>
-        { /*<Sidebar adminName={currentAdminName} />*/}
-          {/*<AdminSidebar />*/}
+          {/* <AdminSidebar /> */}
           <ProductFormContent />
         </div>
       </div>
-
-      
     </div>
   );
 };

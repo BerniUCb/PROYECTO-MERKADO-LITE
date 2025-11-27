@@ -16,7 +16,7 @@ const mainItems: AdminMenuItem[] = [
   { label: "Panel de Control", href: "/admin", icon: "/admin-menu/home.svg" },
   { label: "Manejo de Pedidos", href: "/admin/orders", icon: "/admin-menu/orders.svg" },
   { label: "Clientes", href: "/admin/customers", icon: "/admin-menu/customers.svg" },
-  { label: "Ventas en tienda", href: "/sellings", icon: "/admin-menu/ventaEnTienda.svg" },
+  { label: "Ventas en tienda", href: "/admin/sellings", icon: "/admin-menu/ventaEnTienda.svg" },
   { label: "Repartidores", href: "/admin/riders", icon: "/admin-menu/repartidores.svg" },
   { label: "Gestión de usuarios", href: "/admin/userDetail", icon: "/admin-menu/gestiondeUsuarios.svg" },
   { label: "Categorias", href: "/admin/categories", icon: "/admin-menu/categories.svg" },

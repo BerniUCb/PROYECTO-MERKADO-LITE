@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
-import AdminSidebar from '../components/AdminSidebar'; // Asegúrate de tener el Sidebar
+import AdminSidebar from '../../components/AdminSidebar'; // Asegúrate de tener el Sidebar
 
 // Iconos (usamos lucide-react para compatibilidad)
 import { Search, Plus, X, ShoppingCart, CheckCircle } from 'lucide-react';
 
 // Services & Models
-import { ProductService } from '../services/product.service';
-import { OrderService } from '../services/order.service';
-import type ProductModel from '../models/productCard.model';
-import type Order from '../models/order.model';
+import { ProductService } from '../../services/product.service';
+import { OrderService } from '../../services/order.service';
+import type ProductModel from '../../models/productCard.model';
+import type Order from '../../models/order.model';
 
 // Tipo local para el item del carrito (producto + cantidad de venta)
 interface CartItem {
