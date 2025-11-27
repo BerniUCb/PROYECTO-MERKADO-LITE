@@ -7,10 +7,10 @@ import { Address } from "./address.entity";
 
 export type ShipmentStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'returned' | 'cancelled';
 
-@Entity('shipments') // <-- 'envio'
-export class Shipment { // <-- 'Envio'
+@Entity('shipments') 
+export class Shipment { 
 
-    @PrimaryGeneratedColumn({ name: 'shipment_id' }) // <-- 'envio_id'
+    @PrimaryGeneratedColumn({ name: 'shipment_id' }) 
     id: number;
 
     @Column({
@@ -25,21 +25,20 @@ export class Shipment { // <-- 'Envio'
         ],
         default: 'pending'
     })
-    status: ShipmentStatus; // <-- 'estado' 
+    status: ShipmentStatus; 
 
     @Column({ name: 'assigned_at', type: 'timestamp with time zone', nullable: true })
-    assignedAt: Date; // <-- 'fechaAsignacion' 
+    assignedAt: Date; 
 
     @Column({ name: 'estimated_delivery_at', type: 'timestamp with time zone', nullable: true })
-    estimatedDeliveryAt: Date; // <-- 'fechaEntregaEstimada'
+    estimatedDeliveryAt: Date; 
 
     @Column({ name: 'delivered_at', type: 'timestamp with time zone', nullable: true })
-    deliveredAt: Date; // <-- 'fechaEntregado'
+    deliveredAt: Date; 
 
-    // --- Relationships ---
     @OneToOne(() => Order, { nullable: false })
-    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
-    order: Order; // <-- 'pedido' -> 'order'
+    @JoinColumn({ name: 'order_id' }) 
+    order: Order; 
 
     @ManyToOne(() => User, (user) => user.assignedShipments, { nullable: true }) 
     @JoinColumn({ name: 'delivery_driver_id' }) 

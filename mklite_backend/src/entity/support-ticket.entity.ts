@@ -29,19 +29,18 @@ export class SupportTicket {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date; 
 
-    // --- Relationships ---
     @ManyToOne(() => Order, { nullable: false })
-    @JoinColumn({ name: 'order_id' }) // <-- 'pedido_id'
-    order: Order; // <-- 'pedido' -> 'order'
+    @JoinColumn({ name: 'order_id' }) 
+    order: Order; 
 
     @ManyToOne(() => User, { nullable: false })
-    @JoinColumn({ name: 'user_id' }) // <-- 'cliente_id' -> 'user_id'
-    user: User; // <-- 'cliente' -> 'user'
+    @JoinColumn({ name: 'user_id' }) 
+    user: User; 
 
     @ManyToOne(() => User, { nullable: true })
-    @JoinColumn({ name: 'agent_id' }) // <-- 'agente_id' -> 'agent_id'
-    agent: User; // <-- 'agente' -> 'agent'
+    @JoinColumn({ name: 'agent_id' }) 
+    agent: User; 
     
-    @OneToMany(() => SupportMessage, (message) => message.ticket) // <-- 'MensajeSoporte' -> 'SupportMessage'
-    messages: SupportMessage[]; // <-- 'mensajes' -> 'messages'
+    @OneToMany(() => SupportMessage, (message) => message.ticket) 
+    messages: SupportMessage[]; 
 }

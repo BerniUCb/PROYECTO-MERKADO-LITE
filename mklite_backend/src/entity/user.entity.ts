@@ -23,7 +23,7 @@ export class User {
 
     @Column({ unique: true })
     email: string;
-    @Column({ nullable: true, unique: true }) // Puede ser nulo y debe ser único
+    @Column({ nullable: true, unique: true }) 
     phone: string;
     
     @Column({ name: 'password_hash', select: false })
@@ -45,14 +45,12 @@ export class User {
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
-        // --- NUEVOS CAMPOS PARA 2FA (HU21) ---
     @Column({ name: 'is_two_factor_enabled', default: false })
     isTwoFactorEnabled: boolean;
 
-    @Column({ name: 'two_factor_secret', nullable: true, select: false }) // Select false por seguridad
+    @Column({ name: 'two_factor_secret', nullable: true, select: false }) 
     twoFactorSecret: string;
  
-    // --- Relationships ---
     @OneToMany(() => Order, (order) => order.user)
     orders: Order[];
 

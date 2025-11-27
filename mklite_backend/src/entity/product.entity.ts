@@ -7,29 +7,26 @@ import { PriceHistory } from "./price-history.entity";
 import { SupplierReturn } from "./supplier-return.entity"; 
 import { Promotion } from "./promotion.entity"; 
 
-@Entity('products') // <-- 'producto' 
-export class Product { // <-- 'Producto'
-
-    @PrimaryGeneratedColumn({ name: 'product_id' }) // <-- 'producto_id'
+@Entity('products') 
+export class Product { 
+    @PrimaryGeneratedColumn({ name: 'product_id' }) 
     id: number;
 
     @Column()
-    name: string; // <-- 'nombre'
+    name: string; 
 
     @Column({ type: 'text', nullable: true })
-    description: string; // <-- 'descripcion' 
-
+    description: string; 
     @Column({ type: 'numeric', name: 'sale_price' })
-    salePrice: number; // <-- 'precioVenta' 
-
-    @Column({ name: 'unit_of_measure', default: 'Unit' }) // <-- 'unidad_medida' 
+    salePrice: number; 
+    @Column({ name: 'unit_of_measure', default: 'Unit' })
     unitOfMeasure: string;
 
     @Column({ type: 'integer', name: 'physical_stock' })
-    physicalStock: number; // <-- 'stockFisico' 
+    physicalStock: number; 
 
     @Column({ type: 'integer', name: 'reserved_stock', default: 0 })
-    reservedStock: number; // <-- 'stockReservado' 
+    reservedStock: number; 
 
     @Column({ name: 'image_url', type: 'text', nullable: true })
     imageUrl: string; 
@@ -42,14 +39,13 @@ export class Product { // <-- 'Producto'
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
     updatedAt: Date;
 
-    // --- Relationships ---
-    @ManyToOne(() => Category, (category) => category.products) // <-- 'Categori
-    @JoinColumn({ name: 'category_id' }) // <-- 'categoria_id'
-    category: Category; // <-- 'categoria' -> 'category'
 
-    @OneToMany(() => OrderItem, (item) => item.product) // <-- 'DetallePedido' -> 'OrderItem'
-    orderItems: OrderItem[]; // <-- 'detallesPedido' -> 'orderItems'
-    
+    @ManyToOne(() => Category, (category) => category.products) 
+    @JoinColumn({ name: 'category_id' }) 
+    category: Category; 
+
+    @OneToMany(() => OrderItem, (item) => item.product) 
+    orderItems: OrderItem[]; 
     @OneToMany(() => PriceHistory, (history) => history.product)
     priceHistory: PriceHistory[];
     @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.product)

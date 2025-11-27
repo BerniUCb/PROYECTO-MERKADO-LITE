@@ -25,9 +25,9 @@ export class Supplier {
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt: Date; 
 
-    // --- Relationships ---
-    @OneToMany(() => Lot, (lot) => lot.supplier) // <-- 'Lote' -> 'Lot', '(lote) => lote.proveedor' -> '(lot) => lot.supplier'
-    lots: Lot[]; // <-- 'lotes' -> 'lots'
+    
+    @OneToMany(() => Lot, (lot) => lot.supplier) 
+    lots: Lot[]; 
     @OneToMany(() => SupplierReturn, (supplierReturn) => supplierReturn.supplier)
     returns: SupplierReturn[];
 }
