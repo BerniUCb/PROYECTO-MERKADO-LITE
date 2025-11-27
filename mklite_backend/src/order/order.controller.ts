@@ -8,7 +8,7 @@ import { Order } from 'src/entity/order.entity';
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
-  //Reportes
+
   @Get('report/total-sales')
   getTotalSales(){
     return this.orderService.getTotalSales();
@@ -30,20 +30,20 @@ export class OrderController {
   }
   
   @Get('report/cancelled-count')
-async getCancelledOrdersCount() {
+  async getCancelledOrdersCount() {
   const cancelled = await this.orderService.getCancelledOrdersCount();
   return { cancelledOrders: cancelled };
-}
-@Get('by-user/:userId')
-async getByUser(
+  }
+  @Get('by-user/:userId')
+  async getByUser(
   @Param('userId') userId: number,
   @Query('page') page: number = 1,
   @Query('limit') limit: number = 10,
-) {
+  ) {
   return this.orderService.getByUser(userId, page, limit);
-}
+  }
 
-@Get()
+  @Get()
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -63,10 +63,10 @@ async getByUser(
   return this.orderService.getLast7DaysSales();
   }
   @Get('report/total-count')
-async getTotalOrdersCount() {
+  async getTotalOrdersCount() {
   const total = await this.orderService.getTotalOrdersCount();
   return { totalOrders: total };
-}
+  }
 
 
   @Post()

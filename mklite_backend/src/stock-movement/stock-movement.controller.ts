@@ -7,7 +7,7 @@ import { UpdateStockMovementDto } from './dto/update-stock.dto';
 export class StockMovementController {
   constructor(private readonly stockMovementService: StockMovementService) {}
 
-@Get()
+  @Get()
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
