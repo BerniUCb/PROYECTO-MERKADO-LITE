@@ -1,94 +1,116 @@
-.sidebar {
-  background: #ffffff;
-  border-radius: 15px;
-  padding: 16px 18px;
-  width: 270px;
+/* ========================================================= */
+/*                     PANTALLA DE ÉXITO                     */
+/* ========================================================= */
 
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.successContent {
+  margin-top: 12px;
 }
 
-.header {
-  margin-bottom: 8px;
-}
-
-.userName {
-  font-weight: 600;
-  font-size: 16px;
-  color: #222222;
-}
-
-.menu {
-  margin-top: 4px;
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.item,
-.itemActive {
-  margin-bottom: 8px;
-}
-
-.link {
+.successIconText {
   display: flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  font-size: 14px;
-  color: #b0a6a6; /* gris por defecto */
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.iconWrapper {
+.successIconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #e8f7ec;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
 }
 
-.iconWrapper img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
+.successLead {
+  font-size: 15px;
+  color: #222222;
 }
 
-/* item seleccionado en rojo (texto + icono) */
-.itemActive .link {
-  color: #e30613;
+/* Grid de código/estado/movilidad/fecha */
+.successGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  row-gap: 8px;
+  column-gap: 24px;
+  margin-bottom: 18px;
+}
+
+.successRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.successLabel {
+  color: #b1b1b1;
+}
+
+.successValue {
+  color: #222222;
   font-weight: 600;
 }
 
-/* si tus SVG usan currentColor, esto hará el icono rojo también */
-.itemActive .iconWrapper img {
-  filter: none;
-}
-
-/* --- Cerrar sesión --- */
-
-.logoutButton {
-  margin-top: auto; /* lo manda al fondo del sidebar */
-  width: 100%;
-  border: none;
-  border-radius: 16px;
-  padding: 10px 14px;
-  background: #fdfbfb;
-  display: flex;
+/* Badge "En revisión" */
+.statusBadge {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  cursor: pointer;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff4cf;
+  color: #e0a100;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Texto descriptivo */
+.successText {
   font-size: 14px;
-  color: #111111;
+  color: #333333;
+  line-height: 1.5;
+  margin-bottom: 22px;
 }
 
-.logoutButton:hover {
-  background: #f3efef;
+/* Botón final */
+.actionsEnd {
+  display: flex;
+  justify-content: flex-end;
 }
 
-.logoutLabel {
-  font-weight: 500;
+.backHomeButton {
+  min-width: 180px;
+  height: 44px;
+  border-radius: 6px;
+  border: none;
+  background: #e53935;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.backHomeButton:hover {
+  background: #d32f2f;
+}
+
+.backHomeButton:active {
+  transform: translateY(1px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .successGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsEnd {
+    justify-content: center;
+  }
+
+  .backHomeButton {
+    width: 100%;
+  }
 }

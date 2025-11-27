@@ -19,9 +19,9 @@ export class Payment {
     @Column({ type: 'enum', enum: ['pending', 'completed', 'failed', 'refunded'], default: 'pending' })
     status: PaymentStatus;
 
-    // Para el comprobante (HU6)
+    
     @Column({ name: 'receipt_number', unique: true, nullable: true })
-    receiptNumber: string; // Ej: REC-000123
+    receiptNumber: string;
 
     @Column({ name: 'receipt_url', nullable: true })
     receiptUrl: string; 

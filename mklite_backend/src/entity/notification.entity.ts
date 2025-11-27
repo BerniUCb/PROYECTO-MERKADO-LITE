@@ -3,7 +3,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
 
-// Business-specific notification types
+
 export type NotificationType = 
   | 'CASH_REGISTER_CLOSED'  // Cierre de caja
   | 'LOW_STOCK'             // Stock bajo
@@ -13,20 +13,20 @@ export type NotificationType =
   | 'ORDER_DELIVERED'       // Pedido entregado
   | 'NEW_PROMOTION';        // Nueva promoción
 
-// Recipient roles for easy filtering
+
 export type RecipientRole = 'Admin' | 'Client';
 
-@Entity('notifications') // <-- 'notificacion' -> 'notifications'
-export class Notification { // <-- 'Notificacion' -> 'Notification'
+@Entity('notifications') 
+export class Notification { 
 
-    @PrimaryGeneratedColumn({ name: 'notification_id' }) // <-- 'notificacion_id'
+    @PrimaryGeneratedColumn({ name: 'notification_id' })
     id: number;
 
     @Column()
-    title: string; // <-- 'titulo' -> 'title'
+    title: string;
 
     @Column({ type: 'text' })
-    detail: string; // <-- 'detalle' -> 'detail'
+    detail: string;
 
     @Column({
         type: 'enum',
@@ -40,26 +40,25 @@ export class Notification { // <-- 'Notificacion' -> 'Notification'
             'NEW_PROMOTION'
         ]
     })
-    type: NotificationType; // <-- 'tipo' -> 'type'
+    type: NotificationType; 
     
     @Column({
         type: 'enum',
-        enum: ['Admin', 'Client'], // <-- Traducido para consistencia
+        enum: ['Admin', 'Client'],
         name: 'recipient_role'
     })
-    recipientRole: RecipientRole; // <-- 'destinatarioRol' -> 'recipientRole'
-
+    recipientRole: RecipientRole; 
     @Column({ name: 'related_entity_id', nullable: true })
-    relatedEntityId: string; // <-- 'entidadRelacionadaId' -> 'relatedEntityId'
+    relatedEntityId: string;
 
     @Column({ name: 'is_read', default: false })
-    isRead: boolean; // <-- 'leido' -> 'isRead'
+    isRead: boolean; 
 
     @CreateDateColumn({ name: 'created_at' })
-    createdAt: Date; // <-- 'fechaCreacion' -> 'createdAt'
+    createdAt: Date;
 
-    // --- Relationships ---
-    @ManyToOne(() => User, (user) => user.notifications, { nullable: true }) // <-- 'usuario.notificaciones' -> 'user.notifications'
+
+    @ManyToOne(() => User, (user) => user.notifications, { nullable: true }) 
     @JoinColumn({ name: 'user_id' })
-    user: User; // <-- 'usuario' -> 'user'
+    user: User; 
 }

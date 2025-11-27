@@ -1,10 +1,8 @@
-// src/services/notification.service.tsx
+// src/app/services/notification.service.tsx
 import Notification, { NotificationType } from "../models/notification.model";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL + "/notifications";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/notifications`;
 
 class NotificationService {
-
   // ⭐ Obtener todas las notificaciones del CLIENTE
   async getClientNotifications(): Promise<Notification[]> {
     const res = await fetch(`${API_URL}/all-by-role?role=Client`, {
@@ -12,29 +10,55 @@ class NotificationService {
       cache: "no-cache",
     });
 
-    if (!res.ok) throw new Error("Error al obtener notificaciones");
+    if (!res.ok) throw new Error("Error al obtener notificaciones del cliente");
     return res.json();
   }
 
-  // ⭐ Obtener solo no leídas del cliente
+  // ⭐ Obtener notificaciones NO leídas del CLIENTE
   async getUnreadClientNotifications(): Promise<Notification[]> {
     const res = await fetch(`${API_URL}/unread-by-role?role=Client`, {
       method: "GET",
       cache: "no-cache",
     });
 
-    if (!res.ok) throw new Error("Error al obtener notificaciones no leídas");
+    if (!res.ok)
+      throw new Error("Error al obtener notificaciones no leídas del cliente");
+
     return res.json();
   }
 
-  // ⭐ Obtener por tipo (order received, shipped, delivered, etc.)
+  // ⭐ Obtener todas las notificaciones del ADMIN
+  async getAdminNotifications(): Promise<Notification[]> {
+    const res = await fetch(`${API_URL}/all-by-role?role=Admin`, {
+      method: "GET",
+      cache: "no-cache",
+    });
+
+    if (!res.ok) throw new Error("Error al obtener notificaciones del admin");
+    return res.json();
+  }
+
+  // ⭐ Obtener solo no leídas del ADMIN
+  async getUnreadAdminNotifications(): Promise<Notification[]> {
+    const res = await fetch(`${API_URL}/unread-by-role?role=Admin`, {
+      method: "GET",
+      cache: "no-cache",
+    });
+
+    if (!res.ok)
+      throw new Error("Error al obtener notificaciones no leídas del admin");
+
+    return res.json();
+  }
+
+  // ⭐ Obtener por TIPO (order, promos, inventario, etc.)
   async getByType(type: NotificationType): Promise<Notification[]> {
     const res = await fetch(`${API_URL}/by-type?type=${type}`, {
       method: "GET",
       cache: "no-cache",
     });
 
-    if (!res.ok) throw new Error("Error al obtener por tipo");
+    if (!res.ok) throw new Error("Error al obtener notificaciones por tipo");
     return res.json();
   }
 

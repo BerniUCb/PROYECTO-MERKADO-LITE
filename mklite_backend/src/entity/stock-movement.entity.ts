@@ -1,5 +1,3 @@
-// src/entity/stock-movement.entity.ts
-
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { Product } from "./product.entity"; 
 import { Lot } from "./lot.entity"; 
@@ -31,16 +29,15 @@ export class StockMovement {
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt: Date; 
 
-    // --- Relationships ---
     @ManyToOne(() => Product, { nullable: false })
     @JoinColumn({ name: 'product_id' })
     product: Product; 
 
-    @ManyToOne(() => Lot, (lot) => lot.stockMovements, { nullable: true }) // <-- Relación inversa será 'lot.stockMovements'
+    @ManyToOne(() => Lot, (lot) => lot.stockMovements, { nullable: true }) 
     @JoinColumn({ name: 'lot_id' })
     lot: Lot; 
 
-    @ManyToOne(() => User, (user) => user.stockMovements, { nullable: true }) // <-- Relación inversa será 'user.stockMovements'
+    @ManyToOne(() => User, (user) => user.stockMovements, { nullable: true }) 
     @JoinColumn({ name: 'user_id' })
     user: User; 
 }

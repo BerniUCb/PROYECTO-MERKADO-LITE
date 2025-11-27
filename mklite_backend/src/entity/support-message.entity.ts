@@ -16,12 +16,11 @@ export class SupportMessage {
     @CreateDateColumn({ name: 'sent_at' })
     sentAt: Date; 
     
-    // --- Relationships ---
-    @ManyToOne(() => SupportTicket, (ticket) => ticket.messages, { nullable: false }) // <-- Relación inversa será 'ticket.messages'
-    @JoinColumn({ name: 'support_ticket_id' }) // <-- 'ticket_soporte_id'
-    ticket: SupportTicket; // <-- 'ticket' -> 'ticket' (apunta a 'SupportTicket')
+    @ManyToOne(() => SupportTicket, (ticket) => ticket.messages, { nullable: false }) 
+    @JoinColumn({ name: 'support_ticket_id' }) 
+    ticket: SupportTicket; 
     
     @ManyToOne(() => User, { nullable: false })
-    @JoinColumn({ name: 'sender_id' }) // <-- 'remitente_id' -> 'sender_id'
-    sender: User; // <-- 'remitente' -> 'sender'
+    @JoinColumn({ name: 'sender_id' }) 
+    sender: User; 
 }

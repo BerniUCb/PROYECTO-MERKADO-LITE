@@ -18,10 +18,9 @@ import { ProductService } from "../services/product.service";
 
 // Iconos locales
 import { categoryIcons, defaultIcon } from "../utils/categoryIcons";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import UserSidebar from "../components/UserSidebar";
 
+// ❌ Ya no usamos Header/Footer/UserSidebar aquí,
+// el layout global (LayoutShell) los renderiza.
 export default function HomePage() {
   // 🔹 Estado para categorías
   const [categories, setCategories] = useState<CategoryCardModel[]>([]);
@@ -34,7 +33,7 @@ export default function HomePage() {
   const [totalPages, setTotalPages] = useState(1);
 
   // ================================================================
-  //  CARGAR CATEGORÍAS DESDE BACKEND 
+  //  CARGAR CATEGORÍAS DESDE BACKEND
   // ================================================================
   useEffect(() => {
     const loadCategories = async () => {
@@ -61,7 +60,10 @@ export default function HomePage() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const { products, totalPages } = await ProductService.getPaginated(page, 15);
+        const { products, totalPages } = await ProductService.getPaginated(
+          page,
+          15
+        );
 
         const mapped = products.map((p: ProductModel) => ({
           ...p,
@@ -82,68 +84,60 @@ export default function HomePage() {
   //  RETURN
   // ================================================================
   return (
-    <>
-      <Header />
+    <main className={styles.main}>
+      {/* 🔹 SECCIÓN: Productos */}
+      <section id="productos" className={styles.productsSection}>
+        <h2>Productos</h2>
 
-      
+        <div className={styles.productsGrid}>
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
 
-      <main className={styles.main}>
+        {/* 🔹 PAGINACIÓN */}
+        <div className={styles.pagination}>
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+          >
+            ◀ Anterior
+          </button>
 
-        {/* 🔹 SECCIÓN: Productos */}
-        <section id="productos" className={styles.productsSection}>
-          <h2>Productos</h2>
+          <span>
+            Página {page} de {totalPages}
+          </span>
 
-          <div className={styles.productsGrid}>
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+          >
+            Siguiente ▶
+          </button>
+        </div>
+      </section>
 
-          {/* 🔹 PAGINACIÓN */}
-          <div className={styles.pagination}>
-            <button 
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              ◀ Anterior
-            </button>
+      {/* 🔹 SECCIÓN: Categorías */}
+      <section id="categorias" className={styles.categoriesSection}>
+        <h2>Categorías</h2>
 
-            <span>Página {page} de {totalPages}</span>
+        <div className={styles.categoriesGrid}>
+          {categories.map((cat) => (
+            <CategoryCard
+              key={cat.id}
+              name={cat.name}
+              slug={(cat.name ?? "sin-nombre")
+                .toLowerCase()
+                .replace(/ /g, "-")}
+              IconComponent={cat.IconComponent!}
+            />
+          ))}
+        </div>
+      </section>
 
-            <button 
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Siguiente ▶
-            </button>
-          </div>
-        </section>
-
-        {/* SECCIÓN: Categorías  */}
-        <section id="categorias" className={styles.categoriesSection}>
-          <h2>Categorías</h2>
-
-          <div className={styles.categoriesGrid}>
-            {categories.map((cat) => (
-              <CategoryCard
-                key={cat.id}
-                name={cat.name}
-                slug={(cat.name ?? "sin-nombre")
-                  .toLowerCase()
-                  .replace(/ /g, "-")}
-                IconComponent={cat.IconComponent!}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Showcase + Benefits */}
-        <ProductShowcase />
-        <Benefits />
-
-      </main>
-
-      <Footer />
-    </>
+      {/* Showcase + Benefits */}
+      <ProductShowcase />
+      <Benefits />
+    </main>
   );
 }
