@@ -1,24 +1,27 @@
-// src/data-source.ts
-
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { join } from 'path';
+import * as dotenv from 'dotenv';
+
+// Cargar las variables del .env
+dotenv.config();
 
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    host: '127.0.0.1',
-    port: 5432,
-    username: 'merkado_admin',
-    password: 'merkado_pass',
-    database: 'merkadolite_db',
-    synchronize: true,
-
- 
-    entities: [join(__dirname, '**', '*.entity{.js,.ts}')],
-    // LÍNEA CORREGIDA Y MÁS ROBUSTA
-    migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-
+    // Usamos las variables que acabamos de poner en el .env
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || '5432'),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     
+    // --- ESTO ES CRÍTICO PARA NEON ---
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    // --------------------------------
+
+    synchronize: false, 
     logging: true,
+    entities: [join(__dirname, '**', '*.entity{.ts,.js}'), join(__dirname, '**', '*.view{.ts,.js}')],
+    migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
     subscribers: [],
 };
 
