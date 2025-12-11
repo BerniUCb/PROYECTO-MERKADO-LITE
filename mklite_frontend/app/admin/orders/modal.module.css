@@ -1,75 +1,176 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease-out;
 }
 
 .modal {
-  width: 420px;
+  width: 550px; /* Un poco más ancho para la tabla */
+  max-width: 90%;
   background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.25);
-  font-family: "Segoe UI", sans-serif;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  font-family: "Inter", "Segoe UI", sans-serif;
+  overflow: hidden; /* Para que el header respete el borde redondeado */
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* --- HEADER ROJO --- */
+.header {
+  background-color: #d30000; /* Rojo intenso como la imagen */
+  padding: 25px 30px;
+  color: white;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: #000; /* negro */
-}
-
-.subtitle {
-  margin-top: 20px;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 600;
-  color: #000; /* negro */
+  margin: 0;
 }
 
-.row {
+.headerActions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  color: #000; /* negro */
+  align-items: center;
+  gap: 15px;
 }
 
-.row strong {
-  color: #000; /* negro */
-}
-
-.row span {
-  color: #000; /* negro */
-}
-
-.list {
-  margin-top: 10px;
-  padding-left: 15px;
-  
-}
-
-.list li {
-  color: #616161; 
+/* Badge de Estado */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 600;
+  background-color: white;
+  color: #333;
+}
+.badgeDelivered {
+  background-color: #d1fae5; /* Verde muy claro */
+  color: #065f46; /* Verde oscuro */
 }
 
+.closeIconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.closeIconBtn:hover {
+  opacity: 1;
+}
 
-.closeBtn {
-  margin-top: 20px;
+.orderMeta p {
+  margin: 6px 0;
+  font-size: 14px;
+  opacity: 0.95;
+}
+.orderMeta strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* --- BODY BLANCO --- */
+.body {
+  padding: 20px 30px 30px; /* Padding inferior mas grande para el boton */
+}
+
+.tableContainer {
+  margin-bottom: 20px;
+}
+
+.table {
   width: 100%;
-  background: #e02020;
+  border-collapse: collapse;
+}
+
+.table th {
+ /* text-align: right;*/
+  font-size: 13px;
+  font-weight: 700;
+  color: #4a5568;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.table td {
+  padding: 16px 0;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.productName {
+  color: #333;
+  font-weight: 500;
+}
+
+.textLeft { text-align: left; }
+.textCenter { text-align: center; }
+.textRight { text-align: right; }
+
+/* Total */
+.totalSection {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  padding-top: 15px;
+  margin-bottom: 30px;
+  /* Fondo gris claro opcional para destacar el total si se desea */
+  /* background-color: #f9fafb; padding: 15px; border-radius: 8px; */
+}
+
+.totalLabel {
+  font-size: 16px;
+  color: #666;
+}
+
+.totalValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Botón Descargar */
+.downloadBtn {
+  width: 100%;
+  background-color: #e30613; /* Rojo botón */
   color: white;
   border: none;
-  padding: 10px;
+  padding: 14px;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(227, 6, 19, 0.2);
 }
 
-.closeBtn:hover {
-  background: #c81b1b;
+.downloadBtn:hover {
+  background-color: #c00510;
 }
+
+/* Animaciones */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
