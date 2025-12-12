@@ -1,5 +1,5 @@
 // src/entity/user.entity.ts
-
+import { WishlistItem } from "./wishlist-item.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Order } from "./order.entity";
 import { Shipment } from "./shipment.entity";
@@ -71,4 +71,6 @@ export class User {
 
     @OneToMany(() => Notification, (notification) => notification.user)
     notifications: Notification[];
+    @OneToMany(() => WishlistItem, (item) => item.user)
+    wishlistItems: WishlistItem[];
 }
