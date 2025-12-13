@@ -1,7 +1,7 @@
 .layoutWrapper {
   display: flex;
   gap: 20px;
-  background-color: #f4f6f8; /* Un fondo suave para toda la pagina */
+  /*background-color: #f4f6f8; /* Un fondo suave para toda la pagina */
   min-height: 100vh;
 }
 
@@ -14,11 +14,11 @@
 .mis-pedidos-container {
   flex: 1;
   max-width: 999px; /* Un poco mas ancho */
-  margin: 40px auto;
+  margin: 20px auto;
   padding: 30px;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   font-family: 'Inter', sans-serif; /* Asumiendo una fuente moderna */
 }
 
@@ -248,6 +248,43 @@
 
 .textRight { text-align: right; }
 .textCenter { text-align: center; }
+
+/* ... (Tus estilos anteriores se mantienen igual) ... */
+
+/* Estilos existentes del Modal... */
+
+.modalTotal {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+/* NUEVO: Botón de Descarga PDF */
+.downloadBtn {
+  width: 100%;
+  background-color: #e30613; /* Rojo marca */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(227, 6, 19, 0.2);
+}
+
+.downloadBtn:hover {
+  background-color: #c00510;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
