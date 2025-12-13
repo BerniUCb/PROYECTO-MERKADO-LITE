@@ -24,7 +24,7 @@
   animation: fadeIn 0.25s ease-out;
 }
 
-/* ---- MODAL GRANDE (NUEVO, COMO EN LA FOTO) ---- */
+/* ---- MODAL GRANDE ---- */
 .modalLarge {
   width: 650px;
   background: #fff;
@@ -168,7 +168,6 @@
   background: #fff;
 }
 
-/* ---- TEXTAREA BONITO ---- */
 /* ---- TEXTAREA BONITO ---- */
 .modal textarea,
 .modalLarge textarea,
