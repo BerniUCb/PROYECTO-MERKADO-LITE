@@ -1,0 +1,108 @@
+.page {
+  padding: 30px;
+  background: #f6f6f6;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #253d4e;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* TABLA */
+.tableContainer {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th {
+  text-align: left;
+  color: #999;
+  font-weight: 600;
+  padding-bottom: 12px;
+}
+
+.table td {
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  color: #253d4e;
+}
+
+.table tr {
+  cursor: pointer;
+}
+
+.activeRow {
+  background: #fff2f2;
+}
+
+/* DETALLE */
+.detailCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+.detailCard h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.email {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 14px;
+}
+
+.info span {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  color: #253d4e;
+}
+
+/* ACCIONES */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.accept {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reject {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
