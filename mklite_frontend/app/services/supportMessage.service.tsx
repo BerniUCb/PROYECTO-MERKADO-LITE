@@ -4,7 +4,10 @@ import type SupportMessage from "../models/supportMessage.model";
 export const SupportMessageService = {
   // Crear un nuevo mensaje de soporte
   // POST /support-messages
-  create: async (data: Omit<SupportMessage, "id" | "sentAt">): Promise<SupportMessage> => {
+  create: async (data: {
+    content: string;
+    ticketId: number;
+  }): Promise<SupportMessage> => {
     const res = await instance.post("/support-messages", data);
     return res.data;
   },
