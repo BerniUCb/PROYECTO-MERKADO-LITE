@@ -20,7 +20,7 @@ import {OrderItemModule} from './order-item/order-item.module';
 import { ConfigModule } from '@nestjs/config';
 import { BackupController } from './backup/backup.controller';
 import { PaymentModule } from './payment/payment.module';
-
+import { DriverApplicationModule } from './driver-application/driver-application.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItem } from './entity/order-item.entity';
 import { PriceHistoryModule } from './price-history/price-history.module';
@@ -44,7 +44,7 @@ import { Or } from 'typeorm';
     OrderItemModule,
     PaymentModule,
     PriceHistoryModule,
-
+    DriverApplicationModule,
     ConfigModule.forRoot({ isGlobal: true }),
 
     
