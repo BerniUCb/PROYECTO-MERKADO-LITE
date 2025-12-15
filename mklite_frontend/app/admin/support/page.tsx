@@ -4,16 +4,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
 import { 
   Search, Filter, Clock, AlertCircle, CheckCircle, BarChart2, 
-  Send, Phone, Mail, User, MoreVertical
+  Send, Phone, Mail, User, MoreVertical, ChevronDown
 } from 'lucide-react';
+import AdminSidebar from '../../components/AdminSidebar';
+
 // Services
 import { SupportTicketService } from '../../services/support-ticket.service';
 import { SupportMessageService } from '../../services/supportMessage.service';
 
-// IMPORTACIÓN DE MODELOS (Ya no usamos interfaces locales)
+// Modelos
 import type SupportTicket from '../../models/supportTicket.model';
 import type SupportMessage from '../../models/supportMessage.model';
-import type { TicketStatus } from '../../models/supportTicket.model'; // Si exportaste el tipo
+import type { TicketStatus } from '../../models/supportTicket.model';
 
 const SupportPage: React.FC = () => {
   // --- ESTADOS ---
@@ -23,6 +25,9 @@ const SupportPage: React.FC = () => {
   const [replyText, setReplyText] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   
+  // Estado para la carga al cambiar estado
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+
   const [currentAdminId, setCurrentAdminId] = useState<number | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +42,6 @@ const SupportPage: React.FC = () => {
     } else {
         setCurrentAdminId(1); 
     }
-
     loadTickets();
   }, []);
 
@@ -50,7 +54,6 @@ const SupportPage: React.FC = () => {
     try {
       const data = await SupportTicketService.getAll();
       setTickets(data);
-      
       if (data.length > 0 && !selectedTicket) {
         setSelectedTicket(data[0]);
       }
@@ -66,6 +69,30 @@ const SupportPage: React.FC = () => {
     setSelectedTicket(ticket);
   };
 
+  // NUEVO: Manejar cambio de estado
+  const handleStatusChange = async (newStatus: TicketStatus) => {
+    if (!selectedTicket) return;
+    setUpdatingStatus(true);
+    try {
+        // Llamada al servicio update
+        const updated = await SupportTicketService.update(selectedTicket.id, { status: newStatus });
+        
+        // Actualizar UI localmente
+        const updatedTicket = { ...selectedTicket, status: newStatus };
+        setSelectedTicket(updatedTicket);
+        setTickets(prev => prev.map(t => t.id === selectedTicket.id ? updatedTicket : t));
+        
+        // Opcional: Enviar mensaje de sistema automático
+        // await SupportMessageService.create({ content: `El estado del ticket cambió a: ${getStatusLabel(newStatus)}`, ... });
+
+    } catch (error) {
+        console.error("Error actualizando estado:", error);
+        alert("No se pudo actualizar el estado.");
+    } finally {
+        setUpdatingStatus(false);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!replyText.trim() || !selectedTicket || !currentAdminId) return;
 
@@ -76,14 +103,10 @@ const SupportPage: React.FC = () => {
         sender_id: currentAdminId
       };
 
-      // Guardar en backend
       const savedMessage = await SupportMessageService.create(payload);
       
-      // La respuesta del backend 'savedMessage' ya debería ser un SupportMessage completo
-      // Pero si falta popular relaciones (como el sender), construimos uno local para la UI inmediata
       const newMessageLocal: SupportMessage = {
         ...savedMessage,
-        // Aseguramos que sender tenga los datos mínimos para mostrar "Tú" o el nombre
         sender: savedMessage.sender || { id: currentAdminId, fullName: 'Yo (Admin)' } as any 
       };
 
@@ -135,7 +158,7 @@ const SupportPage: React.FC = () => {
     }
  };
 
- // Helper para prioridad (opcional si tu modelo lo tiene)
+ // Helper para prioridad
  const getPriorityLabel = (p?: string) => {
     if (!p) return '';
     switch(p) {
@@ -145,10 +168,21 @@ const SupportPage: React.FC = () => {
         default: return 'Baja';
     }
  };
+ 
+ const getPriorityColor = (p?: string) => {
+    if (!p) return '';
+    switch(p) {
+        case 'urgent': return styles.tagUrgent;
+        case 'high': return styles.tagHigh;
+        case 'medium': return styles.tagMedium;
+        default: return styles.tagLow;
+    }
+ };
+
 
   return (
     <div className={styles.adminLayout}>
-
+      {/*<AdminSidebar />*/}
       
       <main className={styles.mainContent}>
         <header className={styles.header}>
@@ -202,20 +236,22 @@ const SupportPage: React.FC = () => {
                         >
                             <div className={styles.ticketHeader}>
                                 <span className={styles.ticketCode}>#{ticket.id}</span>
-                                <span className={styles.ticketTime}>
-                                    {new Date(ticket.createdAt).toLocaleDateString()}
+                                <span className={`${styles.priorityTag} ${getPriorityColor(ticket.priority as string)}`}>
+                                    {getPriorityLabel(ticket.priority as string)}
                                 </span>
                             </div>
                             <h4 className={styles.ticketSubject}>{ticket.subject}</h4>
                             <div className={styles.ticketFooter}>
                                 <span className={styles.clientName}>
-                                    {/* Usamos 'user' del modelo actualizado */}
                                     {ticket.user?.fullName || 'Desconocido'} 
                                 </span>
                                 <span className={`${styles.statusBadge} ${getStatusClass(ticket.status)}`}>
                                     {getStatusLabel(ticket.status)}
                                 </span>
                             </div>
+                            <span className={styles.ticketTime}>
+                                {new Date(ticket.createdAt).toLocaleDateString()}
+                            </span>
                         </div>
                     ))}
                 </div>
@@ -229,15 +265,32 @@ const SupportPage: React.FC = () => {
                             <div style={{flex: 1}}>
                                 <h2 className={styles.detailSubject}>
                                     {selectedTicket.subject} 
+                                    {/* <span className={`${styles.priorityTag} ${getPriorityColor(selectedTicket.priority as string)}`} style={{marginLeft: 10, fontSize: '0.7rem', verticalAlign: 'middle'}}>
+                                        {getPriorityLabel(selectedTicket.priority as string)}
+                                    </span> */}
                                 </h2>
                                 <div className={styles.detailMeta}>
                                     Ticket #{selectedTicket.id} 
                                     {selectedTicket.order ? ` • Pedido #${selectedTicket.order.id}` : ''}
                                 </div>
                             </div>
-                            <span className={`${styles.statusBadge} ${getStatusClass(selectedTicket.status)}`} style={{fontSize: '0.85rem', padding: '6px 12px'}}>
-                                {getStatusLabel(selectedTicket.status)}
-                            </span>
+                            
+                            {/* --- SELECTOR DE ESTADO --- */}
+                            <div className={styles.statusSelectWrapper}>
+                                <select 
+                                    className={`${styles.statusSelect} ${getStatusClass(selectedTicket.status)}`}
+                                    value={selectedTicket.status}
+                                    onChange={(e) => handleStatusChange(e.target.value as TicketStatus)}
+                                    disabled={updatingStatus}
+                                >
+                                    <option value="open">Abierto</option>
+                                    <option value="in_progress">En Proceso</option>
+                                    <option value="resolved">Resuelto</option>
+                                    <option value="closed">Cerrado</option>
+                                </select>
+                                <ChevronDown size={14} className={styles.selectIcon}/>
+                            </div>
+
                         </div>
 
                         <div className={styles.clientInfoCard}>
@@ -266,7 +319,6 @@ const SupportPage: React.FC = () => {
 
                         <div className={styles.chatArea}>
                             {selectedTicket.messages?.map((msg) => {
-                                // Lógica para saber si el mensaje es del admin logueado
                                 const isMe = msg.sender?.id === currentAdminId;
                                 
                                 return (

@@ -12,11 +12,12 @@ import { OrderModule } from './order/order.module';
 import { AuthModule } from './auth/auth.module';
 import { NotificationModule } from './notification/notification.module';
 import { TicketModule } from './support-ticket/support-ticket.module';
+import { SupportMessageModule } from './support-message/support-message.module'; 
 import { AddressModule } from './address/address.module';
 import { stockMovementModule } from './stock-movement/stock-movement.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { ShipmentModule } from './shipment/shipment.module';
-import {OrderItemModule} from './order-item/order-item.module';
+import { OrderItemModule } from './order-item/order-item.module';
 import { ConfigModule } from '@nestjs/config';
 import { BackupController } from './backup/backup.controller';
 import { PaymentModule } from './payment/payment.module';
@@ -37,6 +38,7 @@ import { Or } from 'typeorm';
     PromotionModule,
     OrderModule,
     TicketModule,
+    SupportMessageModule,
     ShipmentModule,
     AddressModule,
     stockMovementModule,

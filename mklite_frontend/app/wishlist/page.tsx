@@ -142,7 +142,7 @@ const WishlistPage = () => {
         ) : wishlist.length === 0 ? (
             <div className={styles.emptyState}>
                 <p>Tu lista de deseos está vacía.</p>
-                <Link href="/" className={styles.btnSecondary} style={{marginTop: 10, display: 'inline-block'}}>
+                <Link href="/home" className={styles.btnSecondary} style={{marginTop: 10, display: 'inline-block'}}>
                     Explorar productos
                 </Link>
             </div>
