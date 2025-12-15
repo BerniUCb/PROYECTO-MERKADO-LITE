@@ -1,4 +1,5 @@
-import { instance } from "../utils/axios";
+import { instance } from "@/app/utils/axios";
+//import { instance } from "../utils/axios";
 import Order from "../models/order.model";
 
 export const OrderService = {
@@ -86,4 +87,30 @@ export const OrderService = {
   delete: async (id: number): Promise<void> => {
     await instance.delete(`/orders/${id}`);
   },
+
+  // --- RIDER (sin endpoints nuevos) ---
+  getAvailableForRider: async (): Promise<Order[]> => {
+    // Reutiliza /orders
+    const res = await instance.get("/orders");
+    const orders = res.data as Order[];
+
+    // Disponibles = shipped (ajusta si tu backend usa otro estado)
+    return orders.filter((o) => o.status === "shipped");
+  },
+
+  // Aceptar (sin endpoint): opción A) solo navegar, opción B) marcar status
+  acceptForRider: async (orderId: number, markAsProcessing: boolean): Promise<Order> => {
+    if (markAsProcessing) {
+      // OJO: esto depende de si tu backend permite PATCH status
+      const res = await instance.patch(`/orders/${orderId}`, { status: "processing" });
+      return res.data;
+    }
+
+    // Si no marcamos nada, al menos devolvemos el pedido actual
+    const res = await instance.get(`/orders/${orderId}`);
+    return res.data;
+  },
+
 };
+
+
