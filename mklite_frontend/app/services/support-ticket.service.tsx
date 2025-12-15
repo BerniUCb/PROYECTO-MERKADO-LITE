@@ -2,12 +2,16 @@ import { instance } from "../utils/axios";
 import SupportTicket from "../models/supportTicket.model";
 
 export const SupportTicketService = {
-  /*
-  create: async (data: Omit<SupportTicket, "id" | "messages">): Promise<SupportTicket> => {
+
+  // Crear ticket (DTO real del backend)
+  create: async (data: {
+    reason: string;
+    clientId: number;
+    orderId: number;
+  }): Promise<SupportTicket> => {
     const res = await instance.post("/support-ticket", data);
     return res.data;
   },
-  */
 
   getAll: async (): Promise<SupportTicket[]> => {
     const res = await instance.get("/support-ticket");

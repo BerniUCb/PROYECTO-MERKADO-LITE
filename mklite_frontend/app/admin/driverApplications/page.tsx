@@ -2,31 +2,63 @@
 
 import styles from "./page.module.css";
 import { useState } from "react";
+import { FaPhoneAlt, FaMotorcycle, FaCalendarAlt } from "react-icons/fa";
 
+/* ===============================
+   TIPOS (SOLO MODELADO)
+================================ */
 type Application = {
-  id: string;
-  name: string;
+  id: number;
+  code: string;
+  fullName: string;
+  email: string;
   phone: string;
   vehicle: string;
-  date: string;
-  email: string;
   plate: string;
+  date: string;
 };
 
-const mockData: Application[] = [
+/* ===============================
+   MOCK DATA (TEMPORAL)
+================================ */
+const mockApplications: Application[] = [
   {
-    id: "SOLR001",
-    name: "Carlos Pérez",
+    id: 1,
+    code: "#SOLR001",
+    fullName: "Carlos Pérez",
+    email: "perez@gmail.com",
     phone: "+591 65491862",
     vehicle: "Moto",
+    plate: "123-ABC",
     date: "25/11/2025",
-    email: "carlos@email.com",
-    plate: "ABC-123",
+  },
+  {
+    id: 2,
+    code: "#SOLR002",
+    fullName: "Carlos Pérez",
+    email: "perez@gmail.com",
+    phone: "+591 65491862",
+    vehicle: "Moto",
+    plate: "123-ABC",
+    date: "25/11/2025",
+  },
+  {
+    id: 3,
+    code: "#SOLR003",
+    fullName: "Carlos Pérez",
+    email: "perez@gmail.com",
+    phone: "+591 65491862",
+    vehicle: "Moto",
+    plate: "123-ABC",
+    date: "25/11/2025",
   },
 ];
 
 export default function DriverApplicationsPage() {
-  const [selected, setSelected] = useState<Application | null>(mockData[0]);
+  const [applications] = useState<Application[]>(mockApplications);
+  const [selected, setSelected] = useState<Application | null>(
+    mockApplications[0]
+  );
 
   return (
     <main className={styles.page}>
@@ -37,7 +69,7 @@ export default function DriverApplicationsPage() {
       </p>
 
       <div className={styles.layout}>
-        {/* TABLA */}
+        {/* ===== TABLA ===== */}
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -50,7 +82,7 @@ export default function DriverApplicationsPage() {
               </tr>
             </thead>
             <tbody>
-              {mockData.map((item) => (
+              {applications.map((item) => (
                 <tr
                   key={item.id}
                   onClick={() => setSelected(item)}
@@ -58,8 +90,8 @@ export default function DriverApplicationsPage() {
                     selected?.id === item.id ? styles.activeRow : ""
                   }
                 >
-                  <td>{item.id}</td>
-                  <td>{item.name}</td>
+                  <td>{item.code}</td>
+                  <td>{item.fullName}</td>
                   <td>{item.phone}</td>
                   <td>{item.vehicle}</td>
                   <td>{item.date}</td>
@@ -69,37 +101,46 @@ export default function DriverApplicationsPage() {
           </table>
         </div>
 
-        {/* DETALLE */}
-{selected && (
-  <aside className={styles.detailCard}>
-    <h3>{selected.name}</h3>
-    <p className={styles.email}>{selected.email}</p>
+        {/* ===== DETALLE ===== */}
+        {selected && (
+          <aside className={styles.detailCard}>
+            <h3>{selected.fullName}</h3>
+            <p className={styles.email}>{selected.email}</p>
 
-    <div className={styles.info}>
-      <span>📞 {selected.phone}</span>
-      <span>🏍️ Vehículo: {selected.vehicle}</span>
-      <span>🔢 Placa: {selected.plate}</span>
-      <span>📅 Fecha: {selected.date}</span>
-    </div>
+            <div className={styles.info}>
+              <span>
+                <FaPhoneAlt size={14} />
+                {selected.phone}
+              </span>
 
-    <div className={styles.actions}>
-      <button
-        className={styles.accept}
-        onClick={() => alert("Solicitud aceptada")}
-      >
-        Aceptar
-      </button>
+              <span>
+                <FaMotorcycle size={16} />
+                {selected.vehicle} · Placa {selected.plate}
+              </span>
 
-      <button
-        className={styles.reject}
-        onClick={() => alert("Solicitud rechazada")}
-      >
-        Rechazar
-      </button>
-    </div>
-  </aside>
-)}
+              <span>
+                <FaCalendarAlt size={14} />
+                Fecha de solicitud: {selected.date}
+              </span>
+            </div>
 
+            <div className={styles.actions}>
+              <button
+                className={styles.accept}
+                onClick={() => alert("Solicitud aceptada (mock)")}
+              >
+                Aceptar
+              </button>
+
+              <button
+                className={styles.reject}
+                onClick={() => alert("Solicitud rechazada (mock)")}
+              >
+                Rechazar
+              </button>
+            </div>
+          </aside>
+        )}
       </div>
     </main>
   );

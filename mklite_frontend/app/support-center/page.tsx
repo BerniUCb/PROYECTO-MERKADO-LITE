@@ -1,6 +1,94 @@
 "use client";
+
+import { useState } from "react";
 import styles from "./page.module.css";
+import { SupportTicketService } from "@/app/services/support-ticket.service";
+import { SupportMessageService } from "@/app/services/supportMessage.service";
+import { OrderService } from "@/app/services/order.service";
+import type Order from "@/app/models/order.model";
+
+
 export default function SupportPage() {
+  // Campos visuales
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Campos reales
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+   // ===== RECIBO =====
+const [receiptCode, setReceiptCode] = useState("");
+const [orders, setOrders] = useState<Order[]>([]);
+const [receiptLoading, setReceiptLoading] = useState(false);
+
+  // MOCK (luego viene del auth / pedidos)
+  const clientId = 1;
+  const orderId = 1;
+
+  const handleSubmit = async () => {
+    if (!subject || !message) {
+      alert("Completa el asunto y el mensaje");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // 1️⃣ Crear ticket
+      const ticket = await SupportTicketService.create({
+        reason: subject,
+        clientId,
+        orderId,
+      });
+
+      // 2️⃣ Crear mensaje
+      await SupportMessageService.create({
+        content: message,
+        ticketId: ticket.id,
+      });
+
+      alert("Mensaje enviado correctamente");
+
+      setName("");
+      setEmail("");
+      setPhone("");
+      setSubject("");
+      setMessage("");
+    } catch (error) {
+      console.error(error);
+      alert("Error al enviar el mensaje");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSearchReceipt = async () => {
+  if (!receiptCode) {
+    alert("Ingresa un código de pedido");
+    return;
+  }
+
+  try {
+    setReceiptLoading(true);
+
+    const orderId = Number(receiptCode.replace("#", ""));
+    if (isNaN(orderId)) {
+      alert("Código inválido");
+      return;
+    }
+
+    const order = await OrderService.getById(orderId);
+    setOrders([order]);
+  } catch (error) {
+    console.error(error);
+    alert("Pedido no encontrado");
+    setOrders([]);
+  } finally {
+    setReceiptLoading(false);
+  }
+};
+
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
@@ -53,17 +141,38 @@ export default function SupportPage() {
           </div>
 
           <div className={styles.receiptSearch}>
-            <input placeholder="Ej: #455554 o #465554" />
-            <button>Buscar</button>
-          </div>
+  <input
+    placeholder="Ej: #455554 o #465554"
+    value={receiptCode}
+    onChange={(e) => setReceiptCode(e.target.value)}
+  />
+  <button onClick={handleSearchReceipt} disabled={receiptLoading}>
+    {receiptLoading ? "Buscando..." : "Buscar"}
+  </button>
+</div>
+
 
           <h4 className={styles.subTitle}>Recibos Recientes</h4>
 
           <div className={styles.receiptGrid}>
-            <ReceiptCard id="#465554" price="15.00" status="Entregado" />
-            <ReceiptCard id="#465553" price="25.00" status="En Camino" />
-            <ReceiptCard id="#465552" price="42.50" status="Entregado" />
-          </div>
+  {orders.length === 0 && <p>No hay recibos para mostrar</p>}
+
+  {orders.map((order) => (
+    <ReceiptCard
+      key={order.id}
+      id={`#${order.id}`}
+      price={order.orderTotal.toFixed(2)}
+      status={
+        order.status === "delivered"
+          ? "Entregado"
+          : order.status === "shipped"
+          ? "En Camino"
+          : "Pendiente"
+      }
+    />
+  ))}
+</div>
+
         </section>
 
         {/* ===== AYUDA ===== */}
@@ -81,44 +190,40 @@ export default function SupportPage() {
         {/* ===== FAQ ===== */}
         <section className={styles.faq}>
           <h2>Preguntas Frecuentes</h2>
-
-          <Faq q="¿Cómo puedo rastrear mi pedido?" a="Puedes rastrear tu pedido iniciando sesión en tu cuenta y accediendo a la sección 'Mis Pedidos'. También recibirás actualizaciones por email y SMS." />
-          <Faq q="¿Cuál es el tiempo de entrega?" a="Nuestro tiempo de entrega estándar es de 2-4 horas dentro de la zona de cobertura. Trabajamos de 10:00 - 18:00, Lunes a Domingo." />
-          <Faq q="¿Puedo cancelar mi pedido?" a="Sí, puedes cancelar tu pedido antes de que sea procesado." />
-          <Faq q="¿Qué métodos de pago aceptan?" a="Aceptamos efectivo contra entrega. Muy pronto aceptaremos Visa, Mastercard y pagos en línea." />
-          <Faq q="¿Cómo solicito una factura?" a="Las facturas se envían automáticamente a tu correo después de cada compra." />
-          <Faq q="¿Olvidé mi contraseña, qué hago?" a="Haz clic en 'Olvidé mi contraseña' y sigue los pasos." />
-          <Faq q="¿Cómo sé si un producto está disponible?" a="Los productos disponibles muestran el botón 'Agregar al carrito'." />
+          <Faq q="¿Cómo puedo rastrear mi pedido?" a="Puedes rastrear tu pedido iniciando sesión en tu cuenta." />
+          <Faq q="¿Cuál es el tiempo de entrega?" a="El tiempo estándar es de 2-4 horas." />
+          <Faq q="¿Puedo cancelar mi pedido?" a="Sí, antes de que sea procesado." />
+          <Faq q="¿Qué métodos de pago aceptan?" a="Efectivo contra entrega." />
         </section>
 
-        {/* ===== FORMULARIO ===== */}
+        {/* ===== FORMULARIO (CONECTADO) ===== */}
         <section className={styles.form}>
           <h2>¿No encontraste lo que buscabas?</h2>
-          <p>Completa el formulario y nos pondremos en contacto contigo lo antes posible.</p>
+          <p>Completa el formulario y nos pondremos en contacto contigo.</p>
 
           <div className={styles.formGrid}>
-            <input placeholder="Tu nombre" />
-            <input placeholder="tu@email.com" />
-            <input placeholder="+591 XXX-XXX-XXX" />
-            <input placeholder="Asunto" />
-            <textarea placeholder="Describe tu consulta..." />
+            <input placeholder="Tu nombre" value={name} onChange={e => setName(e.target.value)} />
+            <input placeholder="tu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+            <input placeholder="+591 XXX-XXX-XXX" value={phone} onChange={e => setPhone(e.target.value)} />
+            <input placeholder="Asunto" value={subject} onChange={e => setSubject(e.target.value)} />
+            <textarea placeholder="Describe tu consulta..." value={message} onChange={e => setMessage(e.target.value)} />
           </div>
 
-          <button className={styles.send}>Enviar mensaje</button>
+          <button className={styles.send} onClick={handleSubmit} disabled={loading}>
+            {loading ? "Enviando..." : "Enviar mensaje"}
+          </button>
         </section>
 
         {/* ===== INFO FINAL ===== */}
         <section className={styles.info}>
           <div className={`${styles.infoCard} ${styles.redBg}`}>
-            ⏰<p>Horarios de Atención<br />Lunes a Domingo<br />10:00 AM - 6:00 PM</p>
+            ⏰<p>Atención<br />10:00 - 18:00</p>
           </div>
-
           <div className={`${styles.infoCard} ${styles.greenBg}`}>
-            💬<p>Tiempo de Respuesta<br />Respondemos consultas<br />en menos de 24 horas</p>
+            💬<p>Respuesta en<br />menos de 24h</p>
           </div>
-
           <div className={`${styles.infoCard} ${styles.blueBg}`}>
-            🎧<p>Soporte Dedicado<br />Equipo especializado<br />para ayudarte</p>
+            🎧<p>Soporte dedicado</p>
           </div>
         </section>
 
@@ -137,7 +242,6 @@ function ReceiptCard({ id, price, status }: any) {
       <small className={status === "Entregado" ? styles.ok : styles.warn}>
         {status}
       </small>
-      <a>Ver detalles →</a>
     </div>
   );
 }
