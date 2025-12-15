@@ -11,21 +11,21 @@
 }
 
 .card:hover {
-  transform: scale(1.03);
-  background-color: #000;
-  border-radius: 0px; 
+  transform: scale(1.04);
+  background-color: #ffffff;
+  border-radius: 10px; 
 }
 
-.card:hover .name,
+/*.card:hover .name,
 .card:hover .description,
 .card:hover .finalPrice {
   color: #fff;
-}
+}*/
 
-.card:hover .addButton {
+/*.card:hover .addButton {
   background-color: #fff;
   color: #000;
-}
+}*/
 
 
 .image {
