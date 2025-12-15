@@ -220,3 +220,363 @@
 .backBtn {
   display: none;
 }
+
+
+.mapCard {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid #eef2f7;
+}
+
+.mapHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef2f7;
+  font-weight: 900;
+}
+
+.mapBody {
+  height: 520px;
+}
+
+
+
+
+
+
+.mapMeta {
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+}
+
+/* Instrucciones */
+.instructionsCard {
+  margin-top: 14px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid #eef2f7;
+  overflow: hidden;
+}
+
+.instructionsHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  font-weight: 900;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.stepsList {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stepsEmpty {
+  padding: 10px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.stepRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+}
+
+.stepNum {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: #e11d48;
+  color: #fff;
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.stepText {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepTitle {
+  font-weight: 900;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.stepSub {
+  margin-top: 3px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.stepArrow {
+  font-size: 20px;
+  color: #94a3b8;
+  font-weight: 900;
+  line-height: 1;
+}
+
+
+
+/* ============================= */
+/* UX FINAL: Retiro / Entrega */
+/* ============================= */
+
+/* Botón verde sólido (Confirmar entrega) */
+.primaryGreen {
+  width: 100%;
+  padding: 12px;
+  background: #12b981;
+  color: #fff;
+  font-weight: 900;
+  border-radius: 10px;
+  border: none;
+}
+
+.primaryGreen:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Estado "Recogido" (verde claro, tipo success) */
+.primaryPicked {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(18, 185, 129, 0.35);
+  background: rgba(18, 185, 129, 0.12);
+  color: #0f7a55;
+  font-weight: 900;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Opcional: cuando el card de recoger ya está listo */
+.headPicked {
+  background: #12b981;
+}
+
+/* Opcional: punto de estado arriba (si quieres cambiar color por etapa) */
+.dotPending {
+  background: #f5c542; /* amarillo */
+}
+.dotOnWay {
+  background: #12b981; /* verde */
+}
+.dotDelivered {
+  background: #0ea5e9; /* azul */
+}
+
+
+.primaryRed,
+.primaryGreen,
+.outlineGreen {
+  transition: transform 0.06s ease, filter 0.12s ease;
+}
+
+.primaryRed:hover:not(:disabled),
+.primaryGreen:hover:not(:disabled),
+.outlineGreen:hover {
+  filter: brightness(0.98);
+}
+
+.primaryRed:active:not(:disabled),
+.primaryGreen:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+
+
+
+/* ============================= */
+/* MODAL: Entrega Completada */
+/* ============================= */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  padding: 18px;
+}
+
+.doneCard {
+  width: min(720px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+
+  padding: 34px 28px 26px;
+  text-align: center;
+}
+
+.doneIconWrap {
+  width: 118px;
+  height: 118px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  background: rgba(18, 185, 129, 0.14);
+
+  display: grid;
+  place-items: center;
+}
+
+.doneIcon {
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  border: 4px solid #12b981;
+
+  display: grid;
+  place-items: center;
+
+  color: #12b981;
+  font-weight: 1000;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.doneTitle {
+  font-size: 34px;
+  font-weight: 1000;
+  color: #0f172a;
+  margin: 6px 0 8px;
+}
+
+.doneSub {
+  font-size: 18px;
+  font-weight: 700;
+  color: #64748b;
+  margin: 0 0 24px;
+}
+
+.earningBox {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 18px;
+  margin: 0 auto 22px;
+  text-align: left;
+}
+
+.earningBox span {
+  font-size: 16px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.earningBox strong {
+  font-size: 28px;
+  font-weight: 1000;
+  color: #12b981;
+}
+
+.donePrimary {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 16px;
+
+  background: #12b981;
+  color: #fff;
+
+  font-size: 18px;
+  font-weight: 1000;
+
+  cursor: pointer;
+  transition: transform 0.06s ease, filter 0.12s ease;
+}
+
+.donePrimary:hover {
+  filter: brightness(0.98);
+}
+
+.donePrimary:active {
+  transform: translateY(1px);
+}
+
+.doneSecondary {
+  width: 100%;
+  margin-top: 12px;
+
+  border-radius: 14px;
+  padding: 15px 16px;
+
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  color: #64748b;
+
+  font-size: 18px;
+  font-weight: 900;
+
+  cursor: pointer;
+  transition: transform 0.06s ease, filter 0.12s ease;
+}
+
+.doneSecondary:hover {
+  filter: brightness(0.98);
+}
+
+.doneSecondary:active {
+  transform: translateY(1px);
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .doneCard {
+    padding: 26px 16px 18px;
+    border-radius: 16px;
+  }
+
+  .doneTitle {
+    font-size: 28px;
+  }
+
+  .doneSub {
+    font-size: 15px;
+  }
+
+  .earningBox strong {
+    font-size: 24px;
+  }
+
+  .donePrimary,
+  .doneSecondary {
+    font-size: 16px;
+    border-radius: 12px;
+  }
+}
