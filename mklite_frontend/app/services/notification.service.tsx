@@ -50,6 +50,32 @@ class NotificationService {
 
     return res.json();
   }
+  // ⭐ Obtener todas las notificaciones del REPARTIDOR
+async getDriverNotifications(): Promise<Notification[]> {
+  const res = await fetch(`${API_URL}/all-by-role?role=DeliveryDriver`, {
+    method: "GET",
+    cache: "no-cache",
+  });
+
+  if (!res.ok)
+    throw new Error("Error al obtener notificaciones del repartidor");
+
+  return res.json();
+}
+
+// ⭐ Obtener no leídas del REPARTIDOR
+async getUnreadDriverNotifications(): Promise<Notification[]> {
+  const res = await fetch(`${API_URL}/unread-by-role?role=DeliveryDriver`, {
+    method: "GET",
+    cache: "no-cache",
+  });
+
+  if (!res.ok)
+    throw new Error("Error al obtener notificaciones no leídas del repartidor");
+
+  return res.json();
+}
+
 
   // ⭐ Obtener por TIPO (order, promos, inventario, etc.)
   async getByType(type: NotificationType): Promise<Notification[]> {

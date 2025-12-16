@@ -9,7 +9,7 @@ export type NotificationType =
   | "ORDER_DELIVERED"
   | "NEW_PROMOTION";
 
-export type RecipientRole = "Admin" | "Client";
+export type RecipientRole = "Admin" | "Client" | "DeliveryDriver";
 
 export default interface Notification {
   id: number;
