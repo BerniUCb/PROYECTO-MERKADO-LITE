@@ -1,5 +1,4 @@
 import { instance } from "@/app/utils/axios";
-//import { instance } from "../utils/axios";
 import Order from "../models/order.model";
 import type { CreateOrderDto } from "./dto/create-order.dto";
 
@@ -12,7 +11,9 @@ export interface PaginatedOrders {
 }
 
 export const OrderService = {
-  // --- REPORTES ---
+  // ======================
+  // REPORTES
+  // ======================
   getTotalSales: async () => {
     const res = await instance.get("/orders/report/total-sales");
     return res.data;
@@ -48,7 +49,9 @@ export const OrderService = {
     return res.data;
   },
 
-  // --- CRUD ---
+  // ======================
+  // CRUD
+  // ======================
   create: async (data: CreateOrderDto): Promise<Order> => {
     const res = await instance.post("/orders", data);
     return res.data;
@@ -59,7 +62,25 @@ export const OrderService = {
     return res.data;
   },
 
-  // 🔥 ESTE ES EL IMPORTANTE
+  /**
+   * 🔥 USADO POR ADMIN (/admin/orders)
+   * Devuelve lista simple de pedidos
+   */
+  getAll: async (
+    page: number = 1,
+    limit: number = 50,
+    sortBy: string = "createdAt",
+    sortOrder: "asc" | "desc" = "desc"
+  ): Promise<Order[]> => {
+    const params = { page, limit, sortBy, sortOrder };
+    const res = await instance.get("/orders", { params });
+    return res.data;
+  },
+
+  /**
+   * 🔥 USADO POR PERFIL DE USUARIO
+   * Devuelve pedidos paginados por usuario
+   */
   getByUser: async (
     userId: number,
     page: number = 1,
@@ -78,34 +99,4 @@ export const OrderService = {
   delete: async (id: number): Promise<void> => {
     await instance.delete(`/orders/${id}`);
   },
-<<<<<<< HEAD
-
-  // --- RIDER (sin endpoints nuevos) ---
-  getAvailableForRider: async (): Promise<Order[]> => {
-    // Reutiliza /orders
-    const res = await instance.get("/orders");
-    const orders = res.data as Order[];
-
-    // Disponibles = shipped (ajusta si tu backend usa otro estado)
-    return orders.filter((o) => o.status === "shipped");
-  },
-
-  // Aceptar (sin endpoint): opción A) solo navegar, opción B) marcar status
-  acceptForRider: async (orderId: number, markAsProcessing: boolean): Promise<Order> => {
-    if (markAsProcessing) {
-      // OJO: esto depende de si tu backend permite PATCH status
-      const res = await instance.patch(`/orders/${orderId}`, { status: "processing" });
-      return res.data;
-    }
-
-    // Si no marcamos nada, al menos devolvemos el pedido actual
-    const res = await instance.get(`/orders/${orderId}`);
-    return res.data;
-  },
-
 };
-
-
-=======
-};
->>>>>>> origin/main

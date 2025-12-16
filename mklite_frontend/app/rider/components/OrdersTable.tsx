@@ -26,7 +26,7 @@ export default function OrdersTable({ orders, onSelect }: Props) {
           className={styles.row}
           onClick={() => onSelect(order)}
         >
-          <span className={styles.status}>{(order as any).status}</span>
+          <span className={styles.status}>{order.status}</span>
 
           <span>{new Date(order.createdAt).toLocaleDateString()}</span>
 
@@ -36,17 +36,13 @@ export default function OrdersTable({ orders, onSelect }: Props) {
           </span>
 
           <span className={styles.location}>
-            <strong>{order.store?.name ?? "Tienda Merkado Lite"}</strong>
-            <small>
-              {order.store?.location?.address1 ?? "Dirección de tienda"}
-            </small>
+            <strong>{order.store.name}</strong>
+            <small>{order.store.location.address1}</small>
           </span>
 
           <span className={styles.location}>
             <strong>{order.user.fullName}</strong>
-            <small>
-              {order.customerLocation?.address1 ?? "Dirección cliente"}
-            </small>
+            <small>{order.customerLocation.address1}</small>
           </span>
 
           <span className={styles.dots}>•••</span>
