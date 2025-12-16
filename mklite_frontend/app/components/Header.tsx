@@ -159,7 +159,7 @@ export default function Header() {
           </Link>
           <Link href="/">Inicio</Link>
           <Link href="/about">Quiénes Somos</Link>
-          <Link href="/shop">Tienda</Link>
+          <Link href="/home">Tienda</Link>
           <Link href="/categories/lácteos-y-derivados">Categorías</Link>
           <Link href="/contact">Contacto</Link>
         </div>

@@ -50,7 +50,7 @@
 
 /* --- Main Header --- */
 .mainHeader {
-  background-color: #F40009; /* Rojo */
+  background: linear-gradient(135deg, #e30613 0%, #8b0000 100%);
   color: #FFFFFF;
   padding: 15px 5%;
   display: flex;
@@ -164,7 +164,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 
   position: sticky;  /* 👈 clave */
   top: 0;            /* pegada arriba */
