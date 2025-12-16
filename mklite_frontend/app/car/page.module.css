@@ -1,23 +1,24 @@
 /* CONTENEDOR GENERAL */
 .container {
-  display: flex;
-  justify-content: center;
+  display: flex;  /*dos columnas/*/
+  justify-content: center;/*separarlos*/
   align-items: flex-start;
-  gap: 2rem;
+  gap: 2rem;/* espacio entre columnas */
   padding: 2rem;
-  background-color: #fafafa;
+  background-color: #fafafa;/*color*/
 }
 
 /* === CARRITO IZQUIERDO === */
 .cartBox {
-  width: 65%;
-  border: 1px solid #e3e9f7;
+  width: 65%;/* ancho del carrito */
+  border: 1px solid #e3e9f7;/*suave */
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: 8px;/*redondo*/
   background: #fff;
 }
 
 /* === CABECERA === */
+/*vaciar carrito*/
 .header {
   display: flex;
   justify-content: space-between;
@@ -46,6 +47,7 @@
 }
 
 /* === TABLA === */
+/*tabla de productos*/
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -122,7 +124,7 @@
 
 /* === CANTIDAD === */
 .qtyCell button {
-  background: #f3f4f6;
+  background: #f3f4f6; 
   border: 1px solid #ddd;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
