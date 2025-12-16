@@ -14,7 +14,7 @@ export type NotificationType =
   | 'NEW_PROMOTION';        // Nueva promoción
 
 
-export type RecipientRole = 'Admin' | 'Client';
+export type RecipientRole = 'Admin' | 'Client' | 'DeliveryDriver'; 
 
 @Entity('notifications') 
 export class Notification { 
@@ -44,7 +44,7 @@ export class Notification {
     
     @Column({
         type: 'enum',
-        enum: ['Admin', 'Client'],
+        enum: ['Admin', 'Client', 'DeliveryDriver'],
         name: 'recipient_role'
     })
     recipientRole: RecipientRole; 
