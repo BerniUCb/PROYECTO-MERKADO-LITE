@@ -1,4 +1,4 @@
-// src/database/migrations/TIMESTAMP-UpdateAllProductImages.ts
+// src/database/migrations/1764254883023-UpdateAllProductImages.ts
 
 import { MigrationInterface, QueryRunner } from "typeorm";
 
@@ -148,7 +148,8 @@ export class UpdateAllProductImages1764254883023 implements MigrationInterface {
                 // Escapamos comillas simples en nombres como Lay's
                 const safeName = name.replace(/'/g, "''");
                 await queryRunner.query(
-                    `UPDATE products SET image_url = '${url}' WHERE name ILIKE '${safeName}%'`
+                    `UPDATE products SET image_url = $1 WHERE name ILIKE $2`,
+                    [url, `${safeName}%`]
                 );
                 count++;
             }
@@ -163,15 +164,15 @@ export class UpdateAllProductImages1764254883023 implements MigrationInterface {
         const olaLimon = 'https://amarket.com.bo/cdn/shop/files/7779970830438_438x438.jpg?v=1735844246'; // Link Ola Limón (Verde)
         const olaManzana = 'https://amarket.com.bo/cdn/shop/files/7779970830445_438x438.jpg?v=1720560154'; // Link Ola Manzana (Roja/Amarilla)
 
-        if (olaLimon) await queryRunner.query(`UPDATE products SET image_url = '${olaLimon}' WHERE name = 'Lavavajillas Ola' AND description ILIKE '%Limón%'`);
-        if (olaManzana) await queryRunner.query(`UPDATE products SET image_url = '${olaManzana}' WHERE name = 'Lavavajillas Ola' AND description ILIKE '%Manzana%'`);
+        if (olaLimon) await queryRunner.query(`UPDATE products SET image_url = $1 WHERE name = $2 AND description ILIKE $3`, [olaLimon, 'Lavavajillas Ola', '%Limón%']);
+        if (olaManzana) await queryRunner.query(`UPDATE products SET image_url = $1 WHERE name = $2 AND description ILIKE $3`, [olaManzana, 'Lavavajillas Ola', '%Manzana%']);
 
         // --- Papas Pringles ---
         const pringlesOriginal = 'https://amarket.com.bo/cdn/shop/files/38000184932_438x438.jpg?v=1712347272'; // Link Pringles Roja
         const pringlesCebolla = 'https://amarket.com.bo/cdn/shop/files/038000845260_438x438.jpg?v=1720886626'; // Link Pringles Verde
 
-        if (pringlesOriginal) await queryRunner.query(`UPDATE products SET image_url = '${pringlesOriginal}' WHERE name = 'Papas Pringles' AND description ILIKE '%Original%'`);
-        if (pringlesCebolla) await queryRunner.query(`UPDATE products SET image_url = '${pringlesCebolla}' WHERE name = 'Papas Pringles' AND description ILIKE '%Cebolla%'`);
+        if (pringlesOriginal) await queryRunner.query(`UPDATE products SET image_url = $1 WHERE name = $2 AND description ILIKE $3`, [pringlesOriginal, 'Papas Pringles', '%Original%']);
+        if (pringlesCebolla) await queryRunner.query(`UPDATE products SET image_url = $1 WHERE name = $2 AND description ILIKE $3`, [pringlesCebolla, 'Papas Pringles', '%Cebolla%']);
         
         console.log("✅ Casos especiales completados.");
     }
