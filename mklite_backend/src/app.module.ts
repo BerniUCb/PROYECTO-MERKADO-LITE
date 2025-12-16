@@ -47,11 +47,7 @@ import { Or } from 'typeorm';
     OrderItemModule,
     PaymentModule,
     PriceHistoryModule,
-<<<<<<< HEAD
-    DriverApplicationModule,
-=======
     WishlistModule,
->>>>>>> feature/frontend
     ConfigModule.forRoot({ isGlobal: true }),
 
     
