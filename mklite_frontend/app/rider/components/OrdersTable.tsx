@@ -1,11 +1,11 @@
 "use client";
 
 import styles from "./OrdersTable.module.css";
-import Order from "../../models/order.model";
+import type { RiderOrder } from "../mockOrders";
 
 interface Props {
-  orders: Order[];
-  onSelect: (order: Order) => void;
+  orders: RiderOrder[];
+  onSelect: (order: RiderOrder) => void;
 }
 
 export default function OrdersTable({ orders, onSelect }: Props) {
@@ -26,11 +26,9 @@ export default function OrdersTable({ orders, onSelect }: Props) {
           className={styles.row}
           onClick={() => onSelect(order)}
         >
-          <span className={styles.status}>{order.status}</span>
+          <span className={styles.status}>{(order as any).status}</span>
 
-          <span>
-            {new Date(order.createdAt).toLocaleDateString()}
-          </span>
+          <span>{new Date(order.createdAt).toLocaleDateString()}</span>
 
           <span className={styles.price}>
             Bs. {order.orderTotal.toFixed(2)}
@@ -38,13 +36,17 @@ export default function OrdersTable({ orders, onSelect }: Props) {
           </span>
 
           <span className={styles.location}>
-            <strong>Tienda Merkado Lite</strong>
-            <small>Dirección de tienda</small>
+            <strong>{order.store?.name ?? "Tienda Merkado Lite"}</strong>
+            <small>
+              {order.store?.location?.address1 ?? "Dirección de tienda"}
+            </small>
           </span>
 
           <span className={styles.location}>
             <strong>{order.user.fullName}</strong>
-            <small>Dirección cliente</small>
+            <small>
+              {order.customerLocation?.address1 ?? "Dirección cliente"}
+            </small>
           </span>
 
           <span className={styles.dots}>•••</span>
