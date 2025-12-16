@@ -1,9 +1,9 @@
 // Script para restaurar imágenes reales (URLs estáticas)
-// Ubicación: scripts/restaurar-imagenes-reales.ts
-// Ejecutar desde la raíz del backend: npx ts-node -r tsconfig-paths/register scripts/restaurar-imagenes-reales.ts
+// Ubicación: src/database/restaurar-imagenes-reales.ts
+// Ejecutar desde la raíz del backend: npx ts-node -r tsconfig-paths/register src/database/restaurar-imagenes-reales.ts
 
 import { DataSource } from 'typeorm';
-import { dataSourceOptions } from '../src/data-source';
+import { dataSourceOptions } from '../data-source';
 
 const imageMap: { [key: string]: string } = {
     // === CATEGORÍA 1: LÁCTEOS ===

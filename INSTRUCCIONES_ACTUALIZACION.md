@@ -4,6 +4,19 @@
 
 Este update incluye mejoras importantes en el manejo de imágenes de productos:
 
+### 🔍 Problema Original
+
+**¿Por qué no se veían las imágenes en el frontend?**
+
+1. **URLs vacías en la base de datos**: Los productos tenían `image_url = NULL` o URLs inválidas
+2. **Next.js bloqueaba imágenes remotas**: Por seguridad, Next.js no permite cargar imágenes de dominios externos sin configuración
+3. **Falta de configuración en `next.config.ts`**: No había `remotePatterns` configurado para permitir dominios externos
+
+**Solución aplicada:**
+- ✅ Actualización masiva de URLs en la base de datos con URLs reales
+- ✅ Configuración de `next.config.ts` para permitir imágenes remotas
+- ✅ Script de restauración para mantener las URLs actualizadas
+
 ### ✅ Cambios Realizados
 
 1. **Imágenes de Productos Actualizadas**
@@ -16,10 +29,10 @@ Este update incluye mejoras importantes en el manejo de imágenes de productos:
    - Migración `1765845168957-AddDriverToNotificationEnum.ts` corregida (evita errores de duplicados)
 
 3. **Configuración Frontend**
-   - `next.config.ts` configurado para permitir imágenes remotas
+   - `next.config.ts` configurado para permitir imágenes remotas (`remotePatterns`)
 
 4. **Script de Restauración**
-   - Script organizado en `scripts/restaurar-imagenes-reales.ts`
+   - Script organizado en `src/database/restaurar-imagenes-reales.ts` (ubicación correcta)
 
 ---
 
@@ -66,7 +79,7 @@ Si necesitas restaurar las imágenes con URLs reales, ejecuta:
 ```bash
 # Desde mklite_backend
 cd mklite_backend
-npx ts-node -r tsconfig-paths/register scripts/restaurar-imagenes-reales.ts
+npx ts-node -r tsconfig-paths/register src/database/restaurar-imagenes-reales.ts
 ```
 
 Este script actualizará todas las imágenes de productos con URLs reales.
@@ -92,7 +105,7 @@ npm run dev
 ### Backend
 - ✅ `src/database/migrations/1764254883023-UpdateAllProductImages.ts` - Migración con URLs reales
 - ✅ `src/database/migrations/1765845168957-AddDriverToNotificationEnum.ts` - Corregida para evitar duplicados
-- ✅ `scripts/restaurar-imagenes-reales.ts` - Script para restaurar imágenes manualmente
+- ✅ `src/database/restaurar-imagenes-reales.ts` - Script para restaurar imágenes manualmente (ubicado en database/)
 
 ### Frontend
 - ✅ `next.config.ts` - Configurado para permitir imágenes remotas
@@ -128,7 +141,7 @@ npm run migration:run
 **Solución**: Asegúrate de ejecutar desde la raíz de `mklite_backend`:
 ```bash
 cd mklite_backend
-npx ts-node -r tsconfig-paths/register scripts/restaurar-imagenes-reales.ts
+npx ts-node -r tsconfig-paths/register src/database/restaurar-imagenes-reales.ts
 ```
 
 ---
