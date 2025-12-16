@@ -1,147 +1,165 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { useState } from "react";
+import HeaderAdmin from "../../components/HeaderAdmin";
+
+import DriverApplicationModel, {
+  DriverApplicationStatus,
+} from "@/app/models/driverApplication.model";
+
+import { DriverApplicationService } from "@/app/services/driverApplication.service";
+
 import { FaPhoneAlt, FaMotorcycle, FaCalendarAlt } from "react-icons/fa";
 
-/* ===============================
-   TIPOS (SOLO MODELADO)
-================================ */
-type Application = {
-  id: number;
-  code: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  vehicle: string;
-  plate: string;
-  date: string;
-};
-
-/* ===============================
-   MOCK DATA (TEMPORAL)
-================================ */
-const mockApplications: Application[] = [
-  {
-    id: 1,
-    code: "#SOLR001",
-    fullName: "Carlos Pérez",
-    email: "perez@gmail.com",
-    phone: "+591 65491862",
-    vehicle: "Moto",
-    plate: "123-ABC",
-    date: "25/11/2025",
-  },
-  {
-    id: 2,
-    code: "#SOLR002",
-    fullName: "Carlos Pérez",
-    email: "perez@gmail.com",
-    phone: "+591 65491862",
-    vehicle: "Moto",
-    plate: "123-ABC",
-    date: "25/11/2025",
-  },
-  {
-    id: 3,
-    code: "#SOLR003",
-    fullName: "Carlos Pérez",
-    email: "perez@gmail.com",
-    phone: "+591 65491862",
-    vehicle: "Moto",
-    plate: "123-ABC",
-    date: "25/11/2025",
-  },
-];
-
 export default function DriverApplicationsPage() {
-  const [applications] = useState<Application[]>(mockApplications);
-  const [selected, setSelected] = useState<Application | null>(
-    mockApplications[0]
-  );
+  const [applications, setApplications] =
+    useState<DriverApplicationModel[]>([]);
+  const [selected, setSelected] =
+    useState<DriverApplicationModel | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    DriverApplicationService.getAll()
+      .then((data: DriverApplicationModel[]) => {
+        setApplications(data);
+        setSelected(data[0] ?? null);
+      })
+      .catch((err) => {
+        console.error("Error cargando solicitudes:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleStatusChange = async (
+    id: number,
+    status: DriverApplicationStatus
+  ) => {
+    try {
+      const updated =
+        await DriverApplicationService.updateStatus(id, status);
+
+      setApplications((prev) =>
+        prev.map((app) => (app.id === id ? updated : app))
+      );
+
+      setSelected(updated);
+    } catch (error) {
+      console.error("Error actualizando estado:", error);
+    }
+  };
+
+  if (loading) {
+    return <p>Cargando solicitudes...</p>;
+  }
 
   return (
-    <main className={styles.page}>
-      <h1 className={styles.title}>Solicitudes de repartidor</h1>
-      <p className={styles.subtitle}>
-        Aquí puedes revisar, aprobar o rechazar las solicitudes para convertirse
-        en repartidor.
-      </p>
+    <>
+      <HeaderAdmin />
 
-      <div className={styles.layout}>
-        {/* ===== TABLA ===== */}
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Código Solicitud</th>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>Vehículo</th>
-                <th>Fecha solicitud</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applications.map((item) => (
-                <tr
-                  key={item.id}
-                  onClick={() => setSelected(item)}
-                  className={
-                    selected?.id === item.id ? styles.activeRow : ""
+      <main className={styles.page}>
+        <h1 className={styles.title}>Solicitudes de repartidor</h1>
+        <p className={styles.subtitle}>
+          Aquí puedes revisar, aprobar o rechazar las solicitudes.
+        </p>
+
+        <div className={styles.layout}>
+          {/* ===== TABLA ===== */}
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Teléfono</th>
+                  <th>Vehículo</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((item) => (
+                  <tr
+                    key={item.id}
+                    onClick={() => setSelected(item)}
+                    className={
+                      selected?.id === item.id ? styles.activeRow : ""
+                    }
+                  >
+                    <td>{item.id}</td>
+                    <td>{item.user.fullName}</td>
+                    <td>{item.user.phone}</td>
+                    <td>{item.vehicleType}</td>
+                    <td>{item.status}</td>
+                    <td>
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ===== DETALLE ===== */}
+          {selected && (
+            <aside className={styles.detailCard}>
+              <h3>{selected.user.fullName}</h3>
+              <p className={styles.email}>{selected.user.email}</p>
+
+              <div className={styles.info}>
+                <span>
+                  <FaPhoneAlt size={14} />
+                  {selected.user.phone}
+                </span>
+
+                <span>
+                  <FaMotorcycle size={16} />
+                  {selected.vehicleType}
+                </span>
+
+                <span>
+                  <FaCalendarAlt size={14} />
+                  {new Date(selected.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+
+              <div className={styles.actions}>
+                <button
+                  className={styles.accept}
+                  disabled={
+                    selected.status !==
+                    DriverApplicationStatus.PENDING
+                  }
+                  onClick={() =>
+                    handleStatusChange(
+                      selected.id,
+                      DriverApplicationStatus.APPROVED
+                    )
                   }
                 >
-                  <td>{item.code}</td>
-                  <td>{item.fullName}</td>
-                  <td>{item.phone}</td>
-                  <td>{item.vehicle}</td>
-                  <td>{item.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  Aceptar
+                </button>
+
+                <button
+                  className={styles.reject}
+                  disabled={
+                    selected.status !==
+                    DriverApplicationStatus.PENDING
+                  }
+                  onClick={() =>
+                    handleStatusChange(
+                      selected.id,
+                      DriverApplicationStatus.REJECTED
+                    )
+                  }
+                >
+                  Rechazar
+                </button>
+              </div>
+            </aside>
+          )}
         </div>
-
-        {/* ===== DETALLE ===== */}
-        {selected && (
-          <aside className={styles.detailCard}>
-            <h3>{selected.fullName}</h3>
-            <p className={styles.email}>{selected.email}</p>
-
-            <div className={styles.info}>
-              <span>
-                <FaPhoneAlt size={14} />
-                {selected.phone}
-              </span>
-
-              <span>
-                <FaMotorcycle size={16} />
-                {selected.vehicle} · Placa {selected.plate}
-              </span>
-
-              <span>
-                <FaCalendarAlt size={14} />
-                Fecha de solicitud: {selected.date}
-              </span>
-            </div>
-
-            <div className={styles.actions}>
-              <button
-                className={styles.accept}
-                onClick={() => alert("Solicitud aceptada (mock)")}
-              >
-                Aceptar
-              </button>
-
-              <button
-                className={styles.reject}
-                onClick={() => alert("Solicitud rechazada (mock)")}
-              >
-                Rechazar
-              </button>
-            </div>
-          </aside>
-        )}
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
