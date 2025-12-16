@@ -7,7 +7,9 @@ import styles from "./page.module.css";
 import { mockOrders, type RiderOrder } from "../../mockOrders";
 import RouteMap, { type RouteStep } from "../../components/RouteMap";
 
+
 type RiderStage = "PENDING_PICKUP" | "ON_THE_WAY";
+
 
 type CompletedOrder = {
   id: number;
@@ -18,26 +20,45 @@ type CompletedOrder = {
   riderEarning: number;
 };
 
+function saveCompletedOrder(order: CompletedOrder) {
+  const STORAGE_KEY = "rider_completed_orders";
+
+  const prev: CompletedOrder[] = JSON.parse(
+    localStorage.getItem(STORAGE_KEY) ?? "[]"
+  );
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([order, ...prev]));
+}
+
+
+
+
+
 export default function RiderDeliveryPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const orderId = Number(params.id);
 
+  // ===============================
+  // Order
+  // ===============================
   const order: RiderOrder | undefined = useMemo(() => {
     return mockOrders.find((o) => o.id === orderId);
   }, [orderId]);
 
-  // ✅ aquí ya viene aceptado desde la lista
+  // ===============================
+  // State
+  // ===============================
   const [stage, setStage] = useState<RiderStage>("PENDING_PICKUP");
-
-  // ✅ Modal final (Entrega completada)
   const [showDoneModal, setShowDoneModal] = useState(false);
 
-  // ✅ Datos de ruta (instrucciones / distancia / tiempo)
   const [routeSteps, setRouteSteps] = useState<RouteStep[]>([]);
   const [distanceKm, setDistanceKm] = useState(0);
   const [durationMin, setDurationMin] = useState(0);
 
+  // ===============================
+  // Handlers
+  // ===============================
   const handleRoute = useCallback(
     (data: { steps: RouteStep[]; distanceKm: number; durationMin: number }) => {
       setRouteSteps(data.steps);
@@ -55,12 +76,17 @@ export default function RiderDeliveryPage() {
     );
   }
 
+  // ===============================
+  // Derived data
+  // ===============================
   const customerName = order.user?.fullName ?? "Cliente";
   const customerPhone = order.user?.phone ?? "(+591) 00000000";
 
   const storeName = order.store?.name ?? "MERKADO LITE";
-  const storeAddress1 = order.store?.location?.address1 ?? "Dirección tienda";
-  const storeAddress2 = order.store?.location?.address2 ?? "Cochabamba, Bolivia";
+  const storeAddress1 =
+    order.store?.location?.address1 ?? "Dirección tienda";
+  const storeAddress2 =
+    order.store?.location?.address2 ?? "Cochabamba, Bolivia";
 
   const customerAddress1 =
     order.customerLocation?.address1 ?? "Dirección cliente";
@@ -68,7 +94,9 @@ export default function RiderDeliveryPage() {
     order.customerLocation?.address2 ?? "Cochabamba, Bolivia";
 
   const headerLabel =
-    stage === "PENDING_PICKUP" ? "Pendiente de retiro" : "Retirado (en camino)";
+    stage === "PENDING_PICKUP"
+      ? "Pendiente de retiro"
+      : "Retirado (en camino)";
 
   const storePoint = {
     lat: order.store.location.lat,
@@ -80,31 +108,26 @@ export default function RiderDeliveryPage() {
     lng: order.customerLocation.lng,
   };
 
+  // ===============================
+  // Business actions
+  // ===============================
   const handleConfirmPickup = () => {
     setStage("ON_THE_WAY");
   };
 
-  // ✅ Ganancia (demo). Luego lo conectas a backend o cálculo real
+  // demo – luego backend
   const riderEarning = 25.0;
 
   const handleConfirmDelivery = () => {
-    const key = "rider_completed_orders";
-    const prev: CompletedOrder[] = JSON.parse(
-      localStorage.getItem(key) ?? "[]"
-    );
-
-    const completed: CompletedOrder = {
+    saveCompletedOrder({
       id: order.id,
       customerName,
       storeName,
       deliveredAt: new Date().toISOString(),
       total: order.orderTotal,
       riderEarning,
-    };
+    });
 
-    localStorage.setItem(key, JSON.stringify([completed, ...prev]));
-
-    // ✅ mostrar tarjeta final (NO navegar todavía)
     setShowDoneModal(true);
   };
 
@@ -114,7 +137,6 @@ export default function RiderDeliveryPage() {
   };
 
   const handleFinishShift = () => {
-    // demo logout: limpiar sesión mock
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("rider_active_order");
@@ -122,11 +144,17 @@ export default function RiderDeliveryPage() {
     router.push("/");
   };
 
+  // ===============================
+  // Render
+  // ===============================
   return (
     <div className={styles.wrapper}>
-      {/* TOP */}
+      {/* TOP BAR */}
       <div className={styles.topBar}>
-        <button className={styles.backBtn} onClick={() => router.push("/rider")}>
+        <button
+          className={styles.backBtn}
+          onClick={() => router.push("/rider")}
+        >
           ← Volver
         </button>
 
@@ -137,13 +165,15 @@ export default function RiderDeliveryPage() {
       </div>
 
       <div className={styles.layout}>
-        {/* LEFT */}
+        {/* LEFT COLUMN */}
         <aside className={styles.leftCol}>
-          {/* RECOGER EN */}
+          {/* PICKUP */}
           <div className={styles.card}>
             <div
               className={`${styles.cardHead} ${
-                stage === "PENDING_PICKUP" ? styles.headRed : styles.headPicked
+                stage === "PENDING_PICKUP"
+                  ? styles.headRed
+                  : styles.headPicked
               }`}
             >
               Recoger en
@@ -172,7 +202,7 @@ export default function RiderDeliveryPage() {
             </div>
           </div>
 
-          {/* ENTREGAR A */}
+          {/* DELIVERY */}
           <div className={styles.card}>
             <div className={`${styles.cardHead} ${styles.headGreen}`}>
               Entregar a
@@ -186,7 +216,10 @@ export default function RiderDeliveryPage() {
 
               <p className={styles.line}>📞 {customerPhone}</p>
 
-              <a className={styles.outlineGreen} href={`tel:${customerPhone}`}>
+              <a
+                className={styles.outlineGreen}
+                href={`tel:${customerPhone}`}
+              >
                 Llamar
               </a>
 
@@ -202,7 +235,7 @@ export default function RiderDeliveryPage() {
             </div>
           </div>
 
-          {/* DETALLES */}
+          {/* ORDER DETAILS */}
           <div className={styles.card}>
             <div className={styles.detailsHead}>Detalles del Pedido</div>
 
@@ -214,27 +247,29 @@ export default function RiderDeliveryPage() {
 
               <p className={styles.kv}>
                 <span>Fecha:</span>
-                <strong>{new Date(order.createdAt).toLocaleString()}</strong>
+                <strong>
+                  {new Date(order.createdAt).toLocaleString()}
+                </strong>
               </p>
 
               <p className={styles.kv}>
                 <span>Total:</span>
-                <strong>Bs. {order.orderTotal.toFixed(2)}</strong>
+                <strong>
+                  Bs. {order.orderTotal.toFixed(2)}
+                </strong>
               </p>
 
               <div className={styles.productsTitle}>
                 Productos ({order.items?.length ?? 0})
               </div>
 
-              {(order.items ?? []).map((item) => (
-                <div key={(item as any).id} className={styles.productRow}>
+              {(order.items ?? []).map((item: any) => (
+                <div key={item.id} className={styles.productRow}>
                   <div className={styles.productImg} />
                   <div>
-                    <div className={styles.productName}>
-                      {(item as any).name}
-                    </div>
+                    <div className={styles.productName}>{item.name}</div>
                     <div className={styles.productQty}>
-                      Cantidad: {(item as any).quantity}
+                      Cantidad: {item.quantity}
                     </div>
                   </div>
                 </div>
@@ -243,16 +278,20 @@ export default function RiderDeliveryPage() {
           </div>
         </aside>
 
-        {/* RIGHT */}
+        {/* RIGHT COLUMN */}
         <section className={styles.rightCol}>
-          {/* MAPA */}
+          {/* MAP */}
           <div className={styles.mapCard}>
             <div className={styles.mapHeader}>
               <span>Mapa de Ruta</span>
 
               <span className={styles.mapMeta}>
-                {durationMin ? `${Math.round(durationMin)} min` : ""}
-                {distanceKm ? ` • ${distanceKm.toFixed(1)} km` : ""}
+                {durationMin
+                  ? `${Math.round(durationMin)} min`
+                  : ""}
+                {distanceKm
+                  ? ` • ${distanceKm.toFixed(1)} km`
+                  : ""}
               </span>
             </div>
 
@@ -269,22 +308,26 @@ export default function RiderDeliveryPage() {
             </div>
           </div>
 
-          {/* INSTRUCCIONES */}
+          {/* INSTRUCTIONS */}
           <div className={styles.instructionsCard}>
             <div className={styles.instructionsHead}>
-              <span>Instrucciones de Ruta</span>
+              Instrucciones de Ruta
             </div>
 
             <div className={styles.stepsList}>
               {routeSteps.length === 0 ? (
-                <p className={styles.stepsEmpty}>Calculando ruta...</p>
+                <p className={styles.stepsEmpty}>
+                  Calculando ruta...
+                </p>
               ) : (
                 routeSteps.map((s, idx) => (
                   <div key={idx} className={styles.stepRow}>
                     <div className={styles.stepNum}>{idx + 1}</div>
 
                     <div className={styles.stepText}>
-                      <div className={styles.stepTitle}>{s.instruction}</div>
+                      <div className={styles.stepTitle}>
+                        {s.instruction}
+                      </div>
                       <div className={styles.stepSub}>
                         {s.distanceKm.toFixed(1)} km
                       </div>
@@ -299,7 +342,7 @@ export default function RiderDeliveryPage() {
         </section>
       </div>
 
-      {/* ✅ MODAL ENTREGA COMPLETADA */}
+      {/* DONE MODAL */}
       {showDoneModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.doneCard}>
@@ -307,7 +350,10 @@ export default function RiderDeliveryPage() {
               <div className={styles.doneIcon}>✓</div>
             </div>
 
-            <h2 className={styles.doneTitle}>¡Entrega Completada!</h2>
+            <h2 className={styles.doneTitle}>
+              ¡Entrega Completada!
+            </h2>
+
             <p className={styles.doneSub}>
               Has completado exitosamente la entrega del pedido
             </p>
@@ -317,11 +363,17 @@ export default function RiderDeliveryPage() {
               <strong>Bs. {riderEarning.toFixed(2)}</strong>
             </div>
 
-            <button className={styles.donePrimary} onClick={handleNextOrder}>
+            <button
+              className={styles.donePrimary}
+              onClick={handleNextOrder}
+            >
               Ver Siguiente Pedido
             </button>
 
-            <button className={styles.doneSecondary} onClick={handleFinishShift}>
+            <button
+              className={styles.doneSecondary}
+              onClick={handleFinishShift}
+            >
               Finalizar Turno
             </button>
           </div>
