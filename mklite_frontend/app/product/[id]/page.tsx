@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { Heart } from "lucide-react"; 
 
 import type ProductModel from "@/app/models/productCard.model";
 import { ProductService } from "@/app/services/product.service";
 import { CartItemService } from "@/app/services/cartItem.service";
+import { WishlistService } from "@/app/services/wishlist.service";
 
 export default function ProductPage() {
   const params = useParams();
@@ -18,25 +20,23 @@ export default function ProductPage() {
   const [related, setRelated] = useState<ProductModel[]>([]);
   const [quantity, setQuantity] = useState(1);
 
-  // =========================================================
-  // 🔥 USER ID REAL DEL LOCALSTORAGE
-  // =========================================================
+  // Estados para Wishlist
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistId, setWishlistId] = useState<number | null>(null);
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
+
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (!stored) return;
-
     const parsed = JSON.parse(stored);
     setUserId(parsed.id);
   }, []);
 
-  // =========================================================
   // 1) Cargar producto principal
-  // =========================================================
   useEffect(() => {
     if (!productId) return;
-
     const loadProduct = async () => {
       try {
         const data = await ProductService.getById(productId);
@@ -45,40 +45,51 @@ export default function ProductPage() {
         console.error("❌ Error cargando producto:", error);
       }
     };
-
     loadProduct();
   }, [productId]);
 
-  // =========================================================
-  // 2) Cargar productos relacionados por categoría
-  // =========================================================
+  // 2) Cargar productos relacionados
   useEffect(() => {
     const loadRelated = async () => {
       if (!product?.category?.id) return;
-
       const all = await ProductService.getAll();
       const filtered = all.filter(
         (p) => p.category?.id === product.category?.id && p.id !== product.id
       );
-
       setRelated(filtered);
     };
-
     loadRelated();
   }, [product]);
 
-  // =========================================================
-  // 3) Agregar al carrito (con validación de login)
-  // =========================================================
+  // 3) Verificar si está en Wishlist
+  useEffect(() => {
+    if (!userId || !productId) return;
+
+    const checkWishlist = async () => {
+      try {
+        const item = await WishlistService.checkProduct(userId, productId);
+        if (item) {
+          setIsWishlisted(true);
+          setWishlistId(item.id);
+        } else {
+          setIsWishlisted(false);
+          setWishlistId(null);
+        }
+      } catch (error) {
+        console.error("Error verificando wishlist", error);
+      }
+    };
+    checkWishlist();
+  }, [userId, productId]);
+
+  // Handlers
   const handleAddToCart = async () => {
     if (!product) return;
-
     if (!userId) {
       alert("Debes iniciar sesión para agregar al carrito.");
       router.push("/login");
       return;
     }
-
     try {
       await CartItemService.addToCart(userId, product.id, quantity);
       alert("Producto agregado al carrito");
@@ -88,15 +99,37 @@ export default function ProductPage() {
     }
   };
 
-  // =========================================================
-  // Render
-  // =========================================================
-  if (!product)
-    return <p style={{ padding: 30 }}>Cargando producto...</p>;
+  const handleToggleWishlist = async () => {
+    if (!userId) {
+      alert("Inicia sesión para guardar en favoritos");
+      return;
+    }
+    if (!product) return;
+
+    setLoadingWishlist(true);
+    try {
+      if (isWishlisted && wishlistId) {
+        await WishlistService.remove(wishlistId);
+        setIsWishlisted(false);
+        setWishlistId(null);
+      } else {
+        const newItem = await WishlistService.add(userId, product.id);
+        setIsWishlisted(true);
+        setWishlistId(newItem.id);
+      }
+    } catch (error) {
+      console.error("Error actualizando wishlist", error);
+    } finally {
+      setLoadingWishlist(false);
+    }
+  };
+
+  if (!product) return <p style={{ padding: 30 }}>Cargando producto...</p>;
 
   return (
     <div className={styles["product-page"]}>
       <main className={styles["main-content"]}>
+        
         {/* Imagen */}
         <div className={styles["product-image"]}>
           <img
@@ -107,6 +140,7 @@ export default function ProductPage() {
 
         {/* Info */}
         <div className={styles["product-info"]}>
+          
           <h2>{product?.name}</h2>
 
           <p className={styles.price}>
@@ -122,9 +156,7 @@ export default function ProductPage() {
             >
               −
             </button>
-
             <span>{quantity}</span>
-
             <button onClick={() => setQuantity((q) => q + 1)}>+</button>
 
             <button
@@ -133,15 +165,26 @@ export default function ProductPage() {
             >
               🛒 Agregar al carrito
             </button>
+
+            {/* BOTÓN DE FAVORITOS MOVIDO AQUÍ */}
+            <button 
+                className={styles["wishlist-btn"]} 
+                onClick={handleToggleWishlist}
+                disabled={loadingWishlist}
+                title={isWishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}
+            >
+              <Heart 
+                size={28} 
+                fill={isWishlisted ? "#e30613" : "none"} 
+                color={isWishlisted ? "#e30613" : "#ccc"} 
+                strokeWidth={2}
+              />
+            </button>
           </div>
 
           <div className={styles.details}>
-            <p>
-              <strong>Tipo:</strong> {product?.unitOfMeasure ?? "Unidad"}
-            </p>
-            <p>
-              <strong>Stock:</strong> {product?.physicalStock ?? "—"}
-            </p>
+            <p><strong>Tipo:</strong> {product?.unitOfMeasure ?? "Unidad"}</p>
+            <p><strong>Stock:</strong> {product?.physicalStock ?? "—"}</p>
           </div>
         </div>
 
@@ -159,10 +202,8 @@ export default function ProductPage() {
       {/* Productos Relacionados */}
       <section className={styles["related-products"]}>
         <h3>Productos Relacionados</h3>
-
         <div className={styles["related-grid"]}>
           {related.length === 0 && <p>No hay productos relacionados.</p>}
-
           {related.map((p) => (
             <div key={p.id} className={styles["related-card"]}>
               <Link href={`/product/${p.id}`}>

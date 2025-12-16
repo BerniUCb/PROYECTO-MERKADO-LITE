@@ -164,12 +164,15 @@
 
 /* --- SECCIÓN DERECHA: DETALLES --- */
 .detailSection {
-  flex: 1; /* Ocupa menos espacio */
   background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-radius: 15px;
+  /* Sombra más oscura (0.1) y mejor distribuida */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  /* Opcional: Un borde muy sutil ayuda mucho al contraste en fondos claros */
+  border: 1px solid rgba(0,0,0,0.05);
   min-width: 300px;
   position: sticky;
   top: 20px;
@@ -239,7 +242,7 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.8rem;
-  border: 1px solid #f0f0f0;
+  border: 1.5px solid #f0f0f0;
   border-radius: 8px;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;

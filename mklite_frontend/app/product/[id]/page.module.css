@@ -27,36 +27,12 @@
 
 .product-image img {
   width: 100%;
-  max-width: 400px; /* 👈 limita el tamaño máximo de la imagen */
+  max-width: 400px;
   height: auto;
   border-radius: 12px;
-  object-fit: contain; /* 👈 mantiene proporción sin recortar */
-  
+  object-fit: contain;
   margin: 0 auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-/* MINIATURAS */
-.thumbnail-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-.thumbnail-row img {
-  width: 70px;
-  height: 70px;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  object-fit: cover;
-  transition: 0.3s;
-}
-
-.thumbnail-row img:hover {
-  border-color: #f40009;
 }
 
 /* === INFO DEL PRODUCTO === */
@@ -70,6 +46,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
+  line-height: 1.2;
 }
 
 .price {
@@ -84,33 +61,11 @@
   font-size: 0.95rem;
 }
 
-/* PESOS */
-.weights {
-  display: flex;
-  gap: 10px;
-}
-
-.weight-btn {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 8px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.weight-btn.active,
-.weight-btn:hover {
-  border-color: #f40009;
-  color: #f40009;
-}
-
-/* CANTIDAD Y BOTÓN */
+/* CONTROLES CANTIDAD Y BOTONES */
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 15px; /* Espaciado entre botones */
   margin-top: 15px;
 }
 
@@ -133,6 +88,32 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+}
+
+/* BOTÓN WISHLIST */
+.wishlist-btn {
+  background: none !important; /* Sobrescribir background genérico de botones */
+  border: 1px solid #eee !important; /* Borde suave opcional */
+  cursor: pointer;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  transition: transform 0.2s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; /* Tamaño fijo para círculo */
+  height: 44px;
+}
+
+.wishlist-btn:hover {
+  background-color: #fff0f0 !important;
+  transform: scale(1.1);
+  border-color: #ffdce0 !important;
+}
+
+.wishlist-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
 
 /* DETALLES DEL PRODUCTO */
@@ -190,7 +171,6 @@
 }
 
 .related-products h3 {
-  font-size: 1.3rem;
   margin-bottom: 25px;
   font-size: 1.5rem;
   font-weight: 600;

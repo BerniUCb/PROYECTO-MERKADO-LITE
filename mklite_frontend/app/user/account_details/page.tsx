@@ -1,25 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Para redirigir si no hay sesión
 import styles from "./page.module.css";
 import { UserService } from "@/app/services/user.service";
 import UserSidebar from "@/app/components/UserSidebar";
+import type User from "@/app/models/user.model"; // Importamos el modelo correcto
 
 export default function AccountDetailsPage() {
-  const userId = 1; // temporal hasta login
-
-  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+  
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    UserService.getById(userId).then((data) => setUser(data));
-  }, []);
+    // 1. Obtener el usuario guardado en localStorage
+    const storedUser = localStorage.getItem("user");
+    
+    if (!storedUser) {
+      // Si no hay sesión, redirigir al login
+      router.push("/login");
+      return;
+    }
 
-  if (!user) return <p>Cargando...</p>;
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      const userId = parsedUser.id;
+
+      if (userId) {
+        // 2. Obtener datos frescos del backend usando el ID real
+        UserService.getById(userId)
+          .then((data) => {
+            setUser(data);
+          })
+          .catch((err) => {
+            console.error("Error cargando usuario:", err);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    } catch (error) {
+      console.error("Error al leer sesión:", error);
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) return <p style={{padding: "2rem", textAlign: "center"}}>Cargando perfil...</p>;
+  if (!user) return <p style={{padding: "2rem", textAlign: "center"}}>No se encontraron datos del usuario.</p>;
 
   return (
-    <main className={styles.wrapper}>
-      {/* Sidebar */}
-      {/* <UserSidebar /> */}
+    <div className={styles.wrapper}>
+      {/* Sidebar (Descomentar cuando lo integres) */}
+      {/*<UserSidebar /> */}
 
       {/* Contenido derecha */}
       <div className={styles.container}>
@@ -48,7 +81,16 @@ export default function AccountDetailsPage() {
             <p className={styles.value}>{user.email}</p>
           </div>
         </div>
+        
+        {/* Rol (Opcional, útil para debug) */}
+         <div className={styles.row}>
+          <div>
+            <p className={styles.label}>Tipo de Cuenta</p>
+            <p className={styles.value} style={{textTransform: 'capitalize'}}>{user.role}</p>
+          </div>
+        </div>
+
       </div>
-    </main>
+    </div>
   );
 }
