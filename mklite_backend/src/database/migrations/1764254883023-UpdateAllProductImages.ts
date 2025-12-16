@@ -26,7 +26,7 @@ export class UpdateAllProductImages1764254883023 implements MigrationInterface {
             'Queso Edam Pil': 'https://amarket.com.bo/cdn/shop/files/7772905001262_150x150_crop_center.jpg?v=1712343849',
             'Queso Mozzarella': 'https://amarket.com.bo/cdn/shop/files/9000445_150x150_crop_center.jpg?v=1712346131',
             'Queso Crema Pil': 'https://pilandina.com.bo/wp-content/uploads/2022/10/producto-nuevo-crema-bonle-300x300.png',
-            'Leche Condensada Nestlé': '',
+            'Leche Condensada Nestlé': 'https://amarket.com.bo/cdn/shop/files/7771257660349_647x647.jpg?v=1712345254',
             'Leche Evaporada Gloria': 'https://amarket.com.bo/cdn/shop/files/8716200458719_150x150_crop_center.jpg?v=1712343945',
             'Crema de Leche Pil': 'https://amarket.com.bo/cdn/shop/files/7501001600426_443x443.jpg?v=1712344298',
             'Dulce de Leche Pil': 'https://amarket.com.bo/cdn/shop/files/7772905000029_443x443.jpg?v=1712344706',
