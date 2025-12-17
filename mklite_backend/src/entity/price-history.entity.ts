@@ -17,7 +17,6 @@ export class PriceHistory {
     changedAt: Date; 
 
     @ManyToOne(() => Product, (product) => product.priceHistory, { nullable: false, onDelete: 'CASCADE' }) 
-    @ManyToOne(() => Product, (product) => product.priceHistory, { nullable: false, onDelete: 'CASCADE' }) // <-- Relación inversa será 'product.priceHistory'
     @JoinColumn({ name: 'product_id' })
     product: Product; 
 

@@ -1,0 +1,151 @@
+.pinWrap {
+  position: relative;
+  pointer-events: none;
+
+  /* nitidez */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Punto base (ancla real EXACTA) */
+.ring {
+  position: absolute;
+  left: 50%;
+  bottom: 0;                 /* 🔴 el punto real */
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+
+  box-shadow: 0 10px 20px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10);
+  outline: 1px solid rgba(15,23,42,.10);
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #0f172a;
+  opacity: .95;
+}
+
+/* Halo suave (sin blur agresivo ni borrosidad) */
+.halo {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 35%); /* 🔧 un poco menos que 40% */
+  width: 24px;                     /* 🔧 ligeramente más compacto */
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.10);
+  z-index: 0;
+}
+
+/* Burbuja pegada correctamente al punto */
+.bubble {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;             /* 🔧 alineada mejor con el ring */
+  transform: translateX(-50%) translateZ(0);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 10px;
+  border-radius: 12px;
+
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(15,23,42,.08);
+
+  box-shadow: 0 14px 28px rgba(0,0,0,.12), 0 6px 14px rgba(0,0,0,.08);
+
+  white-space: nowrap;
+  z-index: 3;
+  will-change: transform;
+}
+
+/* Flecha apuntando exactamente al punto */
+.bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;             /* 🔧 más pegada */
+  transform: translateX(-50%) rotate(45deg);
+  width: 9px;
+  height: 9px;
+  background: rgba(255,255,255,.96);
+  border-right: 1px solid rgba(15,23,42,.08);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+/* Iconito */
+.iconPill {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(15,23,42,.06);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.iconDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #0f172a;
+  opacity: .9;
+}
+
+.textPad {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.15;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: rgba(15,23,42,.55);
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(15,23,42,.92);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .bubble {
+    padding: 6px 9px;
+    border-radius: 11px;
+    bottom: 16px;           /* 🔧 consistente en móvil */
+  }
+
+  .iconPill {
+    width: 20px;
+    height: 20px;
+  }
+
+  .label {
+    font-size: 9px;
+  }
+
+  .title {
+    font-size: 11.5px;
+    max-width: 140px;
+  }
+}

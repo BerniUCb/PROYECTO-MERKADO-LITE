@@ -1,17 +1,40 @@
-// src/shipment/shipment.controller.ts
-
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpCode,HttpStatus} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
-import { AssignShipmentDto } from './dto/assign-shipment.dto'; 
-import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto'; 
+import { AssignShipmentDto } from './dto/assign-shipment.dto';
+import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto';
 
-@Controller('shipments') // Plural por convención REST
+@Controller('shipments')
 export class ShipmentController {
   constructor(private readonly shipmentService: ShipmentService) {}
 
-  // ---------------- CRUD BÁSICO ----------------
+  // ---------------- Rider Endpoints (poner antes de :id) ----------------
+
+  /** Shipments disponibles para riders */
+  @Get('available')
+  findAvailable() {
+    return this.shipmentService.findAvailable();
+  }
+
+  /** Shipments asignados a un rider (activos + historial) */
+  @Get('by-driver/:driverId')
+  findByDriver(@Param('driverId', ParseIntPipe) driverId: number) {
+    return this.shipmentService.findByDriver(driverId);
+  }
+
+  // ---------------- CRUD ----------------
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -24,24 +47,19 @@ export class ShipmentController {
     return this.shipmentService.findAll();
   }
 
-  
-  
-  // ---------------- MÉTODO ADICIONAL ----------------
-
-  /**
-   * Asigna un repartidor y opcionalmente actualiza el estado.
-   * E.g.: PATCH /shipments/123/assign
-   */
+  /** Asignar rider y opcionalmente actualizar estado */
   @Patch(':id/assign')
-  assignDriver(@Param('id', ParseIntPipe) id: number, @Body() assignDto: AssignShipmentDto,) {
+  assignDriver(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() assignDto: AssignShipmentDto,
+  ) {
     return this.shipmentService.assignDriverAndUpdateStatus(
-        id, 
-        assignDto.driverId, 
-        assignDto.status
+      id,
+      assignDto.driverId,
+      assignDto.status,
     );
   }
 
-  //FUNADOS
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.shipmentService.findOne(id);
@@ -55,14 +73,15 @@ export class ShipmentController {
     return this.shipmentService.update(id, updateShipmentDto);
   }
 
-  @Patch(':id/status') // Ruta limpia y descriptiva
+  /** Actualizar estado (retiro / entrega) */
+  @Patch(':id/status')
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateStatusDto: UpdateShipmentStatusDto, // <-- Solo esperamos el estado
+    @Body() updateStatusDto: UpdateShipmentStatusDto,
   ) {
     return this.shipmentService.updateStatus(id, updateStatusDto.status);
   }
-  
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
