@@ -1,65 +1,101 @@
 .showcase {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 30px 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 25px;
 }
 
-.title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #9c1313;
+.mainTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 25px;
   border-bottom: 2px solid #e74c3c;
   display: inline-block;
-  margin-bottom: 15px;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
 
+/* Columnas */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+/* Lista */
 .productList {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* Item */
 .productItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
+/* Imagen */
 .image {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid #eee;
 }
 
-.name {
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 4px;
+/* Info */
+.info {
+  flex: 1;
 }
 
-.prices {
+.name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+/* Precio + botón */
+.pricesRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .price {
   color: #e74c3c;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
 }
 
-.oldPrice {
-  text-decoration: line-through;
-  color: #999;
-  font-size: 0.85rem;
+/* Botón agregar */
+.addButton {
+  background: #ffffff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
+.addButton:hover {
+  background: #a81c0c;
+}
 
+.addButton:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
