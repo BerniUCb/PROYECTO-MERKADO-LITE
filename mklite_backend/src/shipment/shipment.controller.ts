@@ -63,7 +63,7 @@ getDriverHistory(
     query.page,
     query.limit,
 );
-}
+} 
   
   // ---------------- MÉTODO ADICIONAL ----------------
 
