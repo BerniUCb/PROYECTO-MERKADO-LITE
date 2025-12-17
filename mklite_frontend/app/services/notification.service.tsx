@@ -1,5 +1,5 @@
-// src/app/services/notification.service.tsx
 import Notification, { NotificationType } from "../models/notification.model";
+
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/notifications`;
 
 class NotificationService {
@@ -50,34 +50,36 @@ class NotificationService {
 
     return res.json();
   }
+
   // ⭐ Obtener todas las notificaciones del REPARTIDOR
-async getDriverNotifications(): Promise<Notification[]> {
-  const res = await fetch(`${API_URL}/all-by-role?role=DeliveryDriver`, {
-    method: "GET",
-    cache: "no-cache",
-  });
+  async getDriverNotifications(): Promise<Notification[]> {
+    const res = await fetch(`${API_URL}/all-by-role?role=DeliveryDriver`, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
-  if (!res.ok)
-    throw new Error("Error al obtener notificaciones del repartidor");
+    if (!res.ok)
+      throw new Error("Error al obtener notificaciones del repartidor");
 
-  return res.json();
-}
+    return res.json();
+  }
 
-// ⭐ Obtener no leídas del REPARTIDOR
-async getUnreadDriverNotifications(): Promise<Notification[]> {
-  const res = await fetch(`${API_URL}/unread-by-role?role=DeliveryDriver`, {
-    method: "GET",
-    cache: "no-cache",
-  });
+  // ⭐ Obtener no leídas del REPARTIDOR
+  async getUnreadDriverNotifications(): Promise<Notification[]> {
+    const res = await fetch(`${API_URL}/unread-by-role?role=DeliveryDriver`, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
-  if (!res.ok)
-    throw new Error("Error al obtener notificaciones no leídas del repartidor");
+    if (!res.ok)
+      throw new Error(
+        "Error al obtener notificaciones no leídas del repartidor"
+      );
 
-  return res.json();
-}
+    return res.json();
+  }
 
-
-  // ⭐ Obtener por TIPO (order, promos, inventario, etc.)
+  // ⭐ Obtener por TIPO
   async getByType(type: NotificationType): Promise<Notification[]> {
     const res = await fetch(`${API_URL}/by-type?type=${type}`, {
       method: "GET",
@@ -105,6 +107,38 @@ async getUnreadDriverNotifications(): Promise<Notification[]> {
     });
 
     if (!res.ok) throw new Error("Error al eliminar notificación");
+  }
+
+  // ===============================
+  // 🔽 NUEVO (NO ROMPE NADA)
+  // ===============================
+
+  // 🔹 Obtener notificaciones por usuario
+  async getByUser(userId: number): Promise<Notification[]> {
+    const res = await fetch(`${API_URL}/user/${userId}`, {
+      method: "GET",
+      cache: "no-cache",
+    });
+
+    if (!res.ok)
+      throw new Error("Error al obtener notificaciones del usuario");
+
+    return res.json();
+  }
+
+  // 🔹 Resolver ruta para "Ver detalles"
+  getNotificationTarget(notification: Notification): string | null {
+    if (!notification.relatedEntityId) return null;
+
+    switch (notification.type) {
+      case "ORDER_RECEIVED":
+      case "ORDER_SHIPPED":
+      case "ORDER_DELIVERED":
+        return `/orders/${notification.relatedEntityId}`;
+
+      default:
+        return null;
+    }
   }
 }
 

@@ -18,7 +18,8 @@ export default interface Shipment {
   assignedAt?: string;
   estimatedDelivery?: string;
   deliveredAt?: string;
-  deliveryAddress: AddressModel;
+
   order: Order;
+  deliveryAddress: AddressModel;
   deliveryDriver?: User;
 }
