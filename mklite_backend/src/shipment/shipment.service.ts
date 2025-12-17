@@ -79,9 +79,48 @@ export class ShipmentService {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // CRUD
-  // ---------------------------------------------------------------------------
+
+  async getDriverDeliveryHistory(
+  driverId: number,
+  page = 1,
+  limit = 10,
+) {
+  // Validar que el repartidor exista y sea DeliveryDriver
+  const driver = await this.userRepository.findOne({
+    where: { id: driverId, role: 'DeliveryDriver' },
+  });
+
+  if (!driver) {
+    throw new NotFoundException(`Driver with ID ${driverId} not found.`);
+
+  }
+
+  const [shipments, total] = await this.shipmentRepository.findAndCount({
+    where: {
+      deliveryDriver: { id: driverId },
+      status: 'delivered',
+    },
+    relations: [
+      'order',
+      'order.items',
+      'order.items.product',
+      'deliveryAddress',
+    ],
+    order: {
+      deliveredAt: 'DESC',
+    },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  return {
+    total,
+    page,
+    limit,
+    data: shipments,
+  };
+}
+  // ---------------- CRUD BÁSICO ----------------
 
   async create(createShipmentDto: CreateShipmentDto): Promise<Shipment> {
     await this.validateShipmentRelations(createShipmentDto);

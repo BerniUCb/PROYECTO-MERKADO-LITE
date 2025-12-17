@@ -13,8 +13,10 @@ import {
 import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
-import { AssignShipmentDto } from './dto/assign-shipment.dto';
-import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto';
+import { AssignShipmentDto } from './dto/assign-shipment.dto'; 
+import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto'; 
+import { Query } from '@nestjs/common';
+import { DriverHistoryQueryDto } from './dto/driver-history-query.dto';
 
 @Controller('shipments')
 export class ShipmentController {
@@ -47,7 +49,28 @@ export class ShipmentController {
     return this.shipmentService.findAll();
   }
 
-  /** Asignar rider y opcionalmente actualizar estado */
+  /**
+ * Historial de pedidos ENTREGADOS por un repartidor
+ * GET /shipments/driver/:driverId/history
+ */
+@Get('driver/:driverId/history')
+getDriverHistory(
+  @Param('driverId', ParseIntPipe) driverId: number,
+  @Query() query: DriverHistoryQueryDto,
+) {
+  return this.shipmentService.getDriverDeliveryHistory(
+    driverId,
+    query.page,
+    query.limit,
+);
+}
+  
+  // ---------------- MÉTODO ADICIONAL ----------------
+
+  /**
+   * Asigna un repartidor y opcionalmente actualiza el estado.
+   * E.g.: PATCH /shipments/123/assign
+   */
   @Patch(':id/assign')
   assignDriver(
     @Param('id', ParseIntPipe) id: number,
