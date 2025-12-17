@@ -10,3 +10,19 @@
   padding: 40px 48px;
   background: #f9f9f9;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  display: flex;
+}
+
+.page {
+  flex: 1;
+  padding: 24px;
+}
+

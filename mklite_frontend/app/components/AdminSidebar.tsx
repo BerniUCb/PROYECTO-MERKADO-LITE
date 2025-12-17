@@ -18,6 +18,19 @@ const mainItems: AdminMenuItem[] = [
   { label: "Clientes", href: "/admin/customers", icon: "/admin-menu/customers.svg" },
   { label: "Ventas en tienda", href: "/admin/sellings", icon: "/admin-menu/ventaEnTienda.svg" },
   { label: "Repartidores", href: "/admin/riders", icon: "/admin-menu/repartidores.svg" },
+
+  // ✅ NUEVOS
+  {
+    label: "Solicitud Repartidores",
+    href: "/admin/driverApplications",
+    icon: "/admin-menu/SolicitudRepartidores.svg",
+  },
+  {
+    label: "Atención al Cliente",
+    href: "/admin/customerSupport",
+    icon: "/admin-menu/AtencionCliente.svg",
+  },
+
   { label: "Gestión de usuarios", href: "/admin/userDetail", icon: "/admin-menu/gestiondeUsuarios.svg" },
   { label: "Categorias", href: "/admin/categories", icon: "/admin-menu/categories.svg" },
 ];
@@ -34,12 +47,15 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const isActiveRoute = (href: string) => {
+    const isRootAdmin = href === "/admin";
+    return isRootAdmin
+      ? pathname === "/admin" || pathname === "/admin/"
+      : pathname === href || pathname.startsWith(href + "/");
+  };
+
   const renderItem = (item: AdminMenuItem) => {
-    const isRootAdmin = item.href === "/admin";
-    const isActive =
-      isRootAdmin
-        ? pathname === "/admin" || pathname === "/admin/"
-        : pathname === item.href || pathname.startsWith(item.href + "/");
+    const isActive = isActiveRoute(item.href);
 
     return (
       <li key={item.href} className={isActive ? styles.itemActive : styles.item}>

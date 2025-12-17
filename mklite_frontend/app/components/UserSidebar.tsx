@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import styles from "./UserSidebar.module.css";
 
 type UserSidebarProps = {
@@ -21,10 +21,16 @@ const menuItems = [
   { label: "Centro de Soporte", href: "/user/support-center", icon: "/user-menu/support.svg" },
 ];
 
-export default function UserSidebar({
-  userName = "Pepe",
-}: UserSidebarProps) {
+export default function UserSidebar({ userName = "Pepe" }: UserSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    router.push("/login");
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -37,16 +43,31 @@ export default function UserSidebar({
           const isActive = pathname.startsWith(item.href);
 
           return (
-            <li key={item.href} className={isActive ? styles.active : styles.item}>
+            <li
+              key={item.href}
+              className={`${styles.item} ${isActive ? styles.active : ""}`}
+            >
               <Link href={item.href} className={styles.link}>
-                <Image src={item.icon} alt={item.label} width={20} height={20} />
-                <span>{item.label}</span>
-
+                <span className={styles.icon}>
+                  <Image src={item.icon} alt={item.label} width={20} height={20} />
+                </span>
+                <span className={styles.label}>{item.label}</span>
               </Link>
             </li>
           );
         })}
       </ul>
+
+      <button
+        type="button"
+        className={styles.logoutButton}
+        onClick={handleLogout}
+      >
+        <span className={styles.icon}>
+          <Image src="/user-menu/logOut.svg" alt="Cerrar sesión" width={20} height={20} />
+        </span>
+        <span className={styles.logoutLabel}>Cerrar sesión</span>
+      </button>
     </aside>
   );
 }

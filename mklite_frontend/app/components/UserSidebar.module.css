@@ -3,15 +3,14 @@
 /* ========================================================= */
 
 .sidebar {
-  width: 260px;
+  width: 270px;
   background: #ffffff;
-  border-radius: 16px;
-  padding: 22px 20px;
+  border-radius: 18px;
+  padding: 18px;
 
-  /* SOMBRA BONITA */
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.06);
 
-  /* ESPACIADO RESPECTO AL BORDE IZQUIERDO */
   margin-left: 32px;
   margin-top: 20px;
 
@@ -24,13 +23,16 @@
 /* ========================================================= */
 
 .header {
-  margin-bottom: 20px;
+  padding: 8px 8px 14px 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .userName {
-  font-size: 17px;
-  font-weight: 700;
-  color: #222222;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: 0.2px;
 }
 
 /* ========================================================= */
@@ -38,43 +40,67 @@
 /* ========================================================= */
 
 .menu {
-  margin-bottom: 20px;
-}
-
-.list {
   list-style: none;
-  margin: 0;
+  margin: 10px 0 0 0;
   padding: 0;
+  display: grid;
+  gap: 6px;
 }
 
-.item,
-.itemActive {
-  margin-bottom: 14px;
+.item {
+  border-radius: 14px;
 }
 
 .link {
   display: flex;
   align-items: center;
   gap: 12px;
+
+  padding: 10px 10px;
+  border-radius: 14px;
+
   text-decoration: none;
-  font-size: 15px;
-  color: #9c9c9c;
-  transition: color 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #6b7280;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .link:hover {
+  background: rgba(227, 6, 19, 0.08);
   color: #e30613;
 }
 
-.iconWrapper img {
-  width: 20px;
-  height: 20px;
+.link:active {
+  transform: scale(0.99);
 }
 
-/* ACTIVO → rojo y negrita */
-.itemActive .link {
+.icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.label {
+  line-height: 1.1;
+}
+
+/* ACTIVO */
+.active .link {
+  background: rgba(227, 6, 19, 0.12);
   color: #e30613;
-  font-weight: 600;
+}
+
+.active .icon {
+  background: rgba(227, 6, 19, 0.12);
+  border-color: rgba(227, 6, 19, 0.22);
 }
 
 /* ========================================================= */
@@ -82,36 +108,40 @@
 /* ========================================================= */
 
 .logoutButton {
-  margin-top: auto;
+  margin-top: 16px;
   width: 100%;
-  padding: 12px;
 
-  border: none;
-  border-radius: 12px;
+  padding: 11px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
 
-  background: #f7f6f6;
-  color: #333;
+  background: #fafafa;
+  color: #111827;
 
   display: flex;
   align-items: center;
   gap: 12px;
 
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .logoutButton:hover {
-  background: #ecebeb;
+  background: #f3f4f6;
+}
+
+.logoutButton:active {
+  transform: scale(0.99);
 }
 
 .logoutLabel {
-  color: #333;
+  color: #111827;
 }
 
 /* ========================================================= */
-/*                  RESPONSIVE OPCIONAL                       */
+/*                  RESPONSIVE                               */
 /* ========================================================= */
 
 @media (max-width: 900px) {
