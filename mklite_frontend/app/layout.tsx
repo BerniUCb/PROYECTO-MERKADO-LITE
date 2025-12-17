@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 
-import LayoutShell from "./components/LayoutShell"; 
+import RootChrome from "./components/RootChrome";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -14,18 +14,11 @@ export const metadata: Metadata = {
   description: "Tu mercado de confianza",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body className={quicksand.className}>
-        {/* Aquí vuelve tu sistema de headers/footers */}
-        <LayoutShell>
-          {children}
-        </LayoutShell>
+        <RootChrome>{children}</RootChrome>
       </body>
     </html>
   );

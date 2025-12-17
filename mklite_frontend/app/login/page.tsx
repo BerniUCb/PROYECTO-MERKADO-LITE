@@ -56,6 +56,12 @@ export default function LoginPage() {
         return;
       }
 
+      if (role === "deliverydriver") {
+        router.push("/rider");
+        return;
+      }
+      
+
       router.push("/home");
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al iniciar sesión");

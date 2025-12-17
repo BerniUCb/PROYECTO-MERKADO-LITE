@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { CartItemService } from "@/app/services/cartItem.service";
+import { AddressService } from "@/app/services/address.service";
+import { OrderService } from "@/app/services/order.service";
+import UserSidebar from "../components/UserSidebar";
 
-// MODALES
 import AddressEmpty from "./components/AddressEmpty";
-import AddressForm from "./components/AddressForm";
 import AddressList from "./components/AddressList";
 import AddressConfirm from "./components/AddressConfirm";
 
 import type AddressModel from "@/app/models/address.model";
-import UserSidebar from "../components/UserSidebar";
 
 type ProductRow = {
   id: number;
@@ -23,253 +24,170 @@ type ProductRow = {
 };
 
 export default function CarPage() {
-  // userId REAL
-  const [userId, setUserId] = useState<number>(0);
+  const router = useRouter();
 
+  const [userId, setUserId] = useState<number>(0);
   const [products, setProducts] = useState<ProductRow[]>([]);
+  const [addresses, setAddresses] = useState<AddressModel[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<AddressModel | null>(null);
+
   const [shipping, setShipping] = useState(0);
 
-  // Modales
   const [showEmpty, setShowEmpty] = useState(false);
-  const [showForm, setShowForm] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [addressList, setAddressList] = useState<AddressModel[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<AddressModel | null>(null);
-
-  // ============================================================
-  // 1) OBTENER USER DESDE LOCALSTORAGE
-  // ============================================================
+  // ================= USER =================
   useEffect(() => {
     const stored = localStorage.getItem("user");
-
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setUserId(parsed.id); // SIEMPRE será número → NO null
-    }
+    if (!stored) return;
+    setUserId(JSON.parse(stored).id);
   }, []);
 
-  // ============================================================
-  // 2) CARGAR CARRITO CUANDO userId YA ESTÁ LISTO
-  // ============================================================
+  // ================= CARRITO =================
   useEffect(() => {
-    if (!userId) return; // si userId == 0, aún no está listo.
+    if (!userId) return;
 
-    async function load() {
+    async function loadCart() {
       const cart = await CartItemService.getCartByUser(userId);
-
-      const mapped = cart.map((item) => ({
-        id: item.id,
-        productId: item.product.id,
-        name: item.product.name,
-        price: Number(item.product.salePrice),
-        qty: item.quantity,
-        img: item.product.imageUrl || "/img/default.png",
-      }));
-
-      setProducts(mapped);
+      setProducts(
+        cart.map((item) => ({
+          id: item.id,
+          productId: item.product.id,
+          name: item.product.name,
+          price: Number(item.product.salePrice),
+          qty: item.quantity,
+          img: item.product.imageUrl || "/img/default.png",
+        }))
+      );
     }
 
-    load();
+    loadCart();
   }, [userId]);
 
-  // ============================================================
-  // CAMBIAR CANTIDAD
-  // ============================================================
-  const changeQty = async (id: number, delta: number) => {
-    const item = products.find((p) => p.id === id);
-    if (!item) return;
-
-    const newQty = Math.max(1, item.qty + delta);
-
-    await CartItemService.updateQuantityById(id, newQty);
-
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, qty: newQty } : p))
-    );
-  };
-
-  // ============================================================
-  // ELIMINAR PRODUCTO
-  // ============================================================
-  const removeProduct = async (id: number) => {
-    await CartItemService.deleteById(id);
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  // TOTAL
-  const subtotal = products.reduce((sum, p) => sum + p.price * p.qty, 0);
+  const subtotal = products.reduce((s, p) => s + p.price * p.qty, 0);
   const total = subtotal + shipping;
 
-  // ============================================================
-  // MOSTRAR ANTES DE CARGAR USER
-  // ============================================================
-  if (userId === 0) return <p>Cargando carrito...</p>;
+  // ================= DIRECCIONES =================
+  const loadAddresses = async () => {
+    const data = await AddressService.getAll(userId);
+    setAddresses(data);
+    data.length === 0 ? setShowEmpty(true) : setShowList(true);
+  };
 
-return (
-  <div className={styles.layoutWrapper}>
-    
-    {/* SIDEBAR */}
-    <UserSidebar />
+  // ================= CONFIRMAR PEDIDO =================
+  const confirmOrder = async () => {
+    if (!selectedAddress) return;
 
-    {/* CONTENIDO PRINCIPAL */}
-    <div className={styles.mainWrapper}>
-      <main className={styles.page}>
-        <div className={styles.container}>
-          
-          {/* CARRITO */}
-          <section className={styles.cartBox}>
-            <div className={styles.header}>
-              <h1>Tu Carrito</h1>
-              <p>Hay {products.length} productos en tu carrito!</p>
+    const order = await OrderService.create({
+      user_id: userId,
+      paymentMethod: "cash",
+      status: "pending",
+      items: products.map((p) => ({
+        productId: p.productId,
+        quantity: p.qty,
+      })),
+    });
 
-              <button
-                className={styles.clear}
-                onClick={() => setProducts([])}
-              >
-                Limpiar Carrito
-              </button>
-            </div>
+    // 🔥 VACIAR CARRITO DESPUÉS DE CONFIRMAR
+    await Promise.all(
+      products.map((p) => CartItemService.deleteById(p.id))
+    );
 
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio U.</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
+    router.push(`/user/confirmation?orderId=${order.id}`);
+  };
 
-              <tbody>
-                {products.map((p) => (
-                  <tr key={p.id}>
-                    <td className={styles.productCell}>
-                      <img src={p.img} alt={p.name} />
-                      <div>
-                        <p>{p.name}</p>
-                        <button onClick={() => removeProduct(p.id)}>
-                          × Eliminar
-                        </button>
-                      </div>
-                    </td>
+  if (!userId) return <p>Cargando...</p>;
 
-                    <td className={styles.qtyCell}>
-                      <button onClick={() => changeQty(p.id, -1)}>-</button>
-                      <span>{p.qty}</span>
-                      <button onClick={() => changeQty(p.id, 1)}>+</button>
-                    </td>
+  return (
+    <div className={styles.layoutWrapper}>
+      <UserSidebar />
 
-                    <td className={styles.price}>
-                      Bs. {p.price.toFixed(2)}
-                    </td>
+      <div className={styles.mainWrapper}>
+        <main className={styles.page}>
+          <div className={styles.container}>
+            {/* CARRITO */}
+            <section className={styles.cartBox}>
+              <div className={styles.header}>
+                <h1>Tu Carrito</h1>
+                <p>Hay {products.length} productos en tu carrito!</p>
+              </div>
 
-                    <td className={styles.subtotal}>
-                      Bs. {(p.price * p.qty).toFixed(2)}
-                    </td>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio U.</th>
+                    <th>Subtotal</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+                </thead>
 
-          {/* RESUMEN */}
-          <aside className={styles.summary}>
-            <h3>Resumen de compra</h3>
+                <tbody>
+                  {products.map((p) => (
+                    <tr key={p.id}>
+                      <td className={styles.productCell}>
+                        <img src={p.img} alt={p.name} />
+                        <div>
+                          <p>{p.name}</p>
+                        </div>
+                      </td>
 
-            <div className={styles.shippingOptions}>
-              <label>
-                <input
-                  type="radio"
-                  name="shipping"
-                  onChange={() => setShipping(0)}
-                  defaultChecked
-                />
-                Envío Gratis
-              </label>
-              <span>Bs. 0.00</span>
+                      <td className={styles.qtyCell}>
+                        <span>{p.qty}</span>
+                      </td>
 
-              <label>
-                <input
-                  type="radio"
-                  name="shipping"
-                  onChange={() => setShipping(15)}
-                />
-                Envío Express
-              </label>
-              <span>Bs. 15.00</span>
-            </div>
+                      <td>Bs. {p.price.toFixed(2)}</td>
+                      <td>Bs. {(p.price * p.qty).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
 
-            <div className={styles.totals}>
-              <p>Subtotal: Bs. {subtotal.toFixed(2)}</p>
-              <p>
-                <strong>Total: Bs. {total.toFixed(2)}</strong>
-              </p>
-            </div>
+            {/* RESUMEN */}
+            <aside className={styles.summary}>
+              <h3>Resumen de compra</h3>
 
-            <button
-              className={styles.checkout}
-              onClick={() => {
-                if (addressList.length === 0) setShowEmpty(true);
-                else setShowList(true);
+              <div className={styles.totals}>
+                <p>Subtotal: Bs. {subtotal.toFixed(2)}</p>
+                <p>
+                  <strong>Total: Bs. {total.toFixed(2)}</strong>
+                </p>
+              </div>
+
+              <button className={styles.checkout} onClick={loadAddresses}>
+                Realizar envío
+              </button>
+            </aside>
+          </div>
+
+          {/* MODALES */}
+          {showEmpty && (
+            <AddressEmpty
+              onClose={() => setShowEmpty(false)}
+              onAdd={() => router.push("/user/address")}
+            />
+          )}
+
+          {showList && (
+            <AddressList
+              addresses={addresses}
+              onClose={() => setShowList(false)}
+              onAdd={() => router.push("/user/address")}
+              onSelect={(addr) => {
+                setSelectedAddress(addr);
+                setShowList(false);
+                setShowConfirm(true);
               }}
-            >
-              Realizar envío
-            </button>
-          </aside>
-        </div>
+            />
+          )}
 
-        {/* MODALES */}
-        {showEmpty && (
-          <AddressEmpty
-            onClose={() => setShowEmpty(false)}
-            onAdd={() => {
-              setShowEmpty(false);
-              setShowForm(true);
-            }}
-          />
-        )}
-
-        {showForm && (
-          <AddressForm
-            onClose={() => setShowForm(false)}
-            onSave={(address) => {
-              setAddressList((prev) => [...prev, address]);
-              setShowForm(false);
-              setShowList(true);
-            }}
-          />
-        )}
-
-        {showList && (
-          <AddressList
-            addresses={addressList}
-            onClose={() => setShowList(false)}
-            onAdd={() => {
-              setShowList(false);
-              setShowForm(true);
-            }}
-            onSelect={(addr) => {
-              setSelectedAddress(addr);
-              setShowList(false);
-              setShowConfirm(true);
-            }}
-          />
-        )}
-
-        {showConfirm && selectedAddress && (
-          <AddressConfirm
-            address={selectedAddress}
-            onClose={() => setShowConfirm(false)}
-          />
-        )}
-      </main>
+          {showConfirm && selectedAddress && (
+            <AddressConfirm address={selectedAddress} onClose={confirmOrder} />
+          )}
+        </main>
+      </div>
     </div>
-  </div>
-);
-
-
-
-
+  );
 }

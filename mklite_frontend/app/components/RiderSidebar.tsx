@@ -15,17 +15,17 @@ type RiderMenuItem = {
 const riderItems: RiderMenuItem[] = [
   {
     label: "Pedidos disponibles",
-    href: "/rider",
+    href: "/delivery",
     icon: "/rider-menu/pedidosDisponibles.svg",
   },
   {
     label: "Historial de pedidos",
-    href: "/rider/history",
+    href: "/rider/orderHistoryRider",
     icon: "/rider-menu/historialdepedidos.svg",
   },
   {
     label: "Notificaciones",
-    href: "/rider/notifications",
+    href: "/rider/notificationRider",
     icon: "/rider-menu/notification.svg",
   },
 ];

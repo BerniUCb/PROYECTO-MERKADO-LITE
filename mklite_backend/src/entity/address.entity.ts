@@ -35,8 +35,12 @@ export class Address {
 
     @Column({ name: 'is_default', default: false })
     isDefault: boolean;
-    @Column({ name: 'coordinates', type: 'varchar', length: 50, nullable: true }) 
-    coordinates: string;
+    
+    @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
+    latitude: number;
+    
+    @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
+    longitude: number;
 
     @ManyToOne(() => User, (user) => user.addresses, { nullable: false }) 
     @JoinColumn({ name: 'user_id' }) 

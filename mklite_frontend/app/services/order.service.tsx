@@ -1,8 +1,19 @@
-import { instance } from "../utils/axios";
+import { instance } from "@/app/utils/axios";
 import Order from "../models/order.model";
+import type { CreateOrderDto } from "./dto/create-order.dto";
+
+export interface PaginatedOrders {
+  data: Order[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
 export const OrderService = {
-  // --- REPORTES ---
+  // ======================
+  // REPORTES
+  // ======================
   getTotalSales: async () => {
     const res = await instance.get("/orders/report/total-sales");
     return res.data;
@@ -18,7 +29,6 @@ export const OrderService = {
     return res.data.totalOrders;
   },
 
-  // NUEVO: Para la tarjeta "Cancelados"
   getCancelledOrderCount: async (): Promise<number> => {
     const res = await instance.get("/orders/report/cancelled-count");
     return res.data.cancelledOrders;
@@ -29,31 +39,21 @@ export const OrderService = {
     return res.data;
   },
 
-  getLatestOrders: async () :Promise<Order[]> => {
+  getLatestOrders: async (): Promise<Order[]> => {
     const res = await instance.get("/orders/report/latest");
     return res.data;
   },
-  
+
   getLast7DaysSales: async (): Promise<number[]> => {
     const res = await instance.get("/orders/stats/last-7-days");
     return res.data;
   },
 
-
-  // --- CRUD ---
-  create: async (data: Omit<Order, "id" |"items">): Promise<Order> => {
+  // ======================
+  // CRUD
+  // ======================
+  create: async (data: CreateOrderDto): Promise<Order> => {
     const res = await instance.post("/orders", data);
-    return res.data;
-  },
-
-  getAll: async (
-    page?: number,
-    limit?: number,
-    sort?: string,
-    order?: "asc" | "desc"
-  ): Promise<Order[]> => {
-    const params = { page, limit, sort, order };
-    const res = await instance.get("/orders", { params });
     return res.data;
   },
 
@@ -62,23 +62,36 @@ export const OrderService = {
     return res.data;
   },
 
-   getByUser: async (
+  /**
+   * 🔥 USADO POR ADMIN (/admin/orders)
+   * Devuelve lista simple de pedidos
+   */
+  getAll: async (
+    page: number = 1,
+    limit: number = 50,
+    sortBy: string = "createdAt",
+    sortOrder: "asc" | "desc" = "desc"
+  ): Promise<Order[]> => {
+    const params = { page, limit, sortBy, sortOrder };
+    const res = await instance.get("/orders", { params });
+    return res.data;
+  },
+
+  /**
+   * 🔥 USADO POR PERFIL DE USUARIO
+   * Devuelve pedidos paginados por usuario
+   */
+  getByUser: async (
     userId: number,
     page: number = 1,
-    limit: number = 5,
-    sort: string = 'createdAt',
-    order: 'asc' | 'desc' = 'desc'
-  ): Promise<Order[]> => {
-    // Enviamos sort/order aunque el backend actual los ignore (buena práctica por si lo actualizas luego)
-    const params = { page, limit, sort, order };
-    
-    // Ruta correcta según tu backend: /orders/by-user/:userId
+    limit: number = 5
+  ): Promise<PaginatedOrders> => {
+    const params = { page, limit };
     const res = await instance.get(`/orders/by-user/${userId}`, { params });
     return res.data;
   },
 
   update: async (id: number, data: Partial<Order>): Promise<Order> => {
-    // Controlador usa PATCH
     const res = await instance.patch(`/orders/${id}`, data);
     return res.data;
   },
