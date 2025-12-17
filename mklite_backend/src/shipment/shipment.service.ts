@@ -1,112 +1,151 @@
 // src/shipment/shipment.service.ts
 
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Shipment, ShipmentStatus } from '../entity/shipment.entity';
-import { CreateShipmentDto } from './dto/create-shipment.dto'; 
+import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
-import { User } from '../entity/user.entity'; // Necesario para buscar al repartidor
-import { Order } from 'src/entity/order.entity';
-import { Address } from 'src/entity/address.entity';
+
+import { User } from '../entity/user.entity';
+import { Order } from '../entity/order.entity';
+import { Address } from '../entity/address.entity';
+
 import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class ShipmentService {
   constructor(
     @InjectRepository(Shipment)
-    private shipmentRepository: Repository<Shipment>,
+    private readonly shipmentRepository: Repository<Shipment>,
+
     @InjectRepository(User)
-    private userRepository: Repository<User>, 
+    private readonly userRepository: Repository<User>,
+
     @InjectRepository(Order)
-    private orderRepository: Repository<Order>,
+    private readonly orderRepository: Repository<Order>,
+
     @InjectRepository(Address)
-    private addressRepository: Repository<Address>,
+    private readonly addressRepository: Repository<Address>,
+
     private readonly notificationService: NotificationService,
   ) {}
 
-
-  private async validateShipmentRelations(dto: CreateShipmentDto | UpdateShipmentDto) {
-    
-    // 1. Validar OrderId (obligatorio para la creación)
+  // =====================================================
+  // VALIDACIONES
+  // =====================================================
+  private async validateShipmentRelations(
+    dto: CreateShipmentDto | UpdateShipmentDto,
+  ) {
     if (dto.orderId) {
-        const order = await this.orderRepository.findOneBy({ id: dto.orderId });
-        if (!order) {
-            throw new NotFoundException(`Order with ID ${dto.orderId} not found.`);
-        }
-    }
-    
-    // 2. Validar AddressId
-    if (dto.deliveryAddressId) {
-        const address = await this.addressRepository.findOneBy({ id: dto.deliveryAddressId });
-        if (!address) {
-            throw new NotFoundException(`Delivery Address with ID ${dto.deliveryAddressId} not found.`);
-        }
+      const order = await this.orderRepository.findOneBy({
+        id: dto.orderId,
+      });
+      if (!order) {
+        throw new NotFoundException(
+          `Order with ID ${dto.orderId} not found.`,
+        );
+      }
     }
 
-    // 3. Validar Repartidor (opcional)
+    if (dto.deliveryAddressId) {
+      const address = await this.addressRepository.findOneBy({
+        id: dto.deliveryAddressId,
+      });
+      if (!address) {
+        throw new NotFoundException(
+          `Delivery Address with ID ${dto.deliveryAddressId} not found.`,
+        );
+      }
+    }
+
     if (dto.deliveryDriverId) {
-      const driver = await this.userRepository.findOneBy({ id: dto.deliveryDriverId });
+      const driver = await this.userRepository.findOneBy({
+        id: dto.deliveryDriverId,
+      });
       if (!driver) {
-        throw new NotFoundException(`Delivery driver with ID ${dto.deliveryDriverId} not found.`);
+        throw new NotFoundException(
+          `Delivery driver with ID ${dto.deliveryDriverId} not found.`,
+        );
       }
     }
   }
-  // ---------------- CRUD BÁSICO ----------------
 
-  async create(createShipmentDto: CreateShipmentDto): Promise<Shipment> {
-    // 1. Validar que las entidades existan antes de la creación
-    await this.validateShipmentRelations(createShipmentDto);
-    
-    // 2. Crear el objeto con las relaciones
+  // =====================================================
+  // CRUD BÁSICO
+  // =====================================================
+  async create(dto: CreateShipmentDto): Promise<Shipment> {
+    await this.validateShipmentRelations(dto);
+
     const shipment = this.shipmentRepository.create({
-      // Copiar propiedades de fecha/estado (si existen en el DTO)
-      ...createShipmentDto, 
-      
-      // Asignar IDs de relaciones
-      order: { id: createShipmentDto.orderId },
-      deliveryAddress: { id: createShipmentDto.deliveryAddressId },
-      deliveryDriver: createShipmentDto.deliveryDriverId ? { id: createShipmentDto.deliveryDriverId } : null,
-      
-      // Asegurar que las propiedades de fecha sean Date objects
-      estimatedDeliveryAt: createShipmentDto.estimatedDeliveryAt 
-          ? new Date(createShipmentDto.estimatedDeliveryAt) 
-          : null
+      ...dto,
+      order: { id: dto.orderId },
+      deliveryAddress: { id: dto.deliveryAddressId },
+      deliveryDriver: dto.deliveryDriverId
+        ? { id: dto.deliveryDriverId }
+        : null,
+      estimatedDeliveryAt: dto.estimatedDeliveryAt
+        ? new Date(dto.estimatedDeliveryAt)
+        : null,
     });
-    
-    // 3. Guardar el nuevo envío.
-    // Si la validación anterior pasó, la base de datos no debería dar un error 500 por FK.
+
     return this.shipmentRepository.save(shipment);
   }
 
   async findAll(): Promise<Shipment[]> {
-    return this.shipmentRepository.find({ 
-      relations: ['order', 'deliveryDriver', 'deliveryAddress'] 
+    return this.shipmentRepository.find({
+      relations: [
+        'order',
+        'order.user',
+        'deliveryDriver',
+        'deliveryAddress',
+      ],
     });
   }
 
   async findOne(id: number): Promise<Shipment> {
     const shipment = await this.shipmentRepository.findOne({
       where: { id },
-      relations: ['order', 'deliveryDriver', 'deliveryAddress'],
+      relations: [
+        'order',
+        'order.user',
+        'order.items',
+        'order.items.product',
+        'deliveryDriver',
+        'deliveryAddress',
+      ],
     });
+
     if (!shipment) {
-      throw new NotFoundException(`Shipment with ID ${id} not found.`);
+      throw new NotFoundException(
+        `Shipment with ID ${id} not found.`,
+      );
     }
+
     return shipment;
   }
-  
-  async update(id: number, updateShipmentDto: UpdateShipmentDto): Promise<Shipment> {
+
+  async update(
+    id: number,
+    dto: UpdateShipmentDto,
+  ): Promise<Shipment> {
     await this.findOne(id);
-    await this.validateShipmentRelations(updateShipmentDto);
-    
-    // Mapeo manual de IDs a entidades para TypeORM
+    await this.validateShipmentRelations(dto);
+
     const updateData: any = {
-        ...updateShipmentDto,
-        deliveryDriver: updateShipmentDto.deliveryDriverId ? { id: updateShipmentDto.deliveryDriverId } : undefined,
-        deliveryAddress: updateShipmentDto.deliveryAddressId ? { id: updateShipmentDto.deliveryAddressId } : undefined,
+      ...dto,
+      deliveryDriver: dto.deliveryDriverId
+        ? { id: dto.deliveryDriverId }
+        : undefined,
+      deliveryAddress: dto.deliveryAddressId
+        ? { id: dto.deliveryAddressId }
+        : undefined,
     };
-    
+
     await this.shipmentRepository.update(id, updateData);
     return this.findOne(id);
   }
@@ -114,68 +153,177 @@ export class ShipmentService {
   async remove(id: number): Promise<void> {
     const result = await this.shipmentRepository.delete(id);
     if (result.affected === 0) {
-      throw new NotFoundException(`Shipment with ID ${id} not found.`);
+      throw new NotFoundException(
+        `Shipment with ID ${id} not found.`,
+      );
     }
   }
 
-  // ---------------- MÉTODOS ADICIONALES ----------------
+  // =====================================================
+  // RIDER - PEDIDOS DISPONIBLES
+  // =====================================================
+  async findAvailable(): Promise<Shipment[]> {
+    return this.shipmentRepository.find({
+      where: {
+        status: 'pending',
+        deliveryDriver: null,
+      },
+      relations: [
+        'order',
+        'order.user',
+        'order.items',
+        'order.items.product',
+        'deliveryAddress',
+      ],
+      order: {
+  id: 'ASC',
+},
 
-  /** * @method assignDriverAndUpdateStatus 
-   * Asigna un repartidor y opcionalmente actualiza el estado (ej. de 'pending' a 'processing'). 
-   */
-  async assignDriverAndUpdateStatus(shipmentId: number, driverId: number, status?: ShipmentStatus): Promise<Shipment> {
-    const shipment = await this.findOne(shipmentId);
-    
-    // 1. Validar que el nuevo repartidor exista
-    const driver = await this.userRepository.findOneBy({ id: driverId });
+    });
+  }
+
+  // =====================================================
+  // RIDER - PEDIDOS ASIGNADOS
+  // =====================================================
+  async findByDriver(driverId: number): Promise<Shipment[]> {
+    const driver = await this.userRepository.findOne({
+      where: { id: driverId, role: 'DeliveryDriver' },
+    });
+
     if (!driver) {
-        throw new NotFoundException(`Delivery driver with ID ${driverId} not found.`);
+      throw new NotFoundException(
+        `Driver with ID ${driverId} not found.`,
+      );
     }
 
-    // 2. Aplicar cambios
+    return this.shipmentRepository.find({
+      where: {
+        deliveryDriver: { id: driverId },
+      },
+      relations: [
+        'order',
+        'order.user',
+        'order.items',
+        'order.items.product',
+        'deliveryAddress',
+      ],
+      order: {
+  id: 'ASC',
+},
+
+    });
+  }
+
+  // =====================================================
+  // RIDER - HISTORIAL (ENTREGADOS)
+  // =====================================================
+  async getDriverDeliveryHistory(
+    driverId: number,
+    page = 1,
+    limit = 10,
+  ) {
+    const driver = await this.userRepository.findOne({
+      where: { id: driverId, role: 'DeliveryDriver' },
+    });
+
+    if (!driver) {
+      throw new NotFoundException(
+        `Driver with ID ${driverId} not found.`,
+      );
+    }
+
+    const [shipments, total] =
+      await this.shipmentRepository.findAndCount({
+        where: {
+          deliveryDriver: { id: driverId },
+          status: 'delivered',
+        },
+        relations: [
+          'order',
+          'order.user',
+          'order.items',
+          'order.items.product',
+          'deliveryAddress',
+        ],
+        order: {
+          deliveredAt: 'DESC',
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+
+    return {
+      total,
+      page,
+      limit,
+      data: shipments,
+    };
+  }
+
+  // =====================================================
+  // ASIGNAR REPARTIDOR
+  // =====================================================
+  async assignDriverAndUpdateStatus(
+    shipmentId: number,
+    driverId: number,
+    status?: ShipmentStatus,
+  ): Promise<Shipment> {
+    const shipment = await this.findOne(shipmentId);
+
+    const driver = await this.userRepository.findOneBy({
+      id: driverId,
+    });
+
+    if (!driver) {
+      throw new NotFoundException(
+        `Delivery driver with ID ${driverId} not found.`,
+      );
+    }
+
     shipment.deliveryDriver = driver;
-    shipment.assignedAt = new Date(); // Registra la fecha de asignación
+    shipment.assignedAt = new Date();
 
     if (status) {
-        shipment.status = status;
-        // Si el estado es 'shipped', se podría calcular la estimatedDeliveryAt aquí
+      shipment.status = status;
     } else if (shipment.status === 'pending') {
-        // Si no se especifica el estado, moverlo a 'processing' por defecto si estaba en 'pending'
-        shipment.status = 'processing';
+      shipment.status = 'processing';
     }
+
     if (shipment.order) {
-        // Actualizamos el estado de la orden en la BD
-        // Puedes ponerle el mismo estado que al shipment o uno específico de Order
-        await this.orderRepository.update(shipment.order.id, { 
-            status: 'processing' // O usa la lógica que prefieras
-        });
+      await this.orderRepository.update(shipment.order.id, {
+        status: 'processing',
+      });
     }
-    const savedShipment = await this.shipmentRepository.save(shipment);
-    
+
+    const saved = await this.shipmentRepository.save(shipment);
+
     await this.notificationService.create({
       title: 'Nuevo Pedido Asignado',
-      detail: `Has aceptado el envío #${savedShipment.id}. Revisa los detalles para iniciar la entrega.`,
-      type: 'ORDER_RECEIVED', // O 'ORDER_SHIPPED'
+      detail: `Has aceptado el envío #${saved.id}.`,
+      type: 'ORDER_RECEIVED',
       recipientRole: 'DeliveryDriver',
       userId: driverId,
-      relatedEntityId: savedShipment.id.toString(), // <--- El shipment_id para el botón "Ver Detalles"
+      relatedEntityId: saved.id.toString(),
     });
-    
-    return savedShipment;
+
+    return saved;
   }
 
-  async updateStatus(id: number, newStatus: ShipmentStatus): Promise<Shipment> {
+  // =====================================================
+  // ACTUALIZAR ESTADO (RETIRO / ENTREGA)
+  // =====================================================
+  async updateStatus(
+    id: number,
+    newStatus: ShipmentStatus,
+  ): Promise<Shipment> {
     const shipment = await this.findOne(id);
-    
+
     shipment.status = newStatus;
 
-    // Lógica clave: registrar la fecha de entrega solo si el estado es 'delivered'
     if (newStatus === 'delivered' && !shipment.deliveredAt) {
       shipment.deliveredAt = new Date();
     }
-    
-    // Si el estado cambia de nuevo (ej. de delivered a returned), la fecha se mantiene
-    
+
     return this.shipmentRepository.save(shipment);
-}
+  }
 }

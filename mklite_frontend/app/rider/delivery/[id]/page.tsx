@@ -6,10 +6,9 @@ import styles from "./page.module.css";
 
 import RouteMap, { type RouteStep } from "../../components/RouteMap";
 
-import {
-  ShipmentService,
-  type Shipment,
-} from "../../../services/shipment.service";
+import { ShipmentService } from "../../../services/shipment.service";
+import type Shipment from "../../../models/shipment.model";
+
 
 // ----------------------------
 // Types
