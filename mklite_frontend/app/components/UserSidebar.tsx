@@ -12,12 +12,13 @@ type UserSidebarProps = {
 const menuItems = [
   { label: "Detalles de la Cuenta", href: "/user/account", icon: "/user-menu/account.svg" },
   { label: "Mis Pedidos", href: "/user/orders", icon: "/user-menu/orders.svg" },
-  { label: "Mi Carrito", href: "/cart", icon: "/user-menu/cart.svg" },
+  { label: "Mi Carrito", href: "/car", icon: "/user-menu/cart.svg" },
   { label: "Mis Direcciones", href: "/user/addresses", icon: "/user-menu/addresses.svg" },
   { label: "Notificaciones", href: "/user/notifications", icon: "/user-menu/notifications.svg" },
   { label: "Cupones", href: "/user/coupons", icon: "/user-menu/coupons.svg" },
   { label: "Recibos", href: "/user/receipts", icon: "/user-menu/receipts.svg" },
   { label: "Configuración de la cuenta", href: "/user/settings", icon: "/user-menu/settings.svg" },
+  { label: "Centro de Soporte", href: "/user/support-center", icon: "/user-menu/support.svg" },
 ];
 
 export default function UserSidebar({
@@ -40,6 +41,7 @@ export default function UserSidebar({
               <Link href={item.href} className={styles.link}>
                 <Image src={item.icon} alt={item.label} width={20} height={20} />
                 <span>{item.label}</span>
+
               </Link>
             </li>
           );

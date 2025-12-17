@@ -2,6 +2,13 @@
 import { instance } from "../utils/axios";
 import type Shipment from "../models/shipment.model";
 
+export interface PaginatedShipments {
+  total: number;
+  page: number;
+  limit: number;
+  data: Shipment[];
+}
+
 export const ShipmentService = {
   getAll: async (): Promise<Shipment[]> => {
     const res = await instance.get("/shipment");
@@ -36,4 +43,17 @@ export const ShipmentService = {
   delete: async (id: number): Promise<void> => {
     await instance.delete(`/shipment/${id}`);
   },
+  
+   getDriverHistory: async (
+    driverId: number,
+    page = 1,
+    limit = 10
+  ): Promise<PaginatedShipments> => {
+    const res = await instance.get(
+      `/shipments/driver/${driverId}/history`,
+      { params: { page, limit } }
+    );
+    return res.data;
+  },
+  
 };

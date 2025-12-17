@@ -8,6 +8,7 @@
     "class-validator": "^0.14.3",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
+    "mapbox-gl": "^3.17.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"
   },
