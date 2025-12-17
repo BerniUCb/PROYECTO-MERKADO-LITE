@@ -6,6 +6,8 @@ import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
 import { AssignShipmentDto } from './dto/assign-shipment.dto'; 
 import { UpdateShipmentStatusDto } from './dto/update-shipment-status.dto'; 
+import { Query } from '@nestjs/common';
+import { DriverHistoryQueryDto } from './dto/driver-history-query.dto';
 
 @Controller('shipments') // Plural por convención REST
 export class ShipmentController {
@@ -24,7 +26,21 @@ export class ShipmentController {
     return this.shipmentService.findAll();
   }
 
-  
+  /**
+ * Historial de pedidos ENTREGADOS por un repartidor
+ * GET /shipments/driver/:driverId/history
+ */
+@Get('driver/:driverId/history')
+getDriverHistory(
+  @Param('driverId', ParseIntPipe) driverId: number,
+  @Query() query: DriverHistoryQueryDto,
+) {
+  return this.shipmentService.getDriverDeliveryHistory(
+    driverId,
+    query.page,
+    query.limit,
+);
+}
   
   // ---------------- MÉTODO ADICIONAL ----------------
 

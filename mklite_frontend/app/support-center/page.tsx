@@ -80,11 +80,17 @@ const [receiptLoading, setReceiptLoading] = useState(false);
 
     const order = await OrderService.getById(orderId);
     setOrders([order]);
-  } catch (error) {
-    console.error(error);
+ } catch (error: any) {
+  if (error.response?.status === 404) {
+    // Caso esperado: pedido no existe
     alert("Pedido no encontrado");
     setOrders([]);
-  } finally {
+  } else {
+    // Error real
+    console.error("Error inesperado:", error);
+    alert("Ocurrió un error al buscar el pedido");
+  }
+} finally {
     setReceiptLoading(false);
   }
 };
@@ -157,20 +163,21 @@ const [receiptLoading, setReceiptLoading] = useState(false);
           <div className={styles.receiptGrid}>
   {orders.length === 0 && <p>No hay recibos para mostrar</p>}
 
-  {orders.map((order) => (
-    <ReceiptCard
-      key={order.id}
-      id={`#${order.id}`}
-      price={order.orderTotal.toFixed(2)}
-      status={
-        order.status === "delivered"
-          ? "Entregado"
-          : order.status === "shipped"
-          ? "En Camino"
-          : "Pendiente"
-      }
-    />
-  ))}
+ {orders.map((order) => (
+  <ReceiptCard
+    key={order.id}
+    id={`#${order.id}`}
+    price={Number(order.orderTotal).toFixed(2)}
+    status={
+      order.status === "delivered"
+        ? "Entregado"
+        : order.status === "shipped"
+        ? "En Camino"
+        : "Pendiente"
+    }
+  />
+))}
+
 </div>
 
         </section>
