@@ -1,64 +1,98 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./productShowcase.module.css";
+import { useRouter } from "next/navigation";
+import { ProductService } from "@/app/services/product.service";
+import type ProductModel from "@/app/models/productCard.model";
 
-interface Product {
-  name: string;
-  price: number;
-  oldPrice?: number;
-  imageUrl: string;
-}
+const MAX_PRODUCTS = 9; // 3 columnas x 3 productos
 
 const ProductShowcase: React.FC = () => {
-  const bestSellers: Product[] = [
-    { name: "All Natural Style Chicken Meatballs", price: 52.85, oldPrice: 55.80, imageUrl: "/products/1.jpg" },
-    { name: "Angie’s Sweet & Salty Kettle Corn", price: 52.85, oldPrice: 55.80, imageUrl: "/products/2.jpg" },
-    { name: "Gorton’s Beer Battered Fish Fillets", price: 23.85, oldPrice: 25.80, imageUrl: "/products/3.jpg" },
-  ];
+  const router = useRouter();
 
-  const newArrivals: Product[] = [
-    { name: "Seeds of Change Organic Red Rice", price: 28.85, oldPrice: 32.80, imageUrl: "/products/4.jpg" },
-    { name: "All Natural Style Chicken Meatballs", price: 52.85, oldPrice: 55.80, imageUrl: "/products/1.jpg" },
-    { name: "Angie’s Sweet & Salty Kettle Corn", price: 48.85, oldPrice: 52.80, imageUrl: "/products/2.jpg" },
-  ];
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [isLogged, setIsLogged] = useState(false);
 
-  const topRated: Product[] = [
-    { name: "Blue Almonds Lightly Salted Vegetables", price: 23.85, oldPrice: 25.80, imageUrl: "/products/5.jpg" },
-    { name: "Organic Cage Grade A Large Eggs", price: 21.00, oldPrice: 24.00, imageUrl: "/products/6.jpg" },
-    { name: "All Natural Style Chicken Meatballs", price: 52.85, oldPrice: 55.80, imageUrl: "/products/1.jpg" },
-  ];
+  // Verificar login
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
 
-  const renderList = (title: string, products: Product[]) => (
-    <div className={styles.column}>
-      <h3 className={styles.title}>{title}</h3>
-      <ul className={styles.productList}>
-        {products.map((p, i) => (
-          <li key={i} className={styles.productItem}>
-            <img src={p.imageUrl} alt={p.name} className={styles.image} />
-            <div>
-              <p className={styles.name}>{p.name}</p>
-              <div className={styles.prices}>
-                <span className={styles.price}>Bs.{p.price.toFixed(2)}</span>
-                {p.oldPrice && <span className={styles.oldPrice}>Bs.{p.oldPrice.toFixed(2)}</span>}
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+  // Cargar productos aleatorios
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const allProducts = await ProductService.getAll();
+
+        // Mezclar productos (shuffle)
+        const shuffled = [...allProducts].sort(
+          () => Math.random() - 0.5
+        );
+
+        setProducts(shuffled.slice(0, MAX_PRODUCTS));
+      } catch (error) {
+        console.error("Error cargando productos recomendados", error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const handleAddClick = (productId: number) => {
+    if (!isLogged) {
+      router.push("/login");
+      return;
+    }
+
+    router.push(`/product/${productId}`);
+  };
+
+  // Dividir en 3 columnas
+  const columns = [0, 1, 2].map((col) =>
+    products.filter((_, index) => index % 3 === col)
   );
 
   return (
     <section className={styles.showcase}>
-      {renderList("Más Vendidos", bestSellers)}
-      {renderList("Recién Agregados", newArrivals)}
-      {renderList("Mejor Calificados", topRated)}
+      <h2 className={styles.mainTitle}>Productos recomendados</h2>
+
+      <div className={styles.columns}>
+        {columns.map((column, colIndex) => (
+          <ul key={colIndex} className={styles.productList}>
+            {column.map((product) => (
+              <li key={product.id} className={styles.productItem}>
+                <img
+                  src={product.imageUrl || "/products/no-image.png"}
+                  alt={product.name}
+                  className={styles.image}
+                />
+
+                <div className={styles.info}>
+                  <p className={styles.name}>{product.name}</p>
+
+                  <div className={styles.pricesRow}>
+                    <span className={styles.price}>
+                      Bs. {Number(product.salePrice).toFixed(2)}
+                    </span>
+
+                    <button
+                      className={styles.addButton}
+                      onClick={() => handleAddClick(product.id)}
+                      title="Ver producto"
+                    >
+                      🛒
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
     </section>
   );
 };
 
 export default ProductShowcase;
-
-
-
