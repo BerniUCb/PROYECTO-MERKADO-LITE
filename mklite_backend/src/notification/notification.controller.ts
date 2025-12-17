@@ -10,10 +10,6 @@ import { RecipientRole, NotificationType } from '../entity/notification.entity';
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  // ------------------------------------------------------------------
-  // 📚 RUTAS CRUD BÁSICO
-  // ------------------------------------------------------------------
-
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createNotificationDto: CreateNotificationDto) {
