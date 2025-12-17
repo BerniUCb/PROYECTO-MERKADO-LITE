@@ -1,115 +1,184 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
-import { notificationIcons } from "@/app/utils/notificationIcons";
-import { HiOutlineBell } from "react-icons/hi";
+import {
+  HiOutlineBell,
+  HiOutlineTruck,
+  HiOutlineExclamation,
+  HiOutlineChatAlt2,
+} from "react-icons/hi";
 import type { IconType } from "react-icons";
 
+import notificationService from "@/app/services/notification.service";
+import type Notification from "@/app/models/notification.model";
+
 export default function NotificationDrivePage() {
+  const router = useRouter();
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   // ===============================
-  // Iconos con fallback seguro
+  // CARGA DE NOTIFICACIONES
   // ===============================
-  const OrderIcon: IconType =
-    notificationIcons["ORDER_RECEIVED"] ?? HiOutlineBell;
+  const loadNotifications = async () => {
+    try {
+      setLoading(true);
 
-  const MessageIcon: IconType =
-    notificationIcons["MESSAGE"] ?? HiOutlineBell;
+      const all = await notificationService.getDriverNotifications();
+      const unread =
+        await notificationService.getUnreadDriverNotifications();
 
-  const BoxIcon: IconType =
-    notificationIcons["ORDER_SHIPPED"] ?? HiOutlineBell;
+      setNotifications(all);
+      setUnreadCount(unread.length);
+    } catch (error) {
+      console.error("Error al cargar notificaciones del repartidor", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const AlertIcon: IconType =
-    notificationIcons["URGENT"] ?? HiOutlineBell;
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
-  const ChatIcon: IconType =
-    notificationIcons["MESSAGE"] ?? HiOutlineBell;
+  // ===============================
+  // CATEGORÍAS
+  // ===============================
+  const isNewOrder = (type: string) => type === "ORDER_RECEIVED";
+  const isUrgentOrder = (type: string) => type === "ORDER_SHIPPED";
+  const isMessage = (type: string) => type === "NEW_PROMOTION";
+
+  // ===============================
+  // ICONOS POR CATEGORÍA
+  // ===============================
+  const getIconByType = (type: string): IconType => {
+    if (isNewOrder(type)) return HiOutlineTruck;
+    if (isUrgentOrder(type)) return HiOutlineExclamation;
+    if (isMessage(type)) return HiOutlineChatAlt2;
+    return HiOutlineBell;
+  };
+
+  // ===============================
+  // VER DETALLES + MARCAR COMO LEÍDO
+  // ===============================
+  const handleViewDetails = async (notif: Notification) => {
+    try {
+      if (!notif.isRead) {
+        await notificationService.markAsRead(notif.id);
+      }
+
+      await loadNotifications();
+
+      if (notif.relatedEntityId) {
+        router.push(`/shipments/${notif.relatedEntityId}`);
+      }
+    } catch (error) {
+      console.error("Error al abrir detalle del envío", error);
+    }
+  };
+
+  
+  // ===============================
+  // CONTADORES
+  // ===============================
+  const newOrdersCount = notifications.filter((n) =>
+    isNewOrder(n.type)
+  ).length;
+
+  const urgentCount = notifications.filter((n) =>
+    isUrgentOrder(n.type)
+  ).length;
+
+  const messageCount = notifications.filter((n) =>
+    isMessage(n.type)
+  ).length;
 
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>Bienvenido Pepe</h1>
 
+      {!loading && notifications.length === 0 && (
+        <p className={styles.empty}>No tienes notificaciones aún</p>
+      )}
+
       <section className={styles.content}>
-        {/* ================= NOTIFICACIONES ================= */}
+        {/* NOTIFICACIONES */}
         <div className={styles.notifications}>
-          {/* ===== PEDIDO URGENTE ===== */}
-          <div className={`${styles.notificationCard} ${styles.urgent}`}>
-            <div className={styles.notificationInfo}>
-              <strong className={styles.cardTitle}>
-                {/* ICONO PEDIDO (NEGRO COMO EN LA IMAGEN) */}
-                <OrderIcon size={18} />
-                <span>Nuevo pedido asignado</span>
-              </strong>
+          {notifications.map((notif) => {
+            const Icon = getIconByType(notif.type);
 
-              <p>
-                Tienes un nuevo pedido <b>#MKL-789456</b> listo para recoger en
-                MERKADOLITE
-              </p>
+            return (
+              <div
+                key={notif.id}
+                className={`${styles.notificationCard} ${
+                  !notif.isRead ? styles.urgent : ""
+                }`}
+              >
+                <div className={styles.notificationInfo}>
+                  <strong className={styles.cardTitle}>
+                    <Icon size={18} />
+                    <span>{notif.title}</span>
+                  </strong>
 
-              <div className={styles.meta}>
-                <span className={styles.time}>Hace 2 min</span>
+                  <p>{notif.detail}</p>
 
-                {/* BADGE URGENTE (ROJO) */}
-                <span className={styles.badge}>
-                  <AlertIcon size={14} />
-                  Urgente
-                </span>
+                  <div className={styles.meta}>
+                    <span className={styles.time}>
+                      {new Date(notif.createdAt).toLocaleString()}
+                    </span>
+
+                    {!notif.isRead && (
+                      <span className={styles.badge}>Nuevo</span>
+                    )}
+                  </div>
+                </div>
+
+                {(isNewOrder(notif.type) || isUrgentOrder(notif.type)) && (
+                  <button
+                    className={styles.primaryBtn}
+                    onClick={() => handleViewDetails(notif)}
+                  >
+                    Ver detalles
+                  </button>
+                )}
               </div>
-            </div>
-
-            <button className={styles.primaryBtn}>Ver detalles</button>
-          </div>
-
-          {/* ===== MENSAJE CLIENTE ===== */}
-          <div className={styles.notificationCard}>
-            <div className={styles.notificationInfo}>
-              <strong className={styles.cardTitle}>
-                {/* ICONO MENSAJE (NEGRO) */}
-                <MessageIcon size={18} />
-                <span>Mensaje del cliente</span>
-              </strong>
-
-              <p>
-                María González: “Por favor toque el timbre dos veces cuando
-                llegue”
-              </p>
-
-              <span className={styles.time}>Hace 10 min</span>
-            </div>
-          </div>
+            );
+          })}
         </div>
 
-        {/* ================= RESUMEN ================= */}
+        {/* RESUMEN */}
         <div className={styles.stats}>
-          {/* PEDIDOS NUEVOS  */}
           <div className={styles.statCard}>
             <span className={`${styles.icon} ${styles.iconBlue}`}>
-              <BoxIcon size={18} />
+              <HiOutlineTruck size={18} />
             </span>
             <div>
               <small>Pedidos Nuevos</small>
-              <strong>1</strong>
+              <strong>{newOrdersCount}</strong>
             </div>
           </div>
 
-          {/* URGENTES */}
           <div className={styles.statCard}>
             <span className={`${styles.icon} ${styles.iconRed}`}>
-              <AlertIcon size={18} />
+              <HiOutlineExclamation size={18} />
             </span>
             <div>
               <small>Urgentes</small>
-              <strong>2</strong>
+              <strong>{urgentCount}</strong>
             </div>
           </div>
 
-          {/* MENSAJES */}
           <div className={styles.statCard}>
             <span className={`${styles.icon} ${styles.iconPurple}`}>
-              <ChatIcon size={18} />
+              <HiOutlineChatAlt2 size={18} />
             </span>
             <div>
               <small>Mensajes</small>
-              <strong>1</strong>
+              <strong>{messageCount}</strong>
             </div>
           </div>
         </div>

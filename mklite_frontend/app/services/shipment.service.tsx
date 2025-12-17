@@ -1,9 +1,6 @@
 import { instance } from "../utils/axios";
 import type Shipment from "../models/shipment.model";
 
-/* =========================
-   Types
-========================= */
 export interface PaginatedShipments {
   total: number;
   page: number;
@@ -11,27 +8,44 @@ export interface PaginatedShipments {
   data: Shipment[];
 }
 
-/* =========================
-   Service
-========================= */
 export const ShipmentService = {
-  /* =========================
-     RIDER
-  ========================= */
-
-  // 🔥 Pedidos disponibles para riders
-  getAvailable: async (): Promise<Shipment[]> => {
-    const res = await instance.get("/shipments/available");
+  getAll: async (): Promise<Shipment[]> => {
+    const res = await instance.get("/shipment");
     return res.data;
   },
 
-  // 🔥 Pedidos asignados a un rider (activos + historial)
-  getByDriver: async (driverId: number): Promise<Shipment[]> => {
-    const res = await instance.get(`/shipments/by-driver/${driverId}`);
+  getById: async (id: number): Promise<Shipment> => {
+    const res = await instance.get(`/shipment/${id}`);
     return res.data;
   },
 
-  // 🔥 Historial ENTREGADO del rider (paginado)
+  getByUser: async (userId: number): Promise<Shipment[]> => {
+    const res = await instance.get(`/user/${userId}/shipments`);
+    return res.data;
+  },
+
+  create: async (
+    shipment: Omit<
+      Shipment,
+      "id" | "assignedAt" | "estimatedDelivery" | "deliveredAt"
+    >
+  ): Promise<Shipment> => {
+    const res = await instance.post("/shipment", shipment);
+    return res.data;
+  },
+
+  update: async (
+    id: number,
+    shipment: Partial<Shipment>
+  ): Promise<Shipment> => {
+    const res = await instance.put(`/shipment/${id}`, shipment);
+    return res.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await instance.delete(`/shipment/${id}`);
+  },
+
   getDriverHistory: async (
     driverId: number,
     page = 1,
@@ -44,52 +58,31 @@ export const ShipmentService = {
     return res.data;
   },
 
-  /* =========================
-     CRUD GENERAL
-  ========================= */
+  // ===============================
+  // 🔽 NUEVO (NO ROMPE NADA)
+  // ===============================
 
-  getAll: async (): Promise<Shipment[]> => {
-    const res = await instance.get("/shipments");
+  // 🔹 Shipments disponibles para repartidor
+  getAvailable: async (): Promise<Shipment[]> => {
+    const res = await instance.get("/shipments/available");
     return res.data;
   },
 
-  getById: async (id: number): Promise<Shipment> => {
-    const res = await instance.get(`/shipments/${id}`);
+  // 🔹 Shipments asignados a un repartidor
+  getByDriver: async (driverId: number): Promise<Shipment[]> => {
+    const res = await instance.get(`/shipments/by-driver/${driverId}`);
     return res.data;
   },
 
-  create: async (
-    data: {
-      orderId: number;
-      deliveryAddressId: number;
-      deliveryDriverId?: number;
-      estimatedDeliveryAt?: string;
-    }
-  ): Promise<Shipment> => {
-    const res = await instance.post("/shipments", data);
-    return res.data;
-  },
-
-  update: async (
-    id: number,
-    shipment: Partial<Shipment>
-  ): Promise<Shipment> => {
-    const res = await instance.patch(`/shipments/${id}`, shipment);
-    return res.data;
-  },
-
-  // 🔥 Confirmar retiro / entrega
+  // 🔹 Actualizar estado del envío
   updateStatus: async (
-    id: number,
-    status: "processing" | "shipped" | "delivered" | "cancelled"
+    shipmentId: number,
+    status: string
   ): Promise<Shipment> => {
-    const res = await instance.patch(`/shipments/${id}/status`, {
+    const res = await instance.patch(`/shipments/${shipmentId}/status`, {
       status,
     });
     return res.data;
   },
-
-  delete: async (id: number): Promise<void> => {
-    await instance.delete(`/shipments/${id}`);
-  },
 };
+
