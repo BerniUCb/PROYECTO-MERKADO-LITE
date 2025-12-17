@@ -78,6 +78,7 @@ class NotificationService {
 
     return res.json();
   }
+  
 
   // ⭐ Obtener por TIPO
   async getByType(type: NotificationType): Promise<Notification[]> {
