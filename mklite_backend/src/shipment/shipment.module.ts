@@ -9,9 +9,10 @@ import { Shipment } from '../entity/shipment.entity';
 import { User } from '../entity/user.entity'; 
 import { Order } from '../entity/order.entity'; 
 import { Address } from '../entity/address.entity'; 
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Shipment, User, Order, Address])],
+  imports: [TypeOrmModule.forFeature([Shipment, User, Order, Address]), NotificationModule,],
   controllers: [ShipmentController],
   providers: [ShipmentService],
   exports: [ShipmentService],
