@@ -39,12 +39,12 @@ function calcTotal(items: RiderOrder["items"]): number {
 }
 
 function shipmentToRiderOrder(s: Shipment): RiderOrder {
-  const items: RiderOrder["items"] = s.order.items.map((it) => ({
-    id: it.id,
-    name: it.name,
-    quantity: Number(it.quantity),
-    unitPrice: Number(it.unitPrice),
-  }));
+  const items: RiderOrder["items"] = s.order.items.map((it: any) => ({
+  id: it.id,
+  name: it.name ?? it.product?.name ?? `Producto ${it.id}`,
+  quantity: Number(it.quantity),
+  unitPrice: Number(it.unitPrice),
+}));
 
   const addr = s.deliveryAddress;
 

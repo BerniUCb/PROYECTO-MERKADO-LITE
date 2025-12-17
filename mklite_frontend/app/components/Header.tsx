@@ -1,63 +1,19 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const [loading, setLoading] = useState(true);
-  const [isLogged, setIsLogged] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userStr = localStorage.getItem("user");
-
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        setRole(user.role?.toLowerCase());
-        setIsLogged(true);
-      } catch {
-        setIsLogged(false);
-        setRole(null);
-      }
-    } else {
-      setIsLogged(false);
-      setRole(null);
-    }
-
-    setLoading(false);
-  }, []);
-
-  // Mientras carga el estado → NO mostramos redirecciones erróneas
-  if (loading) {
-    return <header className={styles.header}></header>;
-  }
-
-  // 🔥 Ruta del botón de cuenta según estado REAL
-  let goToAccount = "/signup";
-
-  if (isLogged) {
-    if (role === "admin") {
-      goToAccount = "/admin";
-    } else {
-      goToAccount = "/user/account_details";
-    }
-  }
-
-  const goToCar = isLogged ? "/car" : "/signup";
-  const goToWishlist = isLogged ? "/wishlist" : "/signup";
-
   return (
     <header className={styles.header}>
       {/* Top Bar */}
       <div className={styles.topBar}>
         <div className={styles.topBarLeft}>
           <Link href="/about">Quiénes Somos</Link>
-          <Link href={goToAccount}>Mi Cuenta</Link>
-          <Link href={goToWishlist}>Lista de Deseos</Link>
+
+          {/* ✅ Cuenta apunta al módulo /user */}
+          <Link href="/user">Mi Cuenta</Link>
+
+          <Link href="/wishlist">Lista de Deseos</Link>
           <Link href="/tracking">Seguimiento de Pedido</Link>
         </div>
 
@@ -76,10 +32,11 @@ export default function Header() {
       {/* Main Header */}
       <div className={styles.mainHeader}>
         <div className={styles.logo}>
-          <Link href="/">
+          {/* ✅ Logo debe llevar al home real */}
+          <Link href="/home">
             <Image
               src="/header/logoMKLite.png"
-              alt="Logo"
+              alt="Merkado Lite Logo"
               width={300}
               height={100}
               priority
@@ -93,20 +50,20 @@ export default function Header() {
         </div>
 
         <div className={styles.mainHeaderIcons}>
-          <Link href={goToWishlist}>
+          <Link href="/wishlist">
             <Image
               src="/header/corazonListaDeDeseos.png"
-              alt=""
+              alt="Lista de Deseos"
               width={24}
               height={24}
             />
             <span>Lista de Deseos</span>
           </Link>
 
-          <Link href={goToCar}>
+          <Link href="/car">
             <Image
               src="/header/carrito.png"
-              alt=""
+              alt="Carrito"
               width={24}
               height={24}
             />
@@ -114,11 +71,11 @@ export default function Header() {
             <span>Carrito</span>
           </Link>
 
-          {/* 🔥 ESTE YA FUNCIONA PERFECTO */}
-          <Link href={goToAccount}>
+          {/* ✅ Icono Cuenta también a /user */}
+          <Link href="/user">
             <Image
               src="/header/iconoUsuario.png"
-              alt=""
+              alt="Cuenta"
               width={24}
               height={24}
             />
@@ -127,20 +84,20 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Nav Inferior */}
+      {/* Nav Bar Inferior */}
       <nav className={styles.bottomNav}>
         <div className={styles.categoriesDropdown}>
           <button>
             <Image
               src="/header/iconoCuadrosCategoriasHeader.png"
-              alt=""
+              alt="Categorías"
               width={20}
               height={20}
             />
             <span>Todas las Categorías</span>
             <Image
               src="/header/flechaSenalAbajo.png"
-              alt=""
+              alt="Flecha"
               width={16}
               height={16}
             />
@@ -157,10 +114,13 @@ export default function Header() {
             />
             Ofertas Destacadas
           </Link>
-          <Link href="/">Inicio</Link>
+
+          {/* ✅ Inicio debe ir a /home */}
+          <Link href="/home">Inicio</Link>
+
           <Link href="/about">Quiénes Somos</Link>
-          <Link href="/home">Tienda</Link>
-          <Link href="/categories/lácteos-y-derivados">Categorías</Link>
+          <Link href="/shop">Tienda</Link>
+          <Link href="/categories/all">Categorías</Link>
           <Link href="/contact">Contacto</Link>
         </div>
 
