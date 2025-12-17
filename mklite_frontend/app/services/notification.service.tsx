@@ -134,7 +134,8 @@ class NotificationService {
       case "ORDER_RECEIVED":
       case "ORDER_SHIPPED":
       case "ORDER_DELIVERED":
-        return `/orders/${notification.relatedEntityId}`;
+       return `/shipments/${notification.relatedEntityId}`;
+
 
       default:
         return null;

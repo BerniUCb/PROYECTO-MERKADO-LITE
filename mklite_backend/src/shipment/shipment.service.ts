@@ -10,18 +10,11 @@ import { Repository } from 'typeorm';
 import { Shipment, ShipmentStatus } from '../entity/shipment.entity';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
-<<<<<<< HEAD
-import { AssignShipmentDto } from './dto/assign-shipment.dto';
 
-import { User } from '../entity/user.entity';
-import { Order } from '../entity/order.entity';
-import { Address } from '../entity/address.entity';
-=======
 import { User } from '../entity/user.entity'; // Necesario para buscar al repartidor
 import { Order } from 'src/entity/order.entity';
 import { Address } from 'src/entity/address.entity';
 import { NotificationService } from 'src/notification/notification.service';
->>>>>>> 28a9a907217a8767c7fb1b3a0ff1d2ecb89c85af
 
 @Injectable()
 export class ShipmentService {
@@ -33,17 +26,11 @@ export class ShipmentService {
     private readonly userRepository: Repository<User>,
 
     @InjectRepository(Order)
-<<<<<<< HEAD
-    private readonly orderRepository: Repository<Order>,
-
-    @InjectRepository(Address)
-    private readonly addressRepository: Repository<Address>,
-=======
-    private orderRepository: Repository<Order>,
+     private orderRepository: Repository<Order>,
     @InjectRepository(Address)
     private addressRepository: Repository<Address>,
     private readonly notificationService: NotificationService,
->>>>>>> 28a9a907217a8767c7fb1b3a0ff1d2ecb89c85af
+   
   ) {}
 
   // ---------------------------------------------------------------------------
@@ -289,11 +276,7 @@ export class ShipmentService {
     shipment.deliveryDriver = driver;
     shipment.assignedAt = new Date();
 
-<<<<<<< HEAD
-    shipment.status = status ?? 'processing';
 
-    return this.shipmentRepository.save(shipment);
-=======
     if (status) {
         shipment.status = status;
         // Si el estado es 'shipped', se podría calcular la estimatedDeliveryAt aquí
@@ -320,7 +303,6 @@ export class ShipmentService {
     });
     
     return savedShipment;
->>>>>>> 28a9a907217a8767c7fb1b3a0ff1d2ecb89c85af
   }
 
   /** Cambiar estado del shipment (retiro / entrega) */
