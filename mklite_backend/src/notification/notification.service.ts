@@ -22,9 +22,17 @@ export class NotificationService {
    * Crea una nueva notificación. 
    */
   async create(createNotificationDto: CreateNotificationDto): Promise<Notification> {
-    const notification = this.notificationRepository.create(createNotificationDto);
-    return this.notificationRepository.save(notification);
-  }
+  // Desestructuramos para separar userId del resto de los datos
+    const { userId, ...data } = createNotificationDto;
+
+    const notification = this.notificationRepository.create({
+      ...data,
+      // Creamos el objeto de relación solo si userId existe
+      user: userId ? { id: userId } : null 
+  });
+
+  return this.notificationRepository.save(notification);
+}
 
   /** * @method findAll 
    * Obtiene todas las notificaciones. 
@@ -108,6 +116,7 @@ export class NotificationService {
   async findAllByRole(role: RecipientRole): Promise<Notification[]> {
     return this.notificationRepository.find({
       where: { recipientRole: role }, // Solo filtra por rol
+      relations: ['user'],
       order: { createdAt: 'DESC' },
     });
   }
