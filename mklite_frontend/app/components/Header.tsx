@@ -43,7 +43,7 @@ export default function Header() {
     if (role === "admin") {
       goToAccount = "/admin";
     } else {
-      goToAccount = "/user/account_details";
+      goToAccount = "/user/account";
     }
   }
 
