@@ -9,6 +9,7 @@ import { UpdateShipmentDto } from './dto/update-shipment.dto';
 import { User } from '../entity/user.entity'; // Necesario para buscar al repartidor
 import { Order } from 'src/entity/order.entity';
 import { Address } from 'src/entity/address.entity';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class ShipmentService {
@@ -19,8 +20,9 @@ export class ShipmentService {
     private userRepository: Repository<User>, 
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
-    @InjectRepository(User)
+    @InjectRepository(Address)
     private addressRepository: Repository<Address>,
+    private readonly notificationService: NotificationService,
   ) {}
 
 
@@ -141,8 +143,25 @@ export class ShipmentService {
         // Si no se especifica el estado, moverlo a 'processing' por defecto si estaba en 'pending'
         shipment.status = 'processing';
     }
-
-    return this.shipmentRepository.save(shipment);
+    if (shipment.order) {
+        // Actualizamos el estado de la orden en la BD
+        // Puedes ponerle el mismo estado que al shipment o uno específico de Order
+        await this.orderRepository.update(shipment.order.id, { 
+            status: 'processing' // O usa la lógica que prefieras
+        });
+    }
+    const savedShipment = await this.shipmentRepository.save(shipment);
+    
+    await this.notificationService.create({
+      title: 'Nuevo Pedido Asignado',
+      detail: `Has aceptado el envío #${savedShipment.id}. Revisa los detalles para iniciar la entrega.`,
+      type: 'ORDER_RECEIVED', // O 'ORDER_SHIPPED'
+      recipientRole: 'DeliveryDriver',
+      userId: driverId,
+      relatedEntityId: savedShipment.id.toString(), // <--- El shipment_id para el botón "Ver Detalles"
+    });
+    
+    return savedShipment;
   }
 
   async updateStatus(id: number, newStatus: ShipmentStatus): Promise<Shipment> {

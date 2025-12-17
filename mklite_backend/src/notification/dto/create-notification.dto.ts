@@ -17,11 +17,12 @@ export class CreateNotificationDto {
     'ORDER_RECEIVED',
     'ORDER_SHIPPED',
     'ORDER_DELIVERED',
-    'NEW_PROMOTION'
+    'NEW_PROMOTION',
+    'DRIVER_APPROVED',
   ], { message: 'Type must be a valid NotificationType enum value.' })
   type: NotificationType;
 
-  @IsEnum(['Admin', 'Client'], { message: 'RecipientRole must be "Admin" or "Client".' })
+  @IsEnum(['Admin', 'Client', 'DeliveryDriver'], { message: 'RecipientRole must be "Admin","Client" or , "DeliveryDriver".' })
   recipientRole: RecipientRole;
 
   @IsOptional()
