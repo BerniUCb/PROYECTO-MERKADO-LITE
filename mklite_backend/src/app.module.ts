@@ -48,6 +48,7 @@ import { Or } from 'typeorm';
     PaymentModule,
     PriceHistoryModule,
     WishlistModule,
+    DriverApplicationModule,
     ConfigModule.forRoot({ isGlobal: true }),
 
     
