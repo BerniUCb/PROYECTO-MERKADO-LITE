@@ -11,8 +11,8 @@ export type NotificationType =
   | 'ORDER_RECEIVED'        // Pedido recibido
   | 'ORDER_SHIPPED'         // Pedido en camino
   | 'ORDER_DELIVERED'       // Pedido entregado
-  | 'NEW_PROMOTION';        // Nueva promoción
-
+  | 'NEW_PROMOTION'        // Nueva promoción
+  | 'DRIVER_APPROVED';      // Conductor aprobado
 
 export type RecipientRole = 'Admin' | 'Client' | 'DeliveryDriver'; 
 
@@ -37,7 +37,8 @@ export class Notification {
             'ORDER_RECEIVED',
             'ORDER_SHIPPED',
             'ORDER_DELIVERED',
-            'NEW_PROMOTION'
+            'NEW_PROMOTION',
+            'DRIVER_APPROVED',
         ]
     })
     type: NotificationType; 
