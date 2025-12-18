@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const instance = axios.create({
-  baseURL: "http://localhost:3005",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005",
 });
 
 if (typeof window !== "undefined") {
@@ -13,3 +13,4 @@ if (typeof window !== "undefined") {
     return config;
   });
 }
+
