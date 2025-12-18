@@ -1,148 +1,65 @@
-import Notification, { NotificationType } from "../models/notification.model";
+import { instance } from "../utils/axios";
+import type Notification from "../models/notification.model";
+import type { NotificationType, RecipientRole } from "../models/notification.model";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/notifications`;
+const NotificationService = {
+  // Obtener todas las notificaciones
+  // GET /notifications
+  getAll: async (): Promise<Notification[]> => {
+    const res = await instance.get("/notifications");
+    return res.data;
+  },
 
-class NotificationService {
-  // ⭐ Obtener todas las notificaciones del CLIENTE
-  async getClientNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/all-by-role?role=Client`, {
-      method: "GET",
-      cache: "no-cache",
+  // Obtener notificaciones por ID de usuario
+  // GET /notifications/user/:userId
+  getByUserId: async (userId: number): Promise<Notification[]> => {
+    const res = await instance.get(`/notifications/user/${userId}`);
+    return res.data;
+  },
+
+  // Obtener notificaciones no leídas por Rol (Admin, Client, Driver)
+  // GET /notifications/unread-by-role?role=...
+  getUnreadByRole: async (role: RecipientRole): Promise<Notification[]> => {
+    const res = await instance.get(`/notifications/unread-by-role`, {
+      params: { role }
     });
-
-    if (!res.ok) throw new Error("Error al obtener notificaciones del cliente");
-    return res.json();
-  }
-
-  // ⭐ Obtener notificaciones NO leídas del CLIENTE
-  async getUnreadClientNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/unread-by-role?role=Client`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok)
-      throw new Error("Error al obtener notificaciones no leídas del cliente");
-
-    return res.json();
-  }
-
-  // ⭐ Obtener todas las notificaciones del ADMIN
-  async getAdminNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/all-by-role?role=Admin`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok) throw new Error("Error al obtener notificaciones del admin");
-    return res.json();
-  }
-
-  // ⭐ Obtener solo no leídas del ADMIN
-  async getUnreadAdminNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/unread-by-role?role=Admin`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok)
-      throw new Error("Error al obtener notificaciones no leídas del admin");
-
-    return res.json();
-  }
-
-  // ⭐ Obtener todas las notificaciones del REPARTIDOR
-  async getDriverNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/all-by-role?role=DeliveryDriver`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok)
-      throw new Error("Error al obtener notificaciones del repartidor");
-
-    return res.json();
-  }
-
-  // ⭐ Obtener no leídas del REPARTIDOR
-  async getUnreadDriverNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/unread-by-role?role=DeliveryDriver`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok)
-      throw new Error(
-        "Error al obtener notificaciones no leídas del repartidor"
-      );
-
-    return res.json();
-  }
+    return res.data;
+  },
   
-
-  // ⭐ Obtener por TIPO
-  async getByType(type: NotificationType): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/by-type?type=${type}`, {
-      method: "GET",
-      cache: "no-cache",
+  // Obtener TODAS las notificaciones por Rol
+  // GET /notifications/all-by-role?role=...
+  getAllByRole: async (role: RecipientRole): Promise<Notification[]> => {
+    const res = await instance.get(`/notifications/all-by-role`, {
+      params: { role }
     });
+    return res.data;
+  },
 
-    if (!res.ok) throw new Error("Error al obtener notificaciones por tipo");
-    return res.json();
+  // Marcar como leída
+  // PATCH /notifications/:id/read
+  markAsRead: async (id: number): Promise<void> => {
+    await instance.patch(`/notifications/${id}/read`);
+  },
+
+  // Eliminar notificación
+  // DELETE /notifications/:id
+  delete: async (id: number): Promise<void> => {
+    await instance.delete(`/notifications/${id}`);
+  },
+
+  // --- Métodos Específicos para Driver (Usando la lógica de Roles) ---
+  
+  // Obtener notificaciones del conductor (Asumiendo que tienes el userId a mano)
+  getDriverNotifications: async (driverId: number): Promise<Notification[]> => {
+    return await NotificationService.getByUserId(driverId);
+  },
+  
+  // Obtener no leídas para el conductor (Usando el rol DeliveryDriver)
+  getUnreadDriverNotifications: async (driverId:number): Promise<Notification[]> => {
+      // Opción A: Filtrar por rol si no tienes endpoint específico de "mis no leídas"
+      const all = await NotificationService.getByUserId(driverId);
+      return all.filter(n => !n.isRead);
   }
+};
 
-  // ⭐ Marcar como leída
-  async markAsRead(id: number): Promise<Notification> {
-    const res = await fetch(`${API_URL}/${id}/read`, {
-      method: "PATCH",
-    });
-
-    if (!res.ok) throw new Error("Error al marcar como leída");
-    return res.json();
-  }
-
-  // ⭐ Eliminar notificación
-  async delete(id: number): Promise<void> {
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) throw new Error("Error al eliminar notificación");
-  }
-
-  // ===============================
-  // 🔽 NUEVO (NO ROMPE NADA)
-  // ===============================
-
-  // 🔹 Obtener notificaciones por usuario
-  async getByUser(userId: number): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/user/${userId}`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-
-    if (!res.ok)
-      throw new Error("Error al obtener notificaciones del usuario");
-
-    return res.json();
-  }
-
-  // 🔹 Resolver ruta para "Ver detalles"
-  getNotificationTarget(notification: Notification): string | null {
-    if (!notification.relatedEntityId) return null;
-
-    switch (notification.type) {
-      case "ORDER_RECEIVED":
-      case "ORDER_SHIPPED":
-      case "ORDER_DELIVERED":
-       return `/shipments/${notification.relatedEntityId}`;
-
-
-      default:
-        return null;
-    }
-  }
-}
-
-const notificationService = new NotificationService();
-export default notificationService;
+export default NotificationService;
