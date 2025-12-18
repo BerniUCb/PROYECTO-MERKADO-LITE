@@ -40,6 +40,7 @@ export default function HeaderAdmin() {
 
         {/* ICONOS DERECHA */}
         <div className={styles.rightSection}>
+          <Link href="/admin/notification">
           {/* NOTIFICACIONES */}
           <button
             className={styles.iconButton}
@@ -53,6 +54,7 @@ export default function HeaderAdmin() {
               height={24}
             />
           </button>
+          </Link>
 
           {/* CUENTA */}
           {/* 🔥 Corregido */}
