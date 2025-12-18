@@ -12,7 +12,7 @@ import {
 } from "react-icons/hi";
 import type { IconType } from "react-icons";
 
-import notificationService from "@/app/services/notification.service";
+import {NotificationService }from "@/app/services/notification.service";
 import type Notification from "@/app/models/notification.model";
 
 export default function NotificationDrivePage() {
@@ -54,11 +54,11 @@ export default function NotificationDrivePage() {
       setLoading(true);
 
       // Pasamos el ID explícitamente al servicio
-      const all = await notificationService.getDriverNotifications(id);
+      const all = await NotificationService.getDriverNotifications(id);
       
       // Filtramos las no leídas localmente para ahorrar una petición extra si el backend no tiene endpoint específico
       // O usamos el método del servicio pasando el ID también
-      const unread = await notificationService.getUnreadDriverNotifications(id);
+      const unread = await NotificationService.getUnreadDriverNotifications(id);
 
       setNotifications(all);
       setUnreadCount(unread.length);
@@ -84,7 +84,7 @@ export default function NotificationDrivePage() {
   const handleViewDetails = async (notif: Notification) => {
     try {
       if (!notif.isRead) {
-        await notificationService.markAsRead(notif.id);
+        await NotificationService.markAsRead(notif.id);
       }
       if (driverId) await loadNotifications(driverId);
 
