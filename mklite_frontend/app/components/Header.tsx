@@ -72,7 +72,7 @@ export default function Header() {
           </Link>
 
           {/* ✅ Icono Cuenta también a /user */}
-          <Link href="/user">
+          <Link href="/user/account">
             <Image
               src="/header/iconoUsuario.png"
               alt="Cuenta"
