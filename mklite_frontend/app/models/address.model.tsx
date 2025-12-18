@@ -11,6 +11,9 @@ export default interface AddressModel {
   references?: string | null;
   addressAlias: string;
   isDefault: boolean;
+  latitude?: number;
+longitude?: number;
+
 
   userId: number;
 }

@@ -1,3 +1,4 @@
+// src/models/notification.model.ts
 import User from "./user.model";
 
 export type NotificationType =
@@ -9,7 +10,7 @@ export type NotificationType =
   | "ORDER_DELIVERED"
   | "NEW_PROMOTION";
 
-export type RecipientRole = "Admin" | "Client";
+export type RecipientRole = "Admin" | "Client" | "DeliveryDriver";
 
 export default interface Notification {
   id: number;
@@ -17,7 +18,10 @@ export default interface Notification {
   detail: string;
   type: NotificationType;
   recipientRole: RecipientRole;
+
+  // normalmente apunta a order_id o shipment_id
   relatedEntityId?: string;
+
   isRead: boolean;
   createdAt: string;
 
