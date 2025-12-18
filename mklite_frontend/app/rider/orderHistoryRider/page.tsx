@@ -92,75 +92,100 @@ export default function OrderRiderHistory() {
     return diff <= 0 ? "A tiempo" : `Retraso (${diff} min)`;
   };
 
+  const hasData = shipments.length > 0;
+
   // =========================
   // Render
   // =========================
   return (
     <div className={styles.layout}>
-      {/* ===== TABLA ===== */}
+      {/* ===== CONTENIDO PRINCIPAL ===== */}
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Salida</th>
-              <th>Entrega</th>
-              <th>Puntualidad</th>
-              <th>Tarifa</th>
-            </tr>
-          </thead>
+        {!hasData ? (
+          // ===== MENSAJE SIN DATOS =====
+          <div
+            style={{
+              padding: "60px 20px",
+              textAlign: "center",
+              color: "#666",
+            }}
+          >
+            <h3>Aún no tienes pedidos</h3>
+            <p>
+              Cuando completes tus primeras entregas, aparecerán aquí.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* ===== TABLA ===== */}
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Salida</th>
+                  <th>Entrega</th>
+                  <th>Puntualidad</th>
+                  <th>Tarifa</th>
+                </tr>
+              </thead>
 
-          <tbody>
-            {shipments.map((s) => (
-              <tr
-                key={s.id}
-                onClick={() => setSelected(s)}
-                style={{ cursor: "pointer" }}
+              <tbody>
+                {shipments.map((s) => (
+                  <tr
+                    key={s.id}
+                    onClick={() => setSelected(s)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>
+                      <span
+                        className={`${styles.badge} ${styles.entregado}`}
+                      >
+                        Entregado
+                      </span>
+                    </td>
+                    <td>{formatDate(s.deliveredAt)}</td>
+                    <td>{formatTime(s.assignedAt)}</td>
+                    <td>{formatTime(s.deliveredAt)}</td>
+                    <td>
+                      <span className={styles.badge}>
+                        {punctuality(s)}
+                      </span>
+                    </td>
+                    <td>
+                      Bs. {calcEarning(s).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* ===== PAGINACIÓN ===== */}
+            <div className={styles.pagination}>
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
               >
-                <td>
-                  <span className={`${styles.badge} ${styles.entregado}`}>
-                    Entregado
-                  </span>
-                </td>
-                <td>{formatDate(s.deliveredAt)}</td>
-                <td>{formatTime(s.assignedAt)}</td>
-                <td>{formatTime(s.deliveredAt)}</td>
-                <td>
-                  <span className={styles.badge}>
-                    {punctuality(s)}
-                  </span>
-                </td>
-                <td>Bs. {calcEarning(s).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                ←
+              </button>
 
-        {/* ===== PAGINACIÓN ===== */}
-        <div className={styles.pagination}>
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            ←
-          </button>
+              <span>
+                Página {page} / {totalPages}
+              </span>
 
-          <span>
-            Página {page} / {totalPages}
-          </span>
-
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            →
-          </button>
-        </div>
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                →
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* ===== DETALLE ===== */}
-      {selected && (
+      {hasData && selected && (
         <div className={styles.detailCard}>
           <h3>Pedido #{selected.order.id}</h3>
 
@@ -180,7 +205,8 @@ export default function OrderRiderHistory() {
             <ul>
               {selected.order.items.map((i) => (
                 <li key={i.id}>
-                  {i.quantity}x {i.product?.name ?? "Producto"}
+                  {i.quantity}x{" "}
+                  {i.product?.name ?? "Producto"}
                 </li>
               ))}
             </ul>
