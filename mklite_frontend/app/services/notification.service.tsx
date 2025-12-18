@@ -30,19 +30,20 @@ export const NotificationService = {
   getUnreadAdminNotifications: async (): Promise<Notification[]> => {
     const res = await instance.get("/notifications/unread-by-role?role=Admin");
     return res.data;
+  }, 
+
+    // Ahora recibe userId y busca las notificaciones PERSONALES
+  getDriverNotifications: async (userId: number): Promise<Notification[]> => {
+    // Usamos getByUserId para traer las específicas de este conductor
+    return await NotificationService.getByUserId(userId);
   },
 
-  // ⭐ Obtener todas las notificaciones del RIDER/DRIVER
-  getDriverNotifications: async (): Promise<Notification[]> => {
-    const res = await instance.get("/notifications/all-by-role?role=DeliveryDriver");
-    return res.data;
+  // Filtramos las no leídas en el cliente para asegurar precisión
+  getUnreadDriverNotifications: async (userId: number): Promise<Notification[]> => {
+    const all = await NotificationService.getByUserId(userId);
+    return all.filter(n => !n.isRead);
   },
 
-  // ⭐ Obtener notificaciones NO leídas del RIDER/DRIVER
-  getUnreadDriverNotifications: async (): Promise<Notification[]> => {
-    const res = await instance.get("/notifications/unread-by-role?role=DeliveryDriver");
-    return res.data;
-  },
 
   // ⭐ Obtener notificaciones por usuario
   getByUserId: async (userId: number): Promise<Notification[]> => {
