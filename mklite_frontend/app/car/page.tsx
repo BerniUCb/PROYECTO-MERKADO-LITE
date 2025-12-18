@@ -166,7 +166,7 @@ export default function CarPage() {
           {showEmpty && (
             <AddressEmpty
               onClose={() => setShowEmpty(false)}
-              onAdd={() => router.push("/user/address")}
+              onAdd={() => router.push("/user/addresses")}
             />
           )}
 
@@ -174,7 +174,7 @@ export default function CarPage() {
             <AddressList
               addresses={addresses}
               onClose={() => setShowList(false)}
-              onAdd={() => router.push("/user/address")}
+              onAdd={() => router.push("/user/addresses")}
               onSelect={(addr) => {
                 setSelectedAddress(addr);
                 setShowList(false);
