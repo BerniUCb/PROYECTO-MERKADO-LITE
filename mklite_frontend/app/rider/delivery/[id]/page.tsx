@@ -23,36 +23,44 @@ function shipmentToView(shipment: Shipment) {
   const addr = shipment.deliveryAddress;
 
   return {
-    id: shipment.id,
-    createdAt: shipment.order.createdAt ?? new Date().toISOString(),
-    status: shipment.status,
+  id: shipment.id,
+  createdAt:
+    shipment.order.createdAt ?? new Date().toISOString(),
 
-    user: shipment.order.user,
+  status: shipment.status,
 
-    items: shipment.order.items,
+  user: shipment.order.user,
 
-    orderTotal: shipment.order.items.reduce(
-      (acc, it) => acc + it.quantity * it.unitPrice,
-      0
-    ),
+  items: shipment.order.items.map((it: any) => ({
+    ...it,
+    quantity: Number(it.quantity),
+    unitPrice: Number(it.unitPrice),
+  })),
 
-    store: {
-      name: "MERKADO LITE",
-      location: {
-        lat: 0,
-        lng: 0,
-        address1: "Tienda",
-        address2: "",
-      },
+  orderTotal: shipment.order.items.reduce(
+    (acc: number, it: any) =>
+      acc +
+      Number(it.quantity) * Number(it.unitPrice),
+    0
+  ),
+
+  store: {
+    name: "MERKADO LITE",
+    location: {
+      lat: -17.374063,
+      lng: -66.167678,
+      address1: "Tienda",
+      address2: "",
     },
+  },
 
-    customerLocation: {
-      lat: addr.latitude ?? 0,
-      lng: addr.longitude ?? 0,
-      address1: `${addr.street} ${addr.streetNumber}`,
-      address2: `${addr.city}, ${addr.state}`,
-    },
-  };
+  customerLocation: {
+    lat: addr.latitude ?? 0,
+    lng: addr.longitude ?? 0,
+    address1: `${addr.street} ${addr.streetNumber}`,
+    address2: `${addr.city}, ${addr.state}`,
+  },
+};
 }
 
 // ----------------------------

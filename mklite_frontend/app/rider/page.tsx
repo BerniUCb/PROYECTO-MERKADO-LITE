@@ -8,10 +8,8 @@ import OrdersTable from "./components/OrdersTable";
 import OrderDetailCard from "./components/OrderDetailCard";
 import { useRouter } from "next/navigation";
 
-import {
-  ShipmentService,
-  type Shipment,
-} from "../services/shipment.service";
+import { ShipmentService, type Shipment } from "@/app/services/shipment.service";
+import { StoreService, type StoreLocation } from "@/app/services/store.service";
 
 // --------------------------------------------------
 // Helpers
@@ -38,13 +36,16 @@ function calcTotal(items: RiderOrder["items"]): number {
   );
 }
 
-function shipmentToRiderOrder(s: Shipment): RiderOrder {
+function shipmentToRiderOrder(
+  s: Shipment,
+  store: StoreLocation
+): RiderOrder {
   const items: RiderOrder["items"] = s.order.items.map((it: any) => ({
-  id: it.id,
-  name: it.name ?? it.product?.name ?? `Producto ${it.id}`,
-  quantity: Number(it.quantity),
-  unitPrice: Number(it.unitPrice),
-}));
+    id: it.id,
+    name: it.product?.name ?? `Producto ${it.id}`,
+    quantity: Number(it.quantity),
+    unitPrice: Number(it.unitPrice),
+  }));
 
   const addr = s.deliveryAddress;
 
@@ -54,10 +55,8 @@ function shipmentToRiderOrder(s: Shipment): RiderOrder {
     createdAt: s.order.createdAt ?? new Date().toISOString(),
 
     status: mapStatus(s.status),
-
     orderTotal: calcTotal(items),
-    paymentMethod:
-      s.order.paymentMethod ?? "Cash on delivery",
+    paymentMethod: s.order.paymentMethod ?? "Cash",
 
     user: {
       id: s.order.user.id,
@@ -68,18 +67,18 @@ function shipmentToRiderOrder(s: Shipment): RiderOrder {
 
     items,
 
-    // Tienda (todavía no existe en backend)
+    // ✅ TIENDA DESDE BACKEND
     store: {
-      name: "MERKADO LITE",
-      location: {
-        lat: 0,
-        lng: 0,
-        address1: "Tienda",
-        address2: "",
-      },
+  name: store.name,
+  location: {
+    lat: Number(store.lat),
+    lng: Number(store.lng),
+    address1: store.address1,
+    address2: store.address2,
+  },
     },
 
-    // Cliente (SALE DIRECTO DEL BACKEND)
+    // ✅ CLIENTE DESDE BACKEND
     customerLocation: {
       lat: addr.latitude ?? 0,
       lng: addr.longitude ?? 0,
@@ -96,16 +95,35 @@ function shipmentToRiderOrder(s: Shipment): RiderOrder {
 export default function RiderHomePage() {
   const riderName = "Jp";
 
+  const [store, setStore] = useState<StoreLocation | null>(null);
   const [orders, setOrders] = useState<RiderOrder[]>([]);
   const [selectedOrder, setSelectedOrder] =
     useState<RiderOrder | null>(null);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] =
-    useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const router = useRouter();
 
+  // ------------------------
+  // 1️⃣ Cargar tienda
+  // ------------------------
   useEffect(() => {
+    (async () => {
+      try {
+        const data = await StoreService.getLocation();
+        setStore(data);
+      } catch (e) {
+        console.error("Error cargando store", e);
+      }
+    })();
+  }, []);
+
+  // ------------------------
+  // 2️⃣ Cargar pedidos
+  // ------------------------
+  useEffect(() => {
+    if (!store) return;
+
     let alive = true;
 
     (async () => {
@@ -113,31 +131,23 @@ export default function RiderHomePage() {
         setLoading(true);
         setErrorMsg(null);
 
-        const shipments =
-          await ShipmentService.getAvailable();
+        const shipments = await ShipmentService.getAvailable();
 
-        const mapped =
-          shipments.map(shipmentToRiderOrder);
+        const mapped = shipments.map((s) =>
+          shipmentToRiderOrder(s, store)
+        );
 
         if (!alive) return;
 
         setOrders(mapped);
-        setSelectedOrder((prev) =>
-          prev
-            ? mapped.find(
-                (o) => o.id === prev.id
-              ) ?? null
-            : null
-        );
+        setSelectedOrder(null);
       } catch (err) {
         console.error(err);
         if (!alive) return;
 
         setOrders([]);
         setSelectedOrder(null);
-        setErrorMsg(
-          "Error cargando pedidos desde el backend"
-        );
+        setErrorMsg("Error cargando pedidos");
       } finally {
         if (!alive) return;
         setLoading(false);
@@ -147,38 +157,28 @@ export default function RiderHomePage() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [store]);
 
   const hasOrders = useMemo(
     () => orders.length > 0,
     [orders.length]
   );
 
-  // --------------------------------------------------
-  // Aceptar pedido (BACKEND REAL)
-  // --------------------------------------------------
-  const handleAccept = async (
-    shipmentId: number
-  ) => {
+  // ------------------------
+  // 3️⃣ Aceptar pedido
+  // ------------------------
+  const handleAccept = async (shipmentId: number) => {
     try {
-      const raw =
-        localStorage.getItem("user");
+      const raw = localStorage.getItem("user");
       if (!raw) {
         alert("Usuario no autenticado");
         return;
       }
 
       const user = JSON.parse(raw);
-      const driverId = user.id;
+      await ShipmentService.assign(shipmentId, user.id);
 
-      await ShipmentService.assign(
-        shipmentId,
-        driverId
-      );
-
-      router.push(
-        `/rider/delivery/${shipmentId}`
-      );
+      router.push(`/rider/delivery/${shipmentId}`);
     } catch (err: any) {
       console.error(err);
       alert(
@@ -188,6 +188,9 @@ export default function RiderHomePage() {
     }
   };
 
+  // ------------------------
+  // Render
+  // ------------------------
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>
@@ -195,7 +198,6 @@ export default function RiderHomePage() {
       </h1>
 
       <section className={styles.content}>
-        {/* CARD IZQUIERDA */}
         <div className={styles.card}>
           <header className={styles.cardHeader}>
             <span className={styles.cardTitle}>
@@ -207,9 +209,7 @@ export default function RiderHomePage() {
             {loading ? (
               <p>Cargando pedidos...</p>
             ) : errorMsg ? (
-              <p className={styles.emptyText}>
-                {errorMsg}
-              </p>
+              <p className={styles.emptyText}>{errorMsg}</p>
             ) : !hasOrders ? (
               <p className={styles.emptyText}>
                 No hay pedidos disponibles
@@ -217,24 +217,18 @@ export default function RiderHomePage() {
             ) : (
               <OrdersTable
                 orders={orders}
-                onSelect={(order) =>
-                  setSelectedOrder(order)
-                }
+                onSelect={setSelectedOrder}
               />
             )}
           </div>
         </div>
 
-        {/* CARD DERECHA */}
         <OrderDetailCard
           order={selectedOrder}
-          onAccept={() => {
-            if (!selectedOrder) return;
-            handleAccept(selectedOrder.id);
-          }}
-          onContact={() =>
-            alert("Contactar cliente")
+          onAccept={() =>
+            selectedOrder && handleAccept(selectedOrder.id)
           }
+          onContact={() => alert("Contactar cliente")}
         />
       </section>
     </div>
