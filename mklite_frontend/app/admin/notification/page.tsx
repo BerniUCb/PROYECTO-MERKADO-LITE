@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-
-// IMPORTS CORRECTOS SEGÚN LA NUEVA ESTRUCTURA
-import notificationService from "@/app/services/notification.service";
+import { NotificationService } from "@/app/services/notification.service";
 import Notification from "@/app/models/notification.model";
+
 // ------------------ MAPEO DE CATEGORÍAS ------------------
 const categoryMap: Record<string, string> = {
   CASH_REGISTER_CLOSED: "inventario",
@@ -41,16 +40,53 @@ export default function NotificationsPage() {
   const [activeFilter, setActiveFilter] = useState("todas");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Cargar datos desde backend PERO PARA ADMIN
+  // Cargar datos desde backend PARA ADMIN
   useEffect(() => {
-    notificationService
-      .getAdminNotifications()
-      .then((res) => setNotifications(res))
-      .finally(() => setLoading(false));
+    const loadNotifications = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const data = await NotificationService.getAdminNotifications();
+        setNotifications(data);
+      } catch (err: any) {
+        console.error("Error cargando notificaciones:", err);
+        setError(err.response?.data?.message || err.message || "Error al cargar notificaciones");
+        setNotifications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadNotifications();
   }, []);
 
-  if (loading) return <p>Cargando...</p>;
+  // Función para eliminar notificación
+  const handleDelete = async (id: number) => {
+    try {
+      await NotificationService.delete(id);
+      setNotifications((old) => old.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error eliminando notificación:", error);
+      alert("Error al eliminar la notificación");
+    }
+  };
+
+  // Función para marcar como leída
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      await NotificationService.markAsRead(id);
+      setNotifications((old) =>
+        old.map((item) =>
+          item.id === id ? { ...item, isRead: true } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error marcando como leída:", error);
+    }
+  };
 
   // Procesar categoría basada en el tipo
   const processed = notifications.map((n) => ({
@@ -64,10 +100,46 @@ export default function NotificationsPage() {
       ? processed
       : processed.filter((n) => n.category === activeFilter);
 
+  if (loading) {
+    return (
+      <div className={styles.overlay}>
+        <div className={styles.panel}>
+          <p style={{ textAlign: 'center', padding: '40px', color: '#777' }}>
+            Cargando notificaciones...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.overlay}>
+        <div className={styles.panel}>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p style={{ color: '#e94b4b', marginBottom: '20px' }}>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#e94b4b',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+              }}
+            >
+              Reintentar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.overlay}>
       <div className={styles.panel}>
-
         {/* ENCABEZADO */}
         <div className={styles.panelHeader}>
           <div>
@@ -97,62 +169,90 @@ export default function NotificationsPage() {
 
         {/* LISTA DE NOTIFICACIONES */}
         <div className={styles.list}>
-          {filtered.map((n) => {
-            const tag = tagMap[n.type];
+          {filtered.length === 0 ? (
+            <p style={{ textAlign: 'center', padding: '40px', color: '#777' }}>
+              No hay notificaciones para mostrar
+            </p>
+          ) : (
+            filtered.map((n) => {
+              const tag = tagMap[n.type];
 
-            return (
-              <div key={n.id} className={styles.card}>
-                <img
-                  src={iconMap[n.category] || "/icons/bell.svg"}
-                  className={styles.icon}
-                />
+              return (
+                <div 
+                  key={n.id} 
+                  className={styles.card}
+                  style={{
+                    opacity: n.isRead ? 0.7 : 1,
+                    borderLeft: n.isRead ? '3px solid #ccc' : '3px solid #e94b4b',
+                  }}
+                >
+                  <img
+                    src={iconMap[n.category] || "/icons/bell.svg"}
+                    className={styles.icon}
+                    alt={n.category}
+                  />
 
-                <div className={styles.info}>
-                  <div className={styles.row}>
-                    <h3>{n.title}</h3>
+                  <div className={styles.info}>
+                    <div className={styles.row}>
+                      <h3 style={{ 
+                        fontWeight: n.isRead ? 'normal' : 'bold',
+                        color: n.isRead ? '#777' : '#1a1a1a',
+                      }}>
+                        {n.title}
+                      </h3>
 
-                    {/* ELIMINAR */}
-                    <span
-                      className={styles.close}
-                      onClick={() =>
-                        notificationService.delete(n.id).then(() =>
-                          setNotifications((old) =>
-                            old.filter((item) => item.id !== n.id)
-                          )
-                        )
-                      }
-                    >
-                      ×
-                    </span>
-                  </div>
+                      {/* ELIMINAR */}
+                      <span
+                        className={styles.close}
+                        onClick={() => handleDelete(n.id)}
+                        title="Eliminar notificación"
+                      >
+                        ×
+                      </span>
+                    </div>
 
-                  <p className={styles.detail}>{n.detail}</p>
+                    <p className={styles.detail}>{n.detail}</p>
 
-                  {/* TAGS */}
-                  <div className={styles.tags}>
-                    <span className={styles.tag1}>
-                      {n.category.charAt(0).toUpperCase() + n.category.slice(1)}
-                    </span>
+                    {/* TAGS */}
+                    <div className={styles.tags}>
+                      <span className={styles.tag1}>
+                        {n.category.charAt(0).toUpperCase() + n.category.slice(1)}
+                      </span>
 
-                    <span
-                      className={styles.tag2}
-                      style={{ background: tag?.color }}
-                    >
-                      {tag?.label}
-                    </span>
-                  </div>
+                      <span
+                        className={styles.tag2}
+                        style={{ background: tag?.color }}
+                      >
+                        {tag?.label}
+                      </span>
 
-                  {/* FECHA */}
-                  <div className={styles.meta}>
-                    {new Date(n.createdAt).toLocaleString("es-BO")} ·{" "}
-                    {n.category}
+                      {!n.isRead && (
+                        <span
+                          className={styles.tag2}
+                          style={{ 
+                            background: '#e94b4b', 
+                            color: 'white',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => handleMarkAsRead(n.id)}
+                          title="Marcar como leída"
+                        >
+                          Marcar como leída
+                        </span>
+                      )}
+                    </div>
+
+                    {/* FECHA */}
+                    <div className={styles.meta}>
+                      {new Date(n.createdAt).toLocaleString("es-BO")} ·{" "}
+                      {n.category}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
-
       </div>
     </div>
   );
