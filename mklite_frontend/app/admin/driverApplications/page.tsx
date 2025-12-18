@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import HeaderAdmin from "../../components/HeaderAdmin";
+// import HeaderAdmin from "../../components/HeaderAdmin"; // Si usas Sidebar, el header suele ir dentro del layout
 
 import DriverApplicationModel, {
   DriverApplicationStatus,
@@ -10,20 +10,20 @@ import DriverApplicationModel, {
 
 import { DriverApplicationService } from "@/app/services/driverApplication.service";
 
-import { FaPhoneAlt, FaMotorcycle, FaCalendarAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaMotorcycle, FaCalendarAlt, FaUser } from "react-icons/fa";
 
 export default function DriverApplicationsPage() {
-  const [applications, setApplications] =
-    useState<DriverApplicationModel[]>([]);
-  const [selected, setSelected] =
-    useState<DriverApplicationModel | null>(null);
+  const [applications, setApplications] = useState<DriverApplicationModel[]>([]);
+  const [selected, setSelected] = useState<DriverApplicationModel | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     DriverApplicationService.getAll()
       .then((data: DriverApplicationModel[]) => {
         setApplications(data);
-        setSelected(data[0] ?? null);
+        if (data.length > 0) {
+            setSelected(data[0]);
+        }
       })
       .catch((err) => {
         console.error("Error cargando solicitudes:", err);
@@ -36,8 +36,7 @@ export default function DriverApplicationsPage() {
     status: DriverApplicationStatus
   ) => {
     try {
-      const updated =
-        await DriverApplicationService.updateStatus(id, status);
+      const updated = await DriverApplicationService.updateStatus(id, status);
 
       setApplications((prev) =>
         prev.map((app) => (app.id === id ? updated : app))
@@ -49,117 +48,142 @@ export default function DriverApplicationsPage() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+      switch(status) {
+          case 'PENDING': return 'Pendiente';
+          case 'APPROVED': return 'Aprobado';
+          case 'REJECTED': return 'Rechazado';
+          default: return status;
+      }
+  };
+
+  const getStatusClass = (status: string) => {
+      switch(status) {
+          case 'PENDING': return styles.statusPending;
+          case 'APPROVED': return styles.statusApproved;
+          case 'REJECTED': return styles.statusRejected;
+          default: return '';
+      }
+  };
+
   if (loading) {
-    return <p>Cargando solicitudes...</p>;
+    return <div className={styles.loadingScreen}>Cargando solicitudes...</div>;
   }
 
   return (
-    <>
-      <HeaderAdmin />
+    <div className={styles.pageWrapper}>
+      {/* <HeaderAdmin />  <-- Descomentar si es necesario, pero usualmente va en el layout padre */}
 
-      <main className={styles.page}>
-        <h1 className={styles.title}>Solicitudes de repartidor</h1>
-        <p className={styles.subtitle}>
-          Aquí puedes revisar, aprobar o rechazar las solicitudes.
-        </p>
+      <main className={styles.mainContent}>
+        <header className={styles.header}>
+            <h1 className={styles.title}>Solicitudes de repartidor</h1>
+            <p className={styles.subtitle}>
+            Administra las solicitudes de ingreso de nuevos conductores.
+            </p>
+        </header>
 
-        <div className={styles.layout}>
-          {/* ===== TABLA ===== */}
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Teléfono</th>
-                  <th>Vehículo</th>
-                  <th>Estado</th>
-                  <th>Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map((item) => (
-                  <tr
-                    key={item.id}
-                    onClick={() => setSelected(item)}
-                    className={
-                      selected?.id === item.id ? styles.activeRow : ""
-                    }
-                  >
-                    <td>{item.id}</td>
-                    <td>{item.user.fullName}</td>
-                    <td>{item.user.phone}</td>
-                    <td>{item.vehicleType}</td>
-                    <td>{item.status}</td>
-                    <td>
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className={styles.contentGrid}>
+          
+          {/* ===== LISTA DE SOLICITUDES (IZQUIERDA) ===== */}
+          <section className={styles.listSection}>
+            <div className={styles.tableWrapper}>
+                <table className={styles.table}>
+                <thead>
+                    <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Vehículo</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {applications.length === 0 && (
+                        <tr><td colSpan={5} className={styles.emptyState}>No hay solicitudes pendientes.</td></tr>
+                    )}
+                    {applications.map((item) => (
+                    <tr
+                        key={item.id}
+                        onClick={() => setSelected(item)}
+                        className={selected?.id === item.id ? styles.activeRow : ""}
+                    >
+                        <td className={styles.boldText}>#{item.id}</td>
+                        <td>{item.user.fullName}</td>
+                        <td>{item.vehicleType}</td>
+                        <td>
+                            <span className={`${styles.statusBadge} ${getStatusClass(item.status)}`}>
+                                {getStatusLabel(item.status)}
+                            </span>
+                        </td>
+                        <td className={styles.dateCell}>
+                            {new Date(item.createdAt).toLocaleDateString()}
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            </div>
+          </section>
 
-          {/* ===== DETALLE ===== */}
-          {selected && (
-            <aside className={styles.detailCard}>
-              <h3>{selected.user.fullName}</h3>
-              <p className={styles.email}>{selected.user.email}</p>
+          {/* ===== DETALLE (DERECHA) ===== */}
+          {selected ? (
+            <aside className={styles.detailSection}>
+              <div className={styles.detailCard}>
+                <div className={styles.profileHeader}>
+                    <div className={styles.avatarCircle}>
+                        <FaUser size={24} />
+                    </div>
+                    <div>
+                        <h3 className={styles.detailName}>{selected.user.fullName}</h3>
+                        <p className={styles.detailEmail}>{selected.user.email}</p>
+                    </div>
+                </div>
 
-              <div className={styles.info}>
-                <span>
-                  <FaPhoneAlt size={14} />
-                  {selected.user.phone}
-                </span>
+                <hr className={styles.divider} />
 
-                <span>
-                  <FaMotorcycle size={16} />
-                  {selected.vehicleType}
-                </span>
+                <div className={styles.infoGrid}>
+                    <div className={styles.infoItem}>
+                        <span className={styles.label}><FaPhoneAlt /> Teléfono</span>
+                        <span className={styles.value}>{selected.user.phone || 'N/A'}</span>
+                    </div>
+                    <div className={styles.infoItem}>
+                        <span className={styles.label}><FaMotorcycle /> Vehículo</span>
+                        <span className={styles.value} style={{textTransform:'capitalize'}}>{selected.vehicleType}</span>
+                    </div>
+                    <div className={styles.infoItem}>
+                        <span className={styles.label}><FaCalendarAlt /> Fecha Solicitud</span>
+                        <span className={styles.value}>{new Date(selected.createdAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
 
-                <span>
-                  <FaCalendarAlt size={14} />
-                  {new Date(selected.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-
-              <div className={styles.actions}>
-                <button
-                  className={styles.accept}
-                  disabled={
-                    selected.status !==
-                    DriverApplicationStatus.PENDING
-                  }
-                  onClick={() =>
-                    handleStatusChange(
-                      selected.id,
-                      DriverApplicationStatus.APPROVED
-                    )
-                  }
-                >
-                  Aceptar
-                </button>
-
-                <button
-                  className={styles.reject}
-                  disabled={
-                    selected.status !==
-                    DriverApplicationStatus.PENDING
-                  }
-                  onClick={() =>
-                    handleStatusChange(
-                      selected.id,
-                      DriverApplicationStatus.REJECTED
-                    )
-                  }
-                >
-                  Rechazar
-                </button>
+                {selected.status === DriverApplicationStatus.PENDING ? (
+                    <div className={styles.actions}>
+                        <button
+                            className={styles.btnApprove}
+                            onClick={() => handleStatusChange(selected.id, DriverApplicationStatus.APPROVED)}
+                        >
+                            Aprobar Solicitud
+                        </button>
+                        <button
+                            className={styles.btnReject}
+                            onClick={() => handleStatusChange(selected.id, DriverApplicationStatus.REJECTED)}
+                        >
+                            Rechazar
+                        </button>
+                    </div>
+                ) : (
+                    <div className={`${styles.statusMessage} ${getStatusClass(selected.status)}`}>
+                        Solicitud {getStatusLabel(selected.status)}
+                    </div>
+                )}
               </div>
             </aside>
+          ) : (
+             <div className={styles.emptySelection}>Selecciona una solicitud para ver detalles</div>
           )}
+
         </div>
       </main>
-    </>
+    </div>
   );
 }
