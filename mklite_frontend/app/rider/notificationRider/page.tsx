@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode"; // Asegúrate de tener esta librería instalada
+import { jwtDecode } from "jwt-decode"; 
 import styles from "./page.module.css";
 import {
   HiOutlineBell,

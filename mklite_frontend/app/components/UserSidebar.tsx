@@ -15,9 +15,9 @@ const menuItems = [
   { label: "Mi Carrito", href: "/car", icon: "/user-menu/cart.svg" },
   { label: "Mis Direcciones", href: "/user/addresses", icon: "/user-menu/addresses.svg" },
   { label: "Notificaciones", href: "/user/notifications", icon: "/user-menu/notifications.svg" },
-  { label: "Cupones", href: "/user/coupons", icon: "/user-menu/coupons.svg" },
-  { label: "Recibos", href: "/user/receipts", icon: "/user-menu/receipts.svg" },
-  { label: "Configuración de la cuenta", href: "/user/settings", icon: "/user-menu/settings.svg" },
+  //{ label: "Cupones", href: "/user/coupons", icon: "/user-menu/coupons.svg" },
+ // { label: "Recibos", href: "/user/receipts", icon: "/user-menu/receipts.svg" },
+  //{ label: "Configuración de la cuenta", href: "/user/settings", icon: "/user-menu/settings.svg" },
   { label: "Centro de Soporte", href: "/user/support-center", icon: "/user-menu/support.svg" },
 ];
 
