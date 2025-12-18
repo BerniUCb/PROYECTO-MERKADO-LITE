@@ -26,6 +26,7 @@ import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItem } from './entity/order-item.entity';
 import { PriceHistoryModule } from './price-history/price-history.module';
 import { WishlistModule } from './wish-list/wish-list.module'; 
+import { StoreModule } from "./store/store.module";
 import { Or } from 'typeorm';
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { Or } from 'typeorm';
     WishlistModule,
     DriverApplicationModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    StoreModule,
 
     
     CartItemModule,
