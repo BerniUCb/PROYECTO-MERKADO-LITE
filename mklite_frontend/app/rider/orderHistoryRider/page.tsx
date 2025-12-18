@@ -2,8 +2,12 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { ShipmentService } from "@/app/services/shipment.service";
-import type Shipment from "@/app/models/shipment.model";
+
+// 👉 IMPORTAR DESDE EL SERVICE (MISMO TIPO)
+import {
+  ShipmentService,
+  type Shipment,
+} from "@/app/services/shipment.service";
 
 const PAGE_SIZE = 5;
 
@@ -16,10 +20,10 @@ export default function OrderRiderHistory() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
 
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   // =========================
-  // Obtener driverId (token)
+  // Obtener driverId desde JWT
   // =========================
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,7 +31,7 @@ export default function OrderRiderHistory() {
 
     try {
       const payload: any = JSON.parse(atob(token.split(".")[1]));
-      setDriverId(payload.sub || payload.id);
+      setDriverId(payload.sub ?? payload.id ?? null);
     } catch {
       console.error("Token inválido");
     }
@@ -46,6 +50,7 @@ export default function OrderRiderHistory() {
           page,
           PAGE_SIZE
         );
+
         setShipments(res.data);
         setTotal(res.total);
         setSelected(res.data[0] ?? null);
@@ -58,24 +63,31 @@ export default function OrderRiderHistory() {
   }, [driverId, page]);
 
   // =========================
-  // Helpers
+  // Helpers (NULL SAFE)
   // =========================
-  const formatDate = (d?: string) =>
+  const formatDate = (d?: string | null) =>
     d ? new Date(d).toLocaleDateString() : "-";
 
-  const formatTime = (d?: string) =>
-    d ? new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-";
+  const formatTime = (d?: string | null) =>
+    d
+      ? new Date(d).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "-";
 
   const calcEarning = (s: Shipment) =>
     s.order.items.reduce(
-      (acc, i) => acc + i.quantity * i.unitPrice,
+      (acc, i) => acc + i.quantity * Number(i.unitPrice),
       0
     );
 
   const punctuality = (s: Shipment) => {
     if (!s.estimatedDelivery || !s.deliveredAt) return "A tiempo";
+
     const est = new Date(s.estimatedDelivery).getTime();
     const del = new Date(s.deliveredAt).getTime();
+
     const diff = Math.round((del - est) / 60000);
     return diff <= 0 ? "A tiempo" : `Retraso (${diff} min)`;
   };
@@ -127,17 +139,20 @@ export default function OrderRiderHistory() {
 
         {/* ===== PAGINACIÓN ===== */}
         <div className={styles.pagination}>
-          <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
             ←
           </button>
 
           <span>
-            Página {page} / {totalPages || 1}
+            Página {page} / {totalPages}
           </span>
 
           <button
             disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
+            onClick={() => setPage((p) => p + 1)}
           >
             →
           </button>
@@ -150,7 +165,8 @@ export default function OrderRiderHistory() {
           <h3>Pedido #{selected.order.id}</h3>
 
           <p>
-            <strong>Cliente:</strong> {selected.order.user.fullName}
+            <strong>Cliente:</strong>{" "}
+            {selected.order.user.fullName}
           </p>
 
           <p>
@@ -162,9 +178,9 @@ export default function OrderRiderHistory() {
           <div className={styles.boxFull}>
             <strong>Productos</strong>
             <ul>
-              {selected.order.items.map((i, idx) => (
-                <li key={idx}>
-                  {i.quantity}x {i.product.name}
+              {selected.order.items.map((i) => (
+                <li key={i.id}>
+                  {i.quantity}x {i.product?.name ?? "Producto"}
                 </li>
               ))}
             </ul>

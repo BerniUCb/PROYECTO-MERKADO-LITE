@@ -22,6 +22,7 @@ export type Shipment = {
 
   assignedAt?: string | null;
   deliveredAt?: string | null;
+  estimatedDelivery?: string | null;
 
   order: {
     id: number;
@@ -61,29 +62,64 @@ export type Shipment = {
   } | null;
 };
 
+/**
+ * Respuesta paginada para historial
+ */
+export interface PaginatedShipments {
+  total: number;
+  page: number;
+  limit: number;
+  data: Shipment[];
+}
+
 export const ShipmentService = {
-  /** 🟢 Rider – pedidos disponibles */
+  // =========================
+  // 🟢 Rider – pedidos disponibles
+  // =========================
   getAvailable: async (): Promise<Shipment[]> => {
     const res = await instance.get("/shipments/available");
     return res.data;
   },
 
-  /** 🟢 Obtener shipment por ID */
+  // =========================
+  // 🟢 Obtener shipment por ID
+  // =========================
   getById: async (id: number): Promise<Shipment> => {
     const res = await instance.get(`/shipments/${id}`);
     return res.data;
   },
 
-  /** 🟢 Pedidos del rider */
+  // =========================
+  // 🟢 Pedidos del rider (activos)
+  // =========================
   getByDriver: async (driverId: number): Promise<Shipment[]> => {
     const res = await instance.get(`/shipments/by-driver/${driverId}`);
     return res.data;
   },
 
-  /** 🟢 Aceptar pedido */
+  // =========================
+  // 🟢 Historial del rider (ENTREGADOS)
+  // =========================
+  getDriverHistory: async (
+    driverId: number,
+    page = 1,
+    limit = 10
+  ): Promise<PaginatedShipments> => {
+    const res = await instance.get(
+      `/shipments/driver/${driverId}/history`,
+      {
+        params: { page, limit },
+      }
+    );
+    return res.data;
+  },
+
+  // =========================
+  // 🟢 Aceptar pedido
+  // =========================
   assign: async (
     shipmentId: number,
-    driverId: number,
+    driverId: number
   ): Promise<Shipment> => {
     const res = await instance.patch(
       `/shipments/${shipmentId}/assign`,
@@ -95,10 +131,12 @@ export const ShipmentService = {
     return res.data;
   },
 
-  /** 🟢 Cambiar estado */
+  // =========================
+  // 🟢 Cambiar estado
+  // =========================
   updateStatus: async (
     shipmentId: number,
-    status: ShipmentStatus,
+    status: ShipmentStatus
   ): Promise<Shipment> => {
     const res = await instance.patch(
       `/shipments/${shipmentId}/status`,

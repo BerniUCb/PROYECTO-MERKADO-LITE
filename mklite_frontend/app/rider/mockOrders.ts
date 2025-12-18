@@ -1,97 +1,52 @@
-import Order from "../models/order.model";
+// ===============================
+// Tipos SOLO PARA LA UI DEL RIDER
+// ===============================
 
-/**
- * Tipos auxiliares SOLO para el Rider (frontend)
- */
-export type GeoLocation = {
-  lat: number;
-  lng: number;
-  address1: string;
-  address2?: string;
-};
+export type RiderOrderStatus =
+  | "Disponible"
+  | "En proceso"
+  | "Entregado";
 
-export type RiderOrder = Order & {
+export interface RiderOrderItem {
+  id: number;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface RiderUser {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+}
+
+export interface RiderOrder {
+  id: number;
+  name: string;
+  createdAt: string;
+
+  status: RiderOrderStatus;
+  paymentMethod: string;
+  orderTotal: number;
+
+  user: RiderUser;
+  items: RiderOrderItem[];
+
   store: {
     name: string;
-    location: GeoLocation;
+    location: {
+      lat: number;
+      lng: number;
+      address1: string;
+      address2?: string;
+    };
   };
-  customerLocation: GeoLocation;
-};
 
-export const mockOrders: RiderOrder[] = [
-  {
-    id: 1,
-    name: "Pedido 1",
-    createdAt: new Date().toISOString(),
-
-    // ✅ Estado correcto para Rider
-    status: "Disponible" as any,
-
-    orderTotal: 85.5,
-    paymentMethod: "Cash on delivery",
-
-    user: {
-      id: 10,
-      fullName: "Carlos Pérez",
-      email: "carlos@gmail.com",
-      phone: "70000000",
-      passwordHash: "",
-      role: "Client",
-      isActive: true,
-      isTwoFactorEnabled: false,
-      twoFactorSecret: "",
-      orders: [],
-      assignedShipments: [],
-      cartItems: [],
-      ratings: [],
-      stockMovements: [],
-      notifications: [],
-      addresses: [],
-    } as any,
-
-    items: [
-      {
-        id: 101,
-        name: "Leche PIL 1L",
-        quantity: 2,
-        unitPrice: 8,
-        order: {} as any,
-        product: {} as any,
-      },
-      {
-        id: 102,
-        name: "Pan Bimbo",
-        quantity: 1,
-        unitPrice: 10,
-        order: {} as any,
-        product: {} as any,
-      },
-      {
-        id: 103,
-        name: "Coca Cola 2L",
-        quantity: 1,
-        unitPrice: 14,
-        order: {} as any,
-        product: {} as any,
-      },
-    ],
-
-    // 🗺️ NUEVO: datos para mapa / ruta
-    store: {
-      name: "MERKADO LITE",
-      location: {
-        lat: -17.3895,
-        lng: -66.1568,
-        address1: "Julio Mendez, Cercado",
-        address2: "Cochabamba, Bolivia",
-      },
-    },
-
-    customerLocation: {
-      lat: -17.3932,
-      lng: -66.1621,
-      address1: "Av. América #456",
-      address2: "Cercado, Cochabamba, Bolivia",
-    },
-  },
-];
+  customerLocation: {
+    lat: number;
+    lng: number;
+    address1: string;
+    address2?: string;
+  };
+}

@@ -6,9 +6,11 @@ import styles from "./page.module.css";
 
 import RouteMap, { type RouteStep } from "../../components/RouteMap";
 
-import { ShipmentService } from "../../../services/shipment.service";
-import type Shipment from "../../../models/shipment.model";
-
+// ✅ IMPORTAR SOLO DESDE EL SERVICE
+import {
+  ShipmentService,
+  type Shipment,
+} from "@/app/services/shipment.service";
 
 // ----------------------------
 // Types
@@ -21,45 +23,44 @@ type RiderStage = "PENDING_PICKUP" | "ON_THE_WAY";
 function shipmentToView(shipment: Shipment) {
   const addr = shipment.deliveryAddress;
 
-  return {
-  id: shipment.id,
-  createdAt:
-    shipment.order.createdAt ?? new Date().toISOString(),
-
-  status: shipment.status,
-
-  user: shipment.order.user,
-
-  items: shipment.order.items.map((it: any) => ({
+  const items = shipment.order.items.map((it) => ({
     ...it,
     quantity: Number(it.quantity),
     unitPrice: Number(it.unitPrice),
-  })),
+  }));
 
-  orderTotal: shipment.order.items.reduce(
-    (acc: number, it: any) =>
-      acc +
-      Number(it.quantity) * Number(it.unitPrice),
+  const orderTotal = items.reduce(
+    (acc, it) => acc + it.quantity * it.unitPrice,
     0
-  ),
+  );
 
-  store: {
-    name: "MERKADO LITE",
-    location: {
-      lat: -17.374063,
-      lng: -66.167678,
-      address1: "Tienda",
-      address2: "",
+  return {
+    id: shipment.id,
+    createdAt:
+      shipment.order.createdAt ?? new Date().toISOString(),
+
+    status: shipment.status,
+    user: shipment.order.user,
+    items,
+    orderTotal,
+
+    store: {
+      name: "MERKADO LITE",
+      location: {
+        lat: -17.374063,
+        lng: -66.167678,
+        address1: "Tienda",
+        address2: "",
+      },
     },
-  },
 
-  customerLocation: {
-    lat: addr.latitude ?? 0,
-    lng: addr.longitude ?? 0,
-    address1: `${addr.street} ${addr.streetNumber}`,
-    address2: `${addr.city}, ${addr.state}`,
-  },
-};
+    customerLocation: {
+      lat: addr.latitude ?? 0,
+      lng: addr.longitude ?? 0,
+      address1: `${addr.street} ${addr.streetNumber}`,
+      address2: `${addr.city}, ${addr.state}`,
+    },
+  };
 }
 
 // ----------------------------
@@ -71,20 +72,29 @@ export default function RiderDeliveryPage() {
   const shipmentId = Number(params.id);
 
   const [shipment, setShipment] = useState<Shipment | null>(null);
-  const [stage, setStage] = useState<RiderStage>("PENDING_PICKUP");
-  const [showDoneModal, setShowDoneModal] = useState(false);
+  const [stage, setStage] =
+    useState<RiderStage>("PENDING_PICKUP");
+  const [showDoneModal, setShowDoneModal] =
+    useState(false);
 
-  const [routeSteps, setRouteSteps] = useState<RouteStep[]>([]);
-  const [distanceKm, setDistanceKm] = useState(0);
-  const [durationMin, setDurationMin] = useState(0);
+  const [routeSteps, setRouteSteps] =
+    useState<RouteStep[]>([]);
+  const [distanceKm, setDistanceKm] =
+    useState(0);
+  const [durationMin, setDurationMin] =
+    useState(0);
 
   // ----------------------------
   // Load shipment
   // ----------------------------
   useEffect(() => {
-    const load = async () => {
+    if (!shipmentId) return;
+
+    (async () => {
       try {
-        const data = await ShipmentService.getById(shipmentId);
+        const data =
+          await ShipmentService.getById(shipmentId);
+
         setShipment(data);
 
         if (data.status === "shipped") {
@@ -93,9 +103,7 @@ export default function RiderDeliveryPage() {
       } catch (err) {
         console.error(err);
       }
-    };
-
-    load();
+    })();
   }, [shipmentId]);
 
   const order = useMemo(
@@ -125,11 +133,14 @@ export default function RiderDeliveryPage() {
   }
 
   // ----------------------------
-  // Actions (BACKEND REAL)
+  // Actions
   // ----------------------------
   const handleConfirmPickup = async () => {
     try {
-      await ShipmentService.updateStatus(shipmentId, "shipped");
+      await ShipmentService.updateStatus(
+        shipmentId,
+        "shipped"
+      );
       setStage("ON_THE_WAY");
     } catch (err) {
       console.error(err);
@@ -139,7 +150,10 @@ export default function RiderDeliveryPage() {
 
   const handleConfirmDelivery = async () => {
     try {
-      await ShipmentService.updateStatus(shipmentId, "delivered");
+      await ShipmentService.updateStatus(
+        shipmentId,
+        "delivered"
+      );
       setShowDoneModal(true);
     } catch (err) {
       console.error(err);
@@ -207,7 +221,9 @@ export default function RiderDeliveryPage() {
                 📍 {order.store.location.address1}
               </p>
 
-              <p className={styles.line}>📞 {customerPhone}</p>
+              <p className={styles.line}>
+                📞 {customerPhone}
+              </p>
 
               {stage === "PENDING_PICKUP" ? (
                 <button
@@ -244,7 +260,9 @@ export default function RiderDeliveryPage() {
                 📍 {order.customerLocation.address1}
               </p>
 
-              <p className={styles.line}>📞 {customerPhone}</p>
+              <p className={styles.line}>
+                📞 {customerPhone}
+              </p>
 
               {stage === "ON_THE_WAY" && (
                 <button

@@ -8,12 +8,16 @@ import OrdersTable from "./components/OrdersTable";
 import OrderDetailCard from "./components/OrderDetailCard";
 import { useRouter } from "next/navigation";
 
-import { ShipmentService, type Shipment } from "@/app/services/shipment.service";
-import { StoreService, type StoreLocation } from "@/app/services/store.service";
+import {
+  ShipmentService,
+  type Shipment,
+} from "@/app/services/shipment.service";
+import {
+  StoreService,
+  type StoreLocation,
+} from "@/app/services/store.service";
 
-// --------------------------------------------------
-// Helpers
-// --------------------------------------------------
+// ---------------- Helpers ----------------
 
 function mapStatus(status: Shipment["status"]): RiderOrder["status"] {
   switch (status) {
@@ -40,7 +44,7 @@ function shipmentToRiderOrder(
   s: Shipment,
   store: StoreLocation
 ): RiderOrder {
-  const items: RiderOrder["items"] = s.order.items.map((it: any) => ({
+  const items: RiderOrder["items"] = s.order.items.map((it) => ({
     id: it.id,
     name: it.product?.name ?? `Producto ${it.id}`,
     quantity: Number(it.quantity),
@@ -53,10 +57,9 @@ function shipmentToRiderOrder(
     id: s.id,
     name: `Pedido ${s.order.id}`,
     createdAt: s.order.createdAt ?? new Date().toISOString(),
-
     status: mapStatus(s.status),
     orderTotal: calcTotal(items),
-    paymentMethod: s.order.paymentMethod ?? "Cash",
+    paymentMethod: s.order.paymentMethod ?? "Efectivo",
 
     user: {
       id: s.order.user.id,
@@ -67,18 +70,16 @@ function shipmentToRiderOrder(
 
     items,
 
-    // ✅ TIENDA DESDE BACKEND
     store: {
-  name: store.name,
-  location: {
-    lat: Number(store.lat),
-    lng: Number(store.lng),
-    address1: store.address1,
-    address2: store.address2,
-  },
+      name: store.name,
+      location: {
+        lat: Number(store.lat),
+        lng: Number(store.lng),
+        address1: store.address1,
+        address2: store.address2,
+      },
     },
 
-    // ✅ CLIENTE DESDE BACKEND
     customerLocation: {
       lat: addr.latitude ?? 0,
       lng: addr.longitude ?? 0,
@@ -88,12 +89,10 @@ function shipmentToRiderOrder(
   };
 }
 
-// --------------------------------------------------
-// Page
-// --------------------------------------------------
+// ---------------- Page ----------------
 
 export default function RiderHomePage() {
-  const riderName = "Jp";
+  const router = useRouter();
 
   const [store, setStore] = useState<StoreLocation | null>(null);
   const [orders, setOrders] = useState<RiderOrder[]>([]);
@@ -102,25 +101,19 @@ export default function RiderHomePage() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const router = useRouter();
-
-  // ------------------------
-  // 1️⃣ Cargar tienda
-  // ------------------------
+  // 📍 Load store
   useEffect(() => {
     (async () => {
       try {
         const data = await StoreService.getLocation();
         setStore(data);
       } catch (e) {
-        console.error("Error cargando store", e);
+        console.error(e);
       }
     })();
   }, []);
 
-  // ------------------------
-  // 2️⃣ Cargar pedidos
-  // ------------------------
+  // 📦 Load shipments
   useEffect(() => {
     if (!store) return;
 
@@ -129,24 +122,15 @@ export default function RiderHomePage() {
     (async () => {
       try {
         setLoading(true);
-        setErrorMsg(null);
-
         const shipments = await ShipmentService.getAvailable();
 
-        const mapped = shipments.map((s) =>
+        if (!alive) return;
+
+        setOrders(shipments.map((s) =>
           shipmentToRiderOrder(s, store)
-        );
-
+        ));
+      } catch {
         if (!alive) return;
-
-        setOrders(mapped);
-        setSelectedOrder(null);
-      } catch (err) {
-        console.error(err);
-        if (!alive) return;
-
-        setOrders([]);
-        setSelectedOrder(null);
         setErrorMsg("Error cargando pedidos");
       } finally {
         if (!alive) return;
@@ -159,61 +143,35 @@ export default function RiderHomePage() {
     };
   }, [store]);
 
-  const hasOrders = useMemo(
-    () => orders.length > 0,
-    [orders.length]
-  );
+  const hasOrders = useMemo(() => orders.length > 0, [orders]);
 
-  // ------------------------
-  // 3️⃣ Aceptar pedido
-  // ------------------------
   const handleAccept = async (shipmentId: number) => {
-    try {
-      const raw = localStorage.getItem("user");
-      if (!raw) {
-        alert("Usuario no autenticado");
-        return;
-      }
+    const raw = localStorage.getItem("user");
+    if (!raw) return;
 
-      const user = JSON.parse(raw);
-      await ShipmentService.assign(shipmentId, user.id);
+    const user = JSON.parse(raw);
+    await ShipmentService.assign(shipmentId, user.id);
 
-      router.push(`/rider/delivery/${shipmentId}`);
-    } catch (err: any) {
-      console.error(err);
-      alert(
-        err?.response?.data?.message ??
-          "No se pudo aceptar el pedido"
-      );
-    }
+    router.push(`/rider/delivery/${shipmentId}`);
   };
 
-  // ------------------------
-  // Render
-  // ------------------------
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        Bienvenido {riderName}
-      </h1>
+      <h1 className={styles.title}>Bienvenido</h1>
 
       <section className={styles.content}>
         <div className={styles.card}>
           <header className={styles.cardHeader}>
-            <span className={styles.cardTitle}>
-              Pedidos disponibles
-            </span>
+            Pedidos disponibles
           </header>
 
           <div className={styles.cardBody}>
             {loading ? (
               <p>Cargando pedidos...</p>
             ) : errorMsg ? (
-              <p className={styles.emptyText}>{errorMsg}</p>
+              <p>{errorMsg}</p>
             ) : !hasOrders ? (
-              <p className={styles.emptyText}>
-                No hay pedidos disponibles
-              </p>
+              <p>No hay pedidos disponibles</p>
             ) : (
               <OrdersTable
                 orders={orders}
@@ -228,7 +186,6 @@ export default function RiderHomePage() {
           onAccept={() =>
             selectedOrder && handleAccept(selectedOrder.id)
           }
-          onContact={() => alert("Contactar cliente")}
         />
       </section>
     </div>
