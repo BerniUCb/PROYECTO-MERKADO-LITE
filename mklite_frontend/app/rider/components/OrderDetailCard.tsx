@@ -7,12 +7,16 @@ type Props = {
   order: RiderOrder | null;
   onAccept?: () => void;
   onContact?: () => void;
+  accepting?: boolean;
+  errorMsg?: string | null;
 };
 
 export default function OrderDetailCard({
   order,
   onAccept,
   onContact,
+  accepting = false,
+  errorMsg = null,
 }: Props) {
   if (!order) {
     return (
@@ -123,13 +127,20 @@ export default function OrderDetailCard({
           </div>
         </div>
 
+        {errorMsg && (
+          <div className={styles.errorMsg}>
+            {errorMsg}
+          </div>
+        )}
+
         {onAccept && (
           <button
             type="button"
             className={styles.acceptBtn}
             onClick={onAccept}
+            disabled={accepting}
           >
-            Aceptar pedido
+            {accepting ? "Aceptando..." : "Aceptar pedido"}
           </button>
         )}
 

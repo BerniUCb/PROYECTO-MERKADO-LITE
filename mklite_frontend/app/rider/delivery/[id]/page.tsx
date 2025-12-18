@@ -11,6 +11,10 @@ import {
   ShipmentService,
   type Shipment,
 } from "@/app/services/shipment.service";
+import {
+  StoreService,
+  type StoreLocation,
+} from "@/app/services/store.service";
 
 // ----------------------------
 // Types
@@ -20,7 +24,7 @@ type RiderStage = "PENDING_PICKUP" | "ON_THE_WAY";
 // ----------------------------
 // Helpers
 // ----------------------------
-function shipmentToView(shipment: Shipment) {
+function shipmentToView(shipment: Shipment, store: StoreLocation) {
   const addr = shipment.deliveryAddress;
 
   const items = shipment.order.items.map((it) => ({
@@ -45,12 +49,12 @@ function shipmentToView(shipment: Shipment) {
     orderTotal,
 
     store: {
-      name: "MERKADO LITE",
+      name: store.name,
       location: {
-        lat: -17.374063,
-        lng: -66.167678,
-        address1: "Tienda",
-        address2: "",
+        lat: Number(store.lat),
+        lng: Number(store.lng),
+        address1: store.address1,
+        address2: store.address2,
       },
     },
 
@@ -72,6 +76,7 @@ export default function RiderDeliveryPage() {
   const shipmentId = Number(params.id);
 
   const [shipment, setShipment] = useState<Shipment | null>(null);
+  const [store, setStore] = useState<StoreLocation | null>(null);
   const [stage, setStage] =
     useState<RiderStage>("PENDING_PICKUP");
   const [showDoneModal, setShowDoneModal] =
@@ -83,6 +88,20 @@ export default function RiderDeliveryPage() {
     useState(0);
   const [durationMin, setDurationMin] =
     useState(0);
+
+  // ----------------------------
+  // Load store location
+  // ----------------------------
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await StoreService.getLocation();
+        setStore(data);
+      } catch (err) {
+        console.error("Error cargando ubicación del store:", err);
+      }
+    })();
+  }, []);
 
   // ----------------------------
   // Load shipment
@@ -107,8 +126,8 @@ export default function RiderDeliveryPage() {
   }, [shipmentId]);
 
   const order = useMemo(
-    () => (shipment ? shipmentToView(shipment) : null),
-    [shipment]
+    () => (shipment && store ? shipmentToView(shipment, store) : null),
+    [shipment, store]
   );
 
   const handleRoute = useCallback(

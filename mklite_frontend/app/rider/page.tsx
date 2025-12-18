@@ -99,6 +99,7 @@ export default function RiderHomePage() {
   const [selectedOrder, setSelectedOrder] =
     useState<RiderOrder | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accepting, setAccepting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // 📍 Load store
@@ -122,6 +123,7 @@ export default function RiderHomePage() {
     (async () => {
       try {
         setLoading(true);
+        setErrorMsg(null); // Limpiar errores previos
         const shipments = await ShipmentService.getAvailable();
 
         if (!alive) return;
@@ -143,16 +145,49 @@ export default function RiderHomePage() {
     };
   }, [store]);
 
+  // Limpiar error cuando se selecciona un nuevo pedido
+  useEffect(() => {
+    if (selectedOrder) {
+      setErrorMsg(null);
+    }
+  }, [selectedOrder]);
+
   const hasOrders = useMemo(() => orders.length > 0, [orders]);
 
   const handleAccept = async (shipmentId: number) => {
-    const raw = localStorage.getItem("user");
-    if (!raw) return;
+    try {
+      const raw = localStorage.getItem("user");
+      if (!raw) {
+        setErrorMsg("No se encontró información del usuario");
+        return;
+      }
 
-    const user = JSON.parse(raw);
-    await ShipmentService.assign(shipmentId, user.id);
+      const user = JSON.parse(raw);
+      
+      // Deshabilitar el botón mientras se procesa
+      setAccepting(true);
+      setErrorMsg(null); // Limpiar errores previos
+      
+      await ShipmentService.assign(shipmentId, user.id);
 
-    router.push(`/rider/delivery/${shipmentId}`);
+      // Redirigir a la página de entrega
+      router.push(`/rider/delivery/${shipmentId}`);
+    } catch (error: any) {
+      console.error("Error al aceptar pedido:", error);
+      
+      // Manejar diferentes tipos de errores
+      if (error?.response?.status === 409) {
+        setErrorMsg("Este pedido ya fue asignado a otro repartidor");
+      } else if (error?.response?.status === 404) {
+        setErrorMsg("El pedido no fue encontrado");
+      } else if (error?.response?.status === 400) {
+        setErrorMsg("Error en la solicitud. Por favor, intenta nuevamente");
+      } else {
+        setErrorMsg("Error al aceptar el pedido. Por favor, intenta nuevamente");
+      }
+      
+      setAccepting(false);
+    }
   };
 
   return (
@@ -186,6 +221,8 @@ export default function RiderHomePage() {
           onAccept={() =>
             selectedOrder && handleAccept(selectedOrder.id)
           }
+          accepting={accepting}
+          errorMsg={errorMsg}
         />
       </section>
     </div>

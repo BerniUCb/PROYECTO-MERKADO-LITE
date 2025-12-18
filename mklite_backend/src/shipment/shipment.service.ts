@@ -250,10 +250,19 @@ export class ShipmentService {
   ): Promise<Shipment> {
     const shipment = await this.findOne(shipmentId);
 
-    // 🚫 Bloquear doble asignación
+    // ✅ Permitir asignación idempotente: si ya está asignado al mismo rider, permitir continuar
     if (shipment.deliveryDriver) {
+      if (shipment.deliveryDriver.id === driverId) {
+        // Ya está asignado al mismo rider, actualizar estado si es necesario y retornar
+        if (status && shipment.status !== status) {
+          shipment.status = status;
+          return this.shipmentRepository.save(shipment);
+        }
+        return shipment; // Ya está asignado al mismo rider, retornar sin cambios
+      }
+      // Está asignado a otro rider diferente
       throw new ConflictException(
-        `Shipment ${shipmentId} is already assigned`,
+        `Shipment ${shipmentId} is already assigned to another driver`,
       );
     }
 

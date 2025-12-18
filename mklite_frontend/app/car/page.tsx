@@ -83,6 +83,7 @@ export default function CarPage() {
       user_id: userId,
       paymentMethod: "cash",
       status: "pending",
+      deliveryAddressId: selectedAddress.id, // ✅ Pasar dirección para crear Shipment automáticamente
       items: products.map((p) => ({
         productId: p.productId,
         quantity: p.qty,

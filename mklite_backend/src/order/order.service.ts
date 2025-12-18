@@ -7,6 +7,9 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderItem } from 'src/entity/order-item.entity';
 import { QueryHelpers } from 'src/utils/query-helpers';
 import { Product } from 'src/entity/product.entity';
+import { Shipment } from 'src/entity/shipment.entity';
+import { Address } from 'src/entity/address.entity';
+import { Payment } from 'src/entity/payment.entity';
 
 
 @Injectable()
@@ -18,6 +21,12 @@ export class OrderService {
     private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Shipment)
+    private readonly shipmentRepository: Repository<Shipment>,
+    @InjectRepository(Address)
+    private readonly addressRepository: Repository<Address>,
+    @InjectRepository(Payment)
+    private readonly paymentRepository: Repository<Payment>,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -60,7 +69,46 @@ export class OrderService {
       orderTotal: total,
     });
 
-    return await this.orderRepository.save(order);
+    const savedOrder = await this.orderRepository.save(order);
+
+    // ✅ Crear Payment automáticamente
+    const payment = this.paymentRepository.create({
+      order: savedOrder,
+      amount: total,
+      method: createOrderDto.paymentMethod,
+      status: 'pending',
+    });
+    await this.paymentRepository.save(payment);
+
+    // ✅ Crear Shipment automáticamente si se proporciona deliveryAddressId
+    if (createOrderDto.deliveryAddressId) {
+      const address = await this.addressRepository.findOne({
+        where: { id: createOrderDto.deliveryAddressId },
+        relations: ['user'],
+      });
+
+      if (!address) {
+        throw new NotFoundException(
+          `Address with ID ${createOrderDto.deliveryAddressId} not found`,
+        );
+      }
+
+      // Verificar que la dirección pertenece al usuario
+      if (address.user.id !== createOrderDto.user_id) {
+        throw new BadRequestException(
+          `Address ${createOrderDto.deliveryAddressId} does not belong to user ${createOrderDto.user_id}`,
+        );
+      }
+
+      const shipment = this.shipmentRepository.create({
+        order: savedOrder,
+        deliveryAddress: address,
+        status: 'pending',
+      });
+      await this.shipmentRepository.save(shipment);
+    }
+
+    return savedOrder;
   }
 
   async findAll(

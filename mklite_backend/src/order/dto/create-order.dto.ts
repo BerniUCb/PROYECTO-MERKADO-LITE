@@ -1,4 +1,5 @@
 import { Order } from 'src/entity/order.entity';
+import { IsOptional, IsNumber } from 'class-validator';
 
 export class CreateOrderDto {
   user_id!: number;
@@ -9,4 +10,8 @@ export class CreateOrderDto {
     productId: number;
     quantity: number;
   }[];
+
+  @IsOptional()
+  @IsNumber()
+  deliveryAddressId?: number; // Opcional: si se proporciona, se crea el Shipment automáticamente
 }
