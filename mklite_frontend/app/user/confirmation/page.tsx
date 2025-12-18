@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // <--- 1. Importamos Suspense
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { OrderService } from "@/app/services/order.service";
 import type Order from "@/app/models/order.model";
 
-export default function PedidoConfirmado() {
+// =========================================================
+// 2. MOVEMOS TODA TU LÓGICA A ESTE COMPONENTE INTERNO
+// =========================================================
+function PedidoConfirmadoContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
@@ -14,9 +17,6 @@ export default function PedidoConfirmado() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ============================
-  // CARGAR PEDIDO REAL
-  // ============================
   useEffect(() => {
     if (!orderId) return;
 
@@ -34,8 +34,8 @@ export default function PedidoConfirmado() {
     loadOrder();
   }, [orderId]);
 
-  if (loading) return <p>Cargando pedido...</p>;
-  if (!order) return <p>No se pudo cargar el pedido.</p>;
+  if (loading) return <p className={styles.loading}>Cargando pedido...</p>;
+  if (!order) return <p className={styles.error}>No se pudo cargar el pedido.</p>;
 
   return (
     <div className={styles.page}>
@@ -97,7 +97,7 @@ export default function PedidoConfirmado() {
             {order.user?.addresses?.[0] && (
               <div className={styles.delivery}>
                 <span>Dirección de Entrega</span>
-                <p>{order.user.addresses[0].street}</p>
+                <p>{order.user.addresses[0].street} # {order.user.addresses[0].streetNumber}</p>
                 <small>
                   {order.user.addresses[0].city},{" "}
                   {order.user.addresses[0].state}
@@ -140,5 +140,16 @@ export default function PedidoConfirmado() {
         </div>
       </div>
     </div>
+  );
+}
+
+// =========================================================
+// 3. EL COMPONENTE PRINCIPAL SOLO ENVUELVE
+// =========================================================
+export default function PedidoConfirmado() {
+  return (
+    <Suspense fallback={<p>Cargando confirmación...</p>}>
+      <PedidoConfirmadoContent />
+    </Suspense>
   );
 }
